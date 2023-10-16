@@ -24,6 +24,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.moviecatalog.R
+import com.example.moviecatalog.ui.theme.label15SBTextStyle
+import com.example.moviecatalog.ui.theme.text15RTextStyle
+import com.example.moviecatalog.ui.theme.title20B2TextStyle
 
 @Composable
 fun SelectAuthScreen(
@@ -43,13 +46,14 @@ fun SelectAuthScreen(
         Spacer(modifier = modifier.height(35.dp))
         Text(
             text = stringResource(R.string.select_auth_title),
-            color = colorResource(R.color.white)
+            color = colorResource(R.color.white),
+            style = title20B2TextStyle
         )
         Spacer(modifier = modifier.height(8.dp))
         Text(
             text = stringResource(R.string.select_auth_text),
             color = colorResource(R.color.white),
-            textAlign = TextAlign.Center
+            style = text15RTextStyle
         )
         Spacer(modifier = modifier.height(35.dp))
 
@@ -122,7 +126,10 @@ fun BasicButton(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        Text(stringResource(stringRes))
+        Text(
+            text = stringResource(stringRes),
+            style = label15SBTextStyle
+        )
     }
 }
 
