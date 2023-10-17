@@ -34,6 +34,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.moviecatalog.R
+import com.example.moviecatalog.components.BasicButton
+import com.example.moviecatalog.components.CustomPasswordTextField
+import com.example.moviecatalog.components.CustomTextField
 import com.example.moviecatalog.ui.theme.label15MTextStyle
 import com.example.moviecatalog.ui.theme.label15SBTextStyle
 import com.example.moviecatalog.ui.theme.label17SBTextStyle
@@ -66,7 +69,7 @@ fun LoginScreen(
             )
             Column(
                 horizontalAlignment = Alignment.Start,
-                modifier = Modifier.weight(0.35f)
+                modifier = Modifier.weight(0.3f)
             ) {
                 Text(
                     text = stringResource(R.string.login),
@@ -77,6 +80,7 @@ fun LoginScreen(
                 CustomTextField(
                     value = "",
                     onValueChange = {},
+                    isError = false,
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.weight(0.15f))
@@ -85,12 +89,13 @@ fun LoginScreen(
                     style = label15MTextStyle
                 )
                 Spacer(modifier = Modifier.weight(0.1f))
-                CustomTextField(
+                CustomPasswordTextField(
                     value = "",
                     onValueChange = {},
+                    isError = false,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.weight(0.25f))
+                Spacer(modifier = Modifier.weight(0.35f))
                 BasicButton(
                     stringRes = R.string.entrance,
                     onClick = { /*TODO*/ },
@@ -119,29 +124,6 @@ fun LoginScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun BasicButton(
-    @StringRes stringRes: Int,
-    onClick: () -> Unit,
-    isEnabled: Boolean,
-    colors: ButtonColors,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onClick,
-        enabled = isEnabled,
-        colors = colors,
-        shape = RoundedCornerShape(10.dp),
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = stringResource(stringRes),
-            style = label15SBTextStyle
-        )
     }
 }
 
@@ -175,28 +157,6 @@ private fun LoginTopAppBar(
     )
 }
 
-@Composable
-fun CustomTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    BasicTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier
-            .border(
-                width = 1.dp,
-                color = colorResource(R.color.border_color),
-                shape = RoundedCornerShape(size = 10.dp)
-            )
-            .padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 12.dp)
-            .fillMaxWidth(),
-        singleLine = true
-    )
-}
-
-
 @Preview
 @Composable
 fun PreviewLoginScreen() {
@@ -206,5 +166,5 @@ fun PreviewLoginScreen() {
 @Preview
 @Composable
 fun PreviewCustomTextField() {
-    CustomTextField(value = "", onValueChange = {})
+    CustomTextField(value = "", onValueChange = {},isError = false)
 }
