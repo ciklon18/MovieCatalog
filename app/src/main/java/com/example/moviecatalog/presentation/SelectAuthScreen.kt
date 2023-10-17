@@ -24,6 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.moviecatalog.R
+import com.example.moviecatalog.components.AccentButton
+import com.example.moviecatalog.components.SecondaryButton
 import com.example.moviecatalog.ui.theme.label15SBTextStyle
 import com.example.moviecatalog.ui.theme.text15RTextStyle
 import com.example.moviecatalog.ui.theme.title20B2TextStyle
@@ -71,67 +73,6 @@ fun SelectAuthScreen(
     }
 }
 
-
-@Composable
-fun AccentButton(
-    @StringRes stringRes: Int,
-    onClick: () -> Unit,
-    isEnabled: Boolean,
-    modifier: Modifier = Modifier
-) {
-    BasicButton(
-        stringRes = stringRes,
-        onClick = onClick,
-        isEnabled = isEnabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(R.color.accent),
-            contentColor = colorResource(R.color.white)
-        ),
-        modifier = modifier
-    )
-}
-
-@Composable
-fun SecondaryButton(
-    @StringRes stringRes: Int,
-    onClick: () -> Unit,
-    isEnabled: Boolean,
-    modifier: Modifier = Modifier
-) {
-    BasicButton(
-        stringRes = stringRes,
-        onClick = onClick,
-        isEnabled = isEnabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(R.color.gray_800),
-            contentColor = colorResource(R.color.accent)
-        ),
-        modifier = modifier
-    )
-}
-
-@Composable
-fun BasicButton(
-    @StringRes stringRes: Int,
-    onClick: () -> Unit,
-    isEnabled: Boolean,
-    colors: ButtonColors,
-    modifier: Modifier = Modifier
-){
-    Button(
-        onClick = onClick,
-        enabled = isEnabled,
-        colors = colors,
-        shape = RoundedCornerShape(10.dp),
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = stringResource(stringRes),
-            style = label15SBTextStyle
-        )
-    }
-}
 
 @Preview
 @Composable
