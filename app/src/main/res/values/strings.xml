@@ -5,4 +5,13 @@
     <string name="select_auth_image_description">Изображение страницы выбора авторизации</string>
     <string name="registration">Регистрация</string>
     <string name="entrance">Вход</string>
+    <string name="top_app_text">FИЛЬМУС</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="is_there_account">Еще нет аккаунта?</string>
+    <string name="register">Зарегистрируйтесь</string>
+    <string name="wrong_login_or_password">Неверный логин или пароль.</string>
+    <string name="show_password">Показать пароль\n</string>
+    <string name="hide_password">Скрыть пароль</string>
+    <string name="date">Выбрать дату</string>
 </resources>
