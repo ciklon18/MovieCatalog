@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.example.moviecatalog.domain.usecases.validation.ValidateLoginUseCase
+import com.example.moviecatalog.domain.usecases.validation.ValidatePasswordUseCase
 import com.example.moviecatalog.presentation.LoginScreen
 import com.example.moviecatalog.presentation.LoginScreenViewModel
 import com.example.moviecatalog.ui.theme.MovieCatalogTheme
@@ -21,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LoginScreen(LoginScreenViewModel())
+                    LoginScreen(LoginScreenViewModel(ValidateLoginUseCase(), ValidatePasswordUseCase()))
                 }
             }
         }

@@ -1,8 +1,6 @@
 package com.example.moviecatalog.presentation
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,12 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +20,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,16 +38,32 @@ import com.example.moviecatalog.components.BasicButton
 import com.example.moviecatalog.components.CustomPasswordTextField
 import com.example.moviecatalog.components.CustomTextField
 import com.example.moviecatalog.ui.theme.label15MTextStyle
-import com.example.moviecatalog.ui.theme.label15SBTextStyle
 import com.example.moviecatalog.ui.theme.label17SBTextStyle
+import com.example.moviecatalog.ui.theme.text14RTextStyle
 import com.example.moviecatalog.ui.theme.title20B2TextStyle
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    loginScreenViewModel: LoginScreenViewModel,
+    viewModel: LoginScreenViewModel,
     modifier: Modifier = Modifier
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    var updatedLogin by remember { mutableStateOf(uiState.login) }
+    var updatedPassword by remember { mutableStateOf(uiState.password) }
+
+    LaunchedEffect(updatedLogin) {
+        delay(300)
+        viewModel.onLoginChanged(updatedLogin)
+    }
+
+    LaunchedEffect(updatedPassword) {
+        delay(300)
+        viewModel.onPasswordChanged(updatedPassword)
+    }
+
     Scaffold(
         topBar = {
             LoginTopAppBar(onClick = {
@@ -78,9 +94,11 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.weight(0.1f))
 
                 CustomTextField(
-                    value = "",
-                    onValueChange = {},
-                    isError = false,
+                    value = updatedLogin,
+                    onValueChange = { newLogin ->
+                        updatedLogin = newLogin
+                    },
+                    isError = uiState.isLoginWrong,
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.weight(0.15f))
@@ -90,16 +108,26 @@ fun LoginScreen(
                 )
                 Spacer(modifier = Modifier.weight(0.1f))
                 CustomPasswordTextField(
-                    value = "",
-                    onValueChange = {},
-                    isError = false,
+                    value = updatedPassword,
+                    onValueChange = { newPassword ->
+                        updatedPassword = newPassword
+                    },
+                    isError = uiState.isPasswordWrong,
                     modifier = Modifier.weight(1f)
                 )
+
+                if (uiState.isLoginWrong || uiState.isPasswordWrong) {
+                    Text(
+                        text = stringResource(R.string.wrong_login_or_password),
+                        style = text14RTextStyle,
+                        color = colorResource(R.color.light_accent)
+                    )
+                }
                 Spacer(modifier = Modifier.weight(0.35f))
                 BasicButton(
                     stringRes = R.string.entrance,
                     onClick = { /*TODO*/ },
-                    isEnabled = true,
+                    isEnabled = uiState.isButtonEnabled,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorResource(R.color.accent),
                         contentColor = colorResource(R.color.white)
@@ -159,12 +187,6 @@ private fun LoginTopAppBar(
 
 @Preview
 @Composable
-fun PreviewLoginScreen() {
-    LoginScreen(LoginScreenViewModel())
-}
-
-@Preview
-@Composable
 fun PreviewCustomTextField() {
-    CustomTextField(value = "", onValueChange = {},isError = false)
+    CustomTextField(value = "", onValueChange = {}, isError = false)
 }
