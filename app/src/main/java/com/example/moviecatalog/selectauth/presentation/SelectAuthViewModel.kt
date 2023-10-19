@@ -1,4 +1,4 @@
-package com.example.moviecatalog.presentation
+package com.example.moviecatalog.selectauth.presentation
 
 import androidx.lifecycle.ViewModel
 

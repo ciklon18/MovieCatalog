@@ -1,4 +1,4 @@
-package com.example.moviecatalog.presentation
+package com.example.moviecatalog.launchscreen.presentation
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
@@ -17,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
 import com.example.moviecatalog.commons.navigation.Routes
-import kotlinx.coroutines.delay
 
 @Composable
 fun LaunchScreen(
@@ -36,7 +35,6 @@ fun LaunchScreen(
                 }
             )
         )
-        delay(2000)
         navController.navigate(Routes.SelectAuthScreen.name)
     }
     Image(

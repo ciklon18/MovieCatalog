@@ -1,6 +1,5 @@
-package com.example.moviecatalog.presentation
+package com.example.moviecatalog.login.presentation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,23 +27,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.moviecatalog.R
-import com.example.moviecatalog.components.BasicButton
-import com.example.moviecatalog.components.CustomPasswordTextField
-import com.example.moviecatalog.components.CustomTextField
-import com.example.moviecatalog.ui.theme.label15MTextStyle
-import com.example.moviecatalog.ui.theme.label17SBTextStyle
-import com.example.moviecatalog.ui.theme.text14RTextStyle
-import com.example.moviecatalog.ui.theme.title20B2TextStyle
-import kotlinx.coroutines.delay
+import com.example.moviecatalog.commons.components.BasicButton
+import com.example.moviecatalog.commons.components.CustomPasswordTextField
+import com.example.moviecatalog.commons.components.CustomTextField
+import com.example.moviecatalog.commons.ui.theme.label15MTextStyle
+import com.example.moviecatalog.commons.ui.theme.label17SBTextStyle
+import com.example.moviecatalog.commons.ui.theme.text14RTextStyle
+import com.example.moviecatalog.commons.ui.theme.title20B2TextStyle
+import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
+import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     navController: NavHostController,
@@ -57,12 +56,10 @@ fun LoginScreen(
     var updatedPassword by remember { mutableStateOf(uiState.password) }
 
     LaunchedEffect(updatedLogin) {
-        delay(300)
         viewModel.onLoginChanged(updatedLogin)
     }
 
     LaunchedEffect(updatedPassword) {
-        delay(300)
         viewModel.onPasswordChanged(updatedPassword)
     }
 
@@ -71,7 +68,6 @@ fun LoginScreen(
             LoginTopAppBar(navigateUp = { navController.navigateUp() })
         },
         modifier = modifier
-            .padding(16.dp)
     ) { innerPadding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -82,15 +78,16 @@ fun LoginScreen(
             Text(
                 text = stringResource(R.string.entrance),
                 style = title20B2TextStyle,
-                modifier = Modifier.weight(0.05f)
+                modifier = Modifier.weight(0.03f)
             )
             Column(
                 horizontalAlignment = Alignment.Start,
-                modifier = Modifier.weight(0.3f)
+                modifier = Modifier.weight(if (uiState.isError) 0.3425f else 0.32f).padding(16.dp)
             ) {
                 Text(
                     text = stringResource(R.string.login),
-                    style = label15MTextStyle
+                    style = label15MTextStyle,
+                    modifier = Modifier.weight(0.35f)
                 )
                 Spacer(modifier = Modifier.weight(0.1f))
 
@@ -99,13 +96,14 @@ fun LoginScreen(
                     onValueChange = { newLogin ->
                         updatedLogin = newLogin
                     },
-                    isError = uiState.isLoginWrong,
+                    isError = uiState.isError,
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.weight(0.15f))
                 Text(
                     text = stringResource(R.string.password),
-                    style = label15MTextStyle
+                    style = label15MTextStyle,
+                    modifier = Modifier.weight(0.35f)
                 )
                 Spacer(modifier = Modifier.weight(0.1f))
                 CustomPasswordTextField(
@@ -113,21 +111,22 @@ fun LoginScreen(
                     onValueChange = { newPassword ->
                         updatedPassword = newPassword
                     },
-                    isError = uiState.isPasswordWrong,
+                    isError = uiState.isError,
                     modifier = Modifier.weight(1f)
                 )
 
-                if (uiState.isLoginWrong || uiState.isPasswordWrong) {
+                if (uiState.isError) {
                     Text(
                         text = stringResource(R.string.wrong_login_or_password),
                         style = text14RTextStyle,
-                        color = colorResource(R.color.light_accent)
+                        color = colorResource(R.color.light_accent),
+                        modifier = Modifier.weight(0.35f)
                     )
                 }
                 Spacer(modifier = Modifier.weight(0.35f))
                 BasicButton(
                     stringRes = R.string.entrance,
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.setFalse() },
                     isEnabled = uiState.isButtonEnabled,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorResource(R.color.accent),
@@ -135,10 +134,8 @@ fun LoginScreen(
                     ),
                     modifier = Modifier.weight(1f)
                 )
-
-
             }
-            Spacer(modifier = Modifier.weight(0.55f))
+            Spacer(modifier = Modifier.weight( if (uiState.isError) 0.4775f else 0.5f))
             Row(
                 modifier = modifier
                     .fillMaxWidth()
@@ -170,7 +167,9 @@ private fun LoginTopAppBar(
             )
         },
         navigationIcon = {
-            IconButton(onClick = navigateUp) {
+            IconButton(
+                onClick = navigateUp,
+            ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowLeft,
                     contentDescription = null,
@@ -182,12 +181,21 @@ private fun LoginTopAppBar(
             navigationIconContentColor = colorResource(R.color.white)
         ),
         modifier = modifier
-            .background(Color.Red)
     )
 }
 
+//@Preview
+//@Composable
+//fun PreviewCustomTextField() {
+//    CustomTextField(value = "", onValueChange = {}, isError = false)
+//}
 @Preview
 @Composable
-fun PreviewCustomTextField() {
-    CustomTextField(value = "", onValueChange = {}, isError = false)
+fun PreviewLoginScreen(){
+    LoginScreen(
+        rememberNavController(), LoginScreenViewModel(
+            ValidateLoginUseCase(),
+        ValidatePasswordUseCase()
+    ))
 }
+

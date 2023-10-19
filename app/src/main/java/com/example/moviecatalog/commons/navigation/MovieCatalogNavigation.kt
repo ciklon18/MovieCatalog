@@ -5,12 +5,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.moviecatalog.domain.usecases.validation.ValidateLoginUseCase
-import com.example.moviecatalog.domain.usecases.validation.ValidatePasswordUseCase
-import com.example.moviecatalog.presentation.LaunchScreen
-import com.example.moviecatalog.presentation.LoginScreen
-import com.example.moviecatalog.presentation.LoginScreenViewModel
-import com.example.moviecatalog.presentation.SelectAuthScreen
+import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
+import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
+import com.example.moviecatalog.launchscreen.presentation.LaunchScreen
+import com.example.moviecatalog.login.presentation.LoginScreen
+import com.example.moviecatalog.login.presentation.LoginScreenViewModel
+import com.example.moviecatalog.selectauth.presentation.SelectAuthScreen
 
 
 @Composable

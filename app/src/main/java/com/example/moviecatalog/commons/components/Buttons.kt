@@ -1,4 +1,4 @@
-package com.example.moviecatalog.components
+package com.example.moviecatalog.commons.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +13,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.moviecatalog.R
-import com.example.moviecatalog.ui.theme.label15SBTextStyle
+import com.example.moviecatalog.commons.ui.theme.label15SBTextStyle
 
 
 @Composable
