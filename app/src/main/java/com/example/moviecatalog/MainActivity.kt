@@ -8,7 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.moviecatalog.commons.navigation.MovieCatalogNavigation
-import com.example.moviecatalog.ui.theme.MovieCatalogTheme
+import com.example.moviecatalog.commons.ui.theme.MovieCatalogTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +21,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MovieCatalogNavigation()
+
                 }
+
             }
         }
     }

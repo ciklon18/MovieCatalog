@@ -1,4 +1,4 @@
-package com.example.moviecatalog.components
+package com.example.moviecatalog.commons.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement

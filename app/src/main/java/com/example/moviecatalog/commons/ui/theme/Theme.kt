@@ -1,4 +1,4 @@
-package com.example.moviecatalog.ui.theme
+package com.example.moviecatalog.commons.ui.theme
 
 import android.app.Activity
 import android.os.Build

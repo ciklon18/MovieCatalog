@@ -1,4 +1,4 @@
-package com.example.moviecatalog.components
+package com.example.moviecatalog.commons.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
