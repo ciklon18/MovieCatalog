@@ -14,11 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
+import com.example.moviecatalog.commons.navigation.Routes
 import kotlinx.coroutines.delay
 
 @Composable
-fun LaunchScreen() {
+fun LaunchScreen(
+    navController: NavHostController
+) {
     val alpha = remember {
         Animatable(0f)
     }
@@ -33,6 +37,7 @@ fun LaunchScreen() {
             )
         )
         delay(2000)
+        navController.navigate(Routes.SelectAuthScreen.name)
     }
     Image(
         painter = painterResource(R.drawable.launch_screen_background),

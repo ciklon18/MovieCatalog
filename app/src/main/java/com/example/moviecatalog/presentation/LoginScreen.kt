@@ -33,6 +33,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
 import com.example.moviecatalog.components.BasicButton
 import com.example.moviecatalog.components.CustomPasswordTextField
@@ -46,6 +47,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
+    navController: NavHostController,
     viewModel: LoginScreenViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -66,8 +68,7 @@ fun LoginScreen(
 
     Scaffold(
         topBar = {
-            LoginTopAppBar(onClick = {
-            })
+            LoginTopAppBar(navigateUp = { navController.navigateUp() })
         },
         modifier = modifier
             .padding(16.dp)
@@ -158,7 +159,7 @@ fun LoginScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoginTopAppBar(
-    onClick: () -> Unit,
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     CenterAlignedTopAppBar(
@@ -169,7 +170,7 @@ private fun LoginTopAppBar(
             )
         },
         navigationIcon = {
-            IconButton(onClick = onClick) {
+            IconButton(onClick = navigateUp) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowLeft,
                     contentDescription = null,

@@ -23,7 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
+import com.example.moviecatalog.commons.navigation.Routes
 import com.example.moviecatalog.components.AccentButton
 import com.example.moviecatalog.components.SecondaryButton
 import com.example.moviecatalog.ui.theme.label15SBTextStyle
@@ -32,6 +34,7 @@ import com.example.moviecatalog.ui.theme.title20B2TextStyle
 
 @Composable
 fun SelectAuthScreen(
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -67,7 +70,7 @@ fun SelectAuthScreen(
         Spacer(modifier = modifier.height(15.dp))
         SecondaryButton(
             stringRes = R.string.entrance,
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(Routes.LoginScreen.name) },
             isEnabled = true
         )
     }
