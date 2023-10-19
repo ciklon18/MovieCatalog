@@ -14,4 +14,6 @@
     <string name="show_password">Показать пароль\n</string>
     <string name="hide_password">Скрыть пароль</string>
     <string name="date">Выбрать дату</string>
+    <string name="confirm">Применить</string>
+    <string name="cancel">Отменить</string>
 </resources>
