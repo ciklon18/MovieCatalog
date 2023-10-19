@@ -43,6 +43,7 @@ fun SelectAuthScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
+
     ) {
         Image(
             painter = painterResource(R.drawable.select_auth_image),
