@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
-import com.example.moviecatalog.launchscreen.presentation.LaunchScreen
+import com.example.moviecatalog.launch.presentation.LaunchScreen
 import com.example.moviecatalog.login.presentation.LoginScreen
 import com.example.moviecatalog.login.presentation.LoginScreenViewModel
 import com.example.moviecatalog.selectauth.presentation.SelectAuthScreen

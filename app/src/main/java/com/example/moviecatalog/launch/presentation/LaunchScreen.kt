@@ -1,4 +1,4 @@
-package com.example.moviecatalog.launchscreen.presentation
+package com.example.moviecatalog.launch.presentation
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable

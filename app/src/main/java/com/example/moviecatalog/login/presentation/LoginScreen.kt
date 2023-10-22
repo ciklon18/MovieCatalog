@@ -8,16 +8,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,12 +31,16 @@ import com.example.moviecatalog.R
 import com.example.moviecatalog.commons.components.BasicButton
 import com.example.moviecatalog.commons.components.CustomPasswordTextField
 import com.example.moviecatalog.commons.components.CustomTextField
+import com.example.moviecatalog.commons.components.Gender
+import com.example.moviecatalog.commons.components.GenderChooseButton
+import com.example.moviecatalog.commons.components.MyTopAppBar
 import com.example.moviecatalog.commons.ui.theme.label15MTextStyle
-import com.example.moviecatalog.commons.ui.theme.label17SBTextStyle
 import com.example.moviecatalog.commons.ui.theme.text14RTextStyle
 import com.example.moviecatalog.commons.ui.theme.title20B2TextStyle
 import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
+
+
 
 @Composable
 fun LoginScreen(
@@ -65,7 +63,7 @@ fun LoginScreen(
 
     Scaffold(
         topBar = {
-            LoginTopAppBar(navigateUp = { navController.navigateUp() })
+            MyTopAppBar(navigateUp = { navController.navigateUp() })
         },
         modifier = modifier
     ) { innerPadding ->
@@ -82,7 +80,9 @@ fun LoginScreen(
             )
             Column(
                 horizontalAlignment = Alignment.Start,
-                modifier = Modifier.weight(if (uiState.isError) 0.3425f else 0.32f).padding(16.dp)
+                modifier = Modifier
+                    .weight(if (uiState.isError) 0.3425f else 0.32f)
+                    .padding(16.dp)
             ) {
                 Text(
                     text = stringResource(R.string.login),
@@ -115,6 +115,7 @@ fun LoginScreen(
                     modifier = Modifier.weight(1f)
                 )
 
+
                 if (uiState.isError) {
                     Text(
                         text = stringResource(R.string.wrong_login_or_password),
@@ -135,7 +136,7 @@ fun LoginScreen(
                     modifier = Modifier.weight(1f)
                 )
             }
-            Spacer(modifier = Modifier.weight( if (uiState.isError) 0.4775f else 0.5f))
+            Spacer(modifier = Modifier.weight(if (uiState.isError) 0.4775f else 0.5f))
             Row(
                 modifier = modifier
                     .fillMaxWidth()
@@ -153,49 +154,14 @@ fun LoginScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LoginTopAppBar(
-    navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.top_app_text),
-                style = label17SBTextStyle
-            )
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = navigateUp,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = null,
-                )
-            }
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            titleContentColor = colorResource(R.color.accent),
-            navigationIconContentColor = colorResource(R.color.white)
-        ),
-        modifier = modifier
-    )
-}
-
-//@Preview
-//@Composable
-//fun PreviewCustomTextField() {
-//    CustomTextField(value = "", onValueChange = {}, isError = false)
-//}
 @Preview
 @Composable
-fun PreviewLoginScreen(){
+fun PreviewLoginScreen() {
     LoginScreen(
         rememberNavController(), LoginScreenViewModel(
             ValidateLoginUseCase(),
-        ValidatePasswordUseCase()
-    ))
+            ValidatePasswordUseCase()
+        )
+    )
 }
 
