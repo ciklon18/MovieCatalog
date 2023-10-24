@@ -1,6 +1,5 @@
 package com.example.moviecatalog.commons.components
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,13 +24,13 @@ import com.example.moviecatalog.commons.ui.theme.text14RTextStyle
 
 @Composable
 fun AccentButton(
-    @StringRes stringRes: Int,
+    text: String,
     onClick: () -> Unit,
     isEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     BasicButton(
-        stringRes = stringRes,
+        text = text,
         onClick = onClick,
         isEnabled = isEnabled,
         colors = ButtonDefaults.buttonColors(
@@ -44,13 +43,13 @@ fun AccentButton(
 
 @Composable
 fun SecondaryButton(
-    @StringRes stringRes: Int,
+    text: String,
     onClick: () -> Unit,
     isEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     BasicButton(
-        stringRes = stringRes,
+        text = text,
         onClick = onClick,
         isEnabled = isEnabled,
         colors = ButtonDefaults.buttonColors(
@@ -63,7 +62,7 @@ fun SecondaryButton(
 
 @Composable
 fun BasicButton(
-    @StringRes stringRes: Int,
+    text: String,
     onClick: () -> Unit,
     isEnabled: Boolean,
     colors: ButtonColors,
@@ -78,8 +77,9 @@ fun BasicButton(
             .fillMaxWidth()
     ) {
         Text(
-            text = stringResource(stringRes),
-            style = label15SBTextStyle
+            text = text,
+            style = label15SBTextStyle,
+            modifier = Modifier.padding(8.dp)
         )
     }
 }

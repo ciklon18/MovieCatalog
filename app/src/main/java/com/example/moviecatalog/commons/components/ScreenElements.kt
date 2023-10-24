@@ -14,6 +14,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import com.example.moviecatalog.R
 import com.example.moviecatalog.commons.ui.theme.label17SBTextStyle
+import com.example.moviecatalog.commons.ui.theme.text14RTextStyle
+import com.example.moviecatalog.commons.ui.theme.title20B2TextStyle
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,6 +45,32 @@ fun MyTopAppBar(
             titleContentColor = colorResource(R.color.accent),
             navigationIconContentColor = colorResource(R.color.white)
         ),
+        modifier = modifier
+    )
+}
+
+@Composable
+fun PageTitleText(
+    text: String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = title20B2TextStyle,
+        modifier = modifier
+    )
+}
+
+
+@Composable
+fun ErrorText(
+    text: String,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = text,
+        style = text14RTextStyle,
+        color = colorResource(R.color.light_accent),
         modifier = modifier
     )
 }

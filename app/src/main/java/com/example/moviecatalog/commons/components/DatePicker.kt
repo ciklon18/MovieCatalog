@@ -3,9 +3,7 @@ package com.example.moviecatalog.commons.components
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -29,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.moviecatalog.R
-import com.example.moviecatalog.commons.ui.theme.label15MTextStyle
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -38,8 +35,7 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomDateFormField(
-    formText: String,
+fun CustomDateField(
     pickedDate: LocalDate,
     onPickedDateChanged: (LocalDate) -> Unit,
     modifier: Modifier = Modifier
@@ -48,7 +44,8 @@ fun CustomDateFormField(
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
     Text(
-        text = formText, style = label15MTextStyle
+        text = formText,
+        style = label15MTextStyle
     )
     Spacer(modifier = Modifier.height(8.dp))
 
