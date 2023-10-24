@@ -26,8 +26,7 @@ import com.example.moviecatalog.commons.ui.theme.title20B2TextStyle
 
 @Composable
 fun SelectAuthScreen(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
+    navController: NavHostController, modifier: Modifier = Modifier
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -56,13 +55,11 @@ fun SelectAuthScreen(
         Spacer(modifier = modifier.height(35.dp))
 
         AccentButton(
-            stringRes = R.string.registration,
-            onClick = { /*TODO*/ },
-            isEnabled = true
+            text = stringResource(R.string.registration), onClick = { /*TODO*/ }, isEnabled = true
         )
         Spacer(modifier = modifier.height(15.dp))
         SecondaryButton(
-            stringRes = R.string.entrance,
+            text = stringResource(R.string.entrance),
             onClick = { navController.navigate(Routes.LoginScreen.name) },
             isEnabled = true
         )
@@ -73,5 +70,9 @@ fun SelectAuthScreen(
 @Preview
 @Composable
 fun PreviewAccentButton() {
-    AccentButton(stringRes = R.string.registration, onClick = { /*TODO*/ }, isEnabled = true)
+    AccentButton(
+        text = stringResource(R.string.registration),
+        onClick = { /*TODO*/ },
+        isEnabled = true
+    )
 }
