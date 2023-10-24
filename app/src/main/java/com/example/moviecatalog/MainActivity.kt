@@ -9,8 +9,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.moviecatalog.commons.navigation.MovieCatalogNavigation
 import com.example.moviecatalog.commons.ui.theme.MovieCatalogTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -21,9 +24,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MovieCatalogNavigation()
-
                 }
-
             }
         }
     }

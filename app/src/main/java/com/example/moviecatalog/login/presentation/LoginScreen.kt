@@ -24,6 +24,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.moviecatalog.R
@@ -31,11 +32,8 @@ import com.example.moviecatalog.commons.components.AccentButton
 import com.example.moviecatalog.commons.components.CustomPasswordFormField
 import com.example.moviecatalog.commons.components.CustomTextFormField
 import com.example.moviecatalog.commons.components.ErrorText
-import com.example.moviecatalog.commons.components.PageTitleText
 import com.example.moviecatalog.commons.components.MyTopAppBar
-import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
-
+import com.example.moviecatalog.commons.components.PageTitleText
 
 @Composable
 fun LoginScreen(
@@ -151,9 +149,7 @@ private fun RegistrationLinkSection(onClickButton: () -> Unit, modifier: Modifie
 @Composable
 fun PreviewLoginScreen() {
     LoginScreen(
-        rememberNavController(), LoginScreenViewModel(
-            ValidateLoginUseCase(), ValidatePasswordUseCase()
-        )
+        rememberNavController(), hiltViewModel()
     )
 }
 

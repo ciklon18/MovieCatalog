@@ -1,8 +1,9 @@
 package com.example.moviecatalog.selectauth.presentation
 
 import androidx.lifecycle.ViewModel
+import javax.inject.Inject
 
-class SelectAuthViewModel: ViewModel() {
+class SelectAuthViewModel @Inject constructor(): ViewModel() {
 
 }
 
