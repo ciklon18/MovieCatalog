@@ -9,9 +9,11 @@
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
     <string name="is_there_account">Еще нет аккаунта?</string>
+    <string name="already_there_is_account">Уже есть аккаунт?</string>
+    <string name="enter_to_account">Войдите</string>
     <string name="register">Зарегистрируйтесь</string>
     <string name="wrong_login_or_password">Неверный логин или пароль.</string>
-    <string name="show_password">Показать пароль\n</string>
+    <string name="show_password">Показать пароль</string>
     <string name="hide_password">Скрыть пароль</string>
     <string name="date">Выбрать дату</string>
     <string name="confirm">Применить</string>
@@ -19,4 +21,13 @@
     <string name="male">Мужчина</string>
     <string name="female">Женщина</string>
     <string name="enter">Войти</string>
+    <string name="name">Имя</string>
+    <string name="gender">Пол</string>
+    <string name="email">Почта</string>
+    <string name="birth_date">Дата рождения</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="to_be_registred">Зарегистрироваться</string>
+    <string name="continue_register">Продолжить</string>
+    <string name="passwords_are_not_matched">Пароли не совпадают</string>
+    <string name="check_entered_fields">Неверное имя, логин, электронная почта или дата рождения</string>
 </resources>

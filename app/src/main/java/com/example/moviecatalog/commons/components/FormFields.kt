@@ -66,7 +66,25 @@ fun CustomTextFormField(
             ),
         )
     }
+}
 
+@Composable
+fun CustomGenderFormField(
+    selectedGender: Gender,
+    onGenderChanged: (Gender) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+    ) {
+        Text(
+            text = stringResource(R.string.gender), style = label15MTextStyle
+        )
+        GenderChooseButton(
+            selectedGender = selectedGender,
+            onClickMaleButton = { onGenderChanged(Gender.Male) },
+            onClickFemaleButton = { onGenderChanged(Gender.Female) }
+        )
+    }
 }
 
 @Composable
@@ -129,6 +147,5 @@ fun CustomPasswordFormField(
             ),
         )
     }
-
 }
 

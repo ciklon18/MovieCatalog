@@ -3,7 +3,9 @@ package com.example.moviecatalog.commons.components
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -27,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.moviecatalog.R
+import com.example.moviecatalog.commons.ui.theme.label15MTextStyle
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -36,7 +39,8 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDateField(
-    pickedDate: LocalDate,
+    formText: String,
+    pickedDate: LocalDate?,
     onPickedDateChanged: (LocalDate) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -58,10 +62,12 @@ fun CustomDateField(
                 shape = RoundedCornerShape(10.dp)
             )
             .padding(start = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = if (pickedDate != null) Arrangement.SpaceBetween else Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = dateFormatter.format(pickedDate))
+        if (pickedDate != null) {
+            Text(text = dateFormatter.format(pickedDate))
+        }
 
         IconButton(onClick = { isDatePickerVisible = true }) {
             Icon(
@@ -74,7 +80,7 @@ fun CustomDateField(
     val datePickerState = remember {
         DatePickerState(
             yearRange = (1970..2023),
-            initialSelectedDateMillis = pickedDate.toEpochDay(),
+            initialSelectedDateMillis = pickedDate?.toEpochDay() ?: LocalDate.now().toEpochDay(),
             initialDisplayMode = DisplayMode.Picker,
             initialDisplayedMonthMillis = null
         )

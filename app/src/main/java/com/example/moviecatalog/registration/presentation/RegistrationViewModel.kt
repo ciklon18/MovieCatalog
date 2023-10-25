@@ -2,6 +2,7 @@ package com.example.moviecatalog.registration.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moviecatalog.commons.components.FieldType
 import com.example.moviecatalog.commons.components.Gender
 import com.example.moviecatalog.commons.validation.usecases.ValidateDateUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidateEmailUseCase
@@ -9,6 +10,7 @@ import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidateNameUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidateRepeatedPasswordsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +18,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import javax.inject.Inject
 
-class RegistrationViewModel(
+@HiltViewModel
+class RegistrationViewModel @Inject constructor(
     private val validateNameUseCase: ValidateNameUseCase,
     private val validateLoginUseCase: ValidateLoginUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
@@ -25,93 +29,228 @@ class RegistrationViewModel(
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val validateRepeatedPasswordsUseCase: ValidateRepeatedPasswordsUseCase
 
-    ) : ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(RegistrationUIState())
     val uiState: StateFlow<RegistrationUIState> = _uiState.asStateFlow()
 
     private val scope = viewModelScope
 
-
-
-    fun onNameChanged(newName: String) {
+    fun onNavigateUpPressed(){
+        if (!_uiState.value.isFirstButtonPressed){
+            resetEnteredData()
+        } else {
+            scope.launch(Dispatchers.IO) {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        isFirstButtonPressed = false
+                    )
+                }
+            }
+        }
+    }
+    fun onFirstButtonPressed(){
         scope.launch(Dispatchers.IO) {
             _uiState.update { currentState ->
                 currentState.copy(
-
+                    isFirstButtonPressed = true
                 )
             }
         }
     }
 
-    fun onLoginChanged(newLogin: String) {
+    fun onFieldChanged(fieldType: FieldType, newValue: Any) {
         scope.launch(Dispatchers.IO) {
+            when (fieldType) {
+                FieldType.Name -> onNameChanged(newName = newValue as String)
+                FieldType.Gender -> onGenderChanged(newGender = newValue as Gender)
+                FieldType.Login -> onLoginChanged(newLogin = newValue as String)
+                FieldType.Email -> onEmailChanged(newEmail = newValue as String)
+                FieldType.BirthDate -> onBirthDateChanged(newBirthDate = newValue as LocalDate)
+                FieldType.Password -> onPasswordChanged(newPassword = newValue as String)
+                FieldType.RepeatedPassword -> onRepeatedPasswordChanged(
+                    password = _uiState.value.password, newRepeatedPassword = newValue as String
+                )
+            }
+            updateErrorAndButtonStateForField(fieldType)
 
+        }
+    }
+
+
+    private fun onNameChanged(newName: String) {
+        scope.launch(Dispatchers.IO) {
+            val isNameCorrect = validateNameUseCase.execute(newName)
             _uiState.update { currentState ->
                 currentState.copy(
+                    name = newName, isNameCorrect = isNameCorrect
                 )
             }
         }
     }
 
-    fun onPasswordChanged(newPassword: String) {
+    private fun onGenderChanged(newGender: Gender) {
         scope.launch(Dispatchers.IO) {
             _uiState.update { currentState ->
                 currentState.copy(
-                )
-            }
-        }
-    }
-    fun ondDateChanged(newDate: LocalDate) {
-        scope.launch(Dispatchers.IO) {
-            _uiState.update { currentState ->
-                currentState.copy(
+                    gender = newGender
                 )
             }
         }
     }
 
-    private fun isError(
-        login: String,
-        password: String,
-        isLoginCorrect: Boolean,
-        isPasswordCorrect: Boolean
+    private fun onLoginChanged(newLogin: String) {
+        scope.launch(Dispatchers.IO) {
+            val isLoginCorrect = validateLoginUseCase.execute(newLogin)
+            _uiState.update { currentState ->
+                currentState.copy(
+                    login = newLogin, isLoginCorrect = isLoginCorrect
+                )
+            }
+        }
+    }
+
+    private fun onEmailChanged(newEmail: String) {
+        scope.launch(Dispatchers.IO) {
+            val isEmailCorrect = validateEmailUseCase.execute(newEmail)
+            _uiState.update { currentState ->
+                currentState.copy(
+                    email = newEmail, isEmailCorrect = isEmailCorrect
+                )
+            }
+        }
+    }
+
+
+    private fun onBirthDateChanged(newBirthDate: LocalDate) {
+        scope.launch(Dispatchers.IO) {
+            val isBirthDateCorrect = validateDateUseCase.execute(newBirthDate)
+            _uiState.update { currentState ->
+                currentState.copy(
+                    birthDate = newBirthDate, isBirthDateCorrect = isBirthDateCorrect
+                )
+            }
+        }
+    }
+
+    private fun onPasswordChanged(newPassword: String) {
+        scope.launch(Dispatchers.IO) {
+            val isPasswordCorrect = validatePasswordUseCase.execute(newPassword)
+            _uiState.update { currentState ->
+                currentState.copy(
+                    password = newPassword, isPasswordCorrect = isPasswordCorrect
+                )
+            }
+        }
+    }
+
+    private fun onRepeatedPasswordChanged(password: String, newRepeatedPassword: String) {
+        scope.launch(Dispatchers.IO) {
+            val isPasswordsSame =
+                validateRepeatedPasswordsUseCase.execute(password, newRepeatedPassword)
+            _uiState.update { currentState ->
+                currentState.copy(
+                    repeatedPassword = newRepeatedPassword, isPasswordsSame = isPasswordsSame
+                )
+            }
+        }
+    }
+
+    private fun updateErrorAndButtonStateForField(fieldType: FieldType) {
+        scope.launch(Dispatchers.IO) {
+            if (fieldType != FieldType.Gender) {
+                if (fieldType == FieldType.Password || fieldType == FieldType.RepeatedPassword) {
+                    _uiState.update { currentState ->
+                        val isSecondPageDataValid = isSecondPageDataValid(currentState)
+                        currentState.copy(
+                            isErrorSecondPage = !isSecondPageDataValid,
+                            isSecondButtonEnabled = isButtonEnabledForSecondPage(
+                                currentState,
+                                isSecondPageDataValid
+                            )
+                        )
+                    }
+                } else {
+                    _uiState.update { currentState ->
+                        val isFirstPageDataValid = isFirstPageDataValid(currentState)
+                        currentState.copy(
+                            isErrorFirstPage = !isFirstPageDataValid,
+                            isFirstButtonEnabled = isButtonEnabledForFirstPage(
+                                currentState,
+                                isFirstPageDataValid
+                            ),
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isButtonEnabledForFirstPage(
+        currentState: RegistrationUIState,
+        isDataValid: Boolean
     ): Boolean {
-        if (login.isBlank() || password.isBlank()) {
-            return false
-        }
-        return !(isLoginCorrect && isPasswordCorrect)
+        return currentState.name.isNotBlank()
+                && currentState.login.isNotBlank()
+                && currentState.email.isNotBlank()
+                && currentState.birthDate != LocalDate.now()
+                && currentState.birthDate != null
+                && isDataValid
     }
 
-    private fun isButtonEnabled(login: String, password: String, isError: Boolean): Boolean {
-        return login.isNotBlank() && password.isNotBlank() && !isError
+    private fun isFirstPageDataValid(currentState: RegistrationUIState): Boolean {
+        if (currentState.name.isBlank() && currentState.login.isBlank()
+            && currentState.email.isBlank() && currentState.birthDate == null
+        ) {
+            return true
+        }
+        return currentState.isNameCorrect
+                && currentState.isEmailCorrect
+                && currentState.isBirthDateCorrect
+                && currentState.isLoginCorrect
+    }
+
+    private fun isButtonEnabledForSecondPage(
+        currentState: RegistrationUIState,
+        isDataValid: Boolean
+    ): Boolean {
+        return currentState.password.isNotBlank()
+                && currentState.repeatedPassword.isNotBlank()
+                && isDataValid
+    }
+
+    private fun isSecondPageDataValid(currentState: RegistrationUIState): Boolean {
+        if (currentState.password.isBlank() && currentState.repeatedPassword.isBlank()) {
+            return true
+        }
+        return currentState.isPasswordCorrect && currentState.isPasswordsSame
+    }
+
+    private fun resetEnteredData() {
+        _uiState.value = RegistrationUIState()
     }
 }
 
 
 data class RegistrationUIState(
-    val name: String = "",
-    val isNameCorrect: Boolean = true,
+    val name: String = "", val isNameCorrect: Boolean = true,
 
     val gender: Gender = Gender.Male,
 
-    val login: String = "",
-    val isLoginCorrect: Boolean = true,
+    val login: String = "", val isLoginCorrect: Boolean = true,
 
-    val email: String = "",
-    val isEmailCorrect: Boolean = true,
+    val email: String = "", val isEmailCorrect: Boolean = true,
 
-    val pickedDate: LocalDate = LocalDate.now(),
-    val isDateCorrect: Boolean = true,
+    val birthDate: LocalDate? = null, val isBirthDateCorrect: Boolean = true,
 
-    val password: String = "",
-    val isPasswordCorrect: Boolean = true,
+    val password: String = "", val isPasswordCorrect: Boolean = true,
 
-    val repeatedPassword: String = "",
-    val isPasswordsSame: Boolean = true,
+    val repeatedPassword: String = "", val isPasswordsSame: Boolean = true,
 
-    val isErrorFirstPage: Boolean = false,
-    val isErrorSecondPage: Boolean = false,
+    val isErrorFirstPage: Boolean = false, val isErrorSecondPage: Boolean = false,
 
-    val isFirstButtonEnabled: Boolean = false,
-    val isSecondButtonEnabled: Boolean = false
-)
+    val isFirstButtonEnabled: Boolean = false, val isSecondButtonEnabled: Boolean = false,
+
+    val isFirstButtonPressed: Boolean = false
+) {
+
+}
