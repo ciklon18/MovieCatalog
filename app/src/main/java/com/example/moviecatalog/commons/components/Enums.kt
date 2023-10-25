@@ -5,3 +5,12 @@ enum class Gender{
     Female
 }
 
+enum class FieldType {
+    Name,
+    Gender,
+    Login,
+    Email,
+    BirthDate,
+    Password,
+    RepeatedPassword
+}

@@ -2,7 +2,6 @@ package com.example.moviecatalog.commons.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +10,10 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -97,20 +100,19 @@ fun GenderChooseButton(
             .background(
                 color = colorResource(R.color.choosing_gender_background),
                 shape = RoundedCornerShape(8.dp)
-            )
-
+            ),
     ) {
         GenderButton(
             text = stringResource(R.string.male),
             isSelected = selectedGender == Gender.Male,
             onClick = onClickMaleButton,
-            modifier.weight(1f)
+            modifier = modifier.weight(1f)
         )
         GenderButton(
             text = stringResource(R.string.female),
             isSelected = selectedGender == Gender.Female,
             onClick = onClickFemaleButton,
-            modifier.weight(1f)
+            modifier = modifier.weight(1f)
         )
     }
 }
@@ -135,9 +137,7 @@ fun GenderButton(
     }
     Button(
         onClick = onClick,
-        modifier = modifier
-            .fillMaxSize()
-            .padding(top = 2.dp, bottom = 2.dp),
+        modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColor,
             contentColor = buttonTextColor
@@ -151,7 +151,8 @@ fun GenderButton(
 @Preview
 @Composable
 fun PreviewGenderChooseButton() {
+    var gender by remember { mutableStateOf(Gender.Male) }
     GenderChooseButton(
-        Gender.Male, {}, {}
+        gender, { gender = Gender.Male }, { gender = Gender.Female }
     )
 }
