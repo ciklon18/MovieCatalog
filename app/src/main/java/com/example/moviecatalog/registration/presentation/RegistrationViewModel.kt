@@ -2,8 +2,12 @@ package com.example.moviecatalog.registration.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.example.moviecatalog.commons.components.FieldType
 import com.example.moviecatalog.commons.components.Gender
+import com.example.moviecatalog.commons.navigation.Routes
+import com.example.moviecatalog.commons.network.models.UserRegisterModel
+import com.example.moviecatalog.commons.network.repository.AuthRepository
 import com.example.moviecatalog.commons.validation.usecases.ValidateDateUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidateEmailUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
@@ -17,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -27,16 +32,16 @@ class RegistrationViewModel @Inject constructor(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validateDateUseCase: ValidateDateUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val validateRepeatedPasswordsUseCase: ValidateRepeatedPasswordsUseCase
-
+    private val validateRepeatedPasswordsUseCase: ValidateRepeatedPasswordsUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RegistrationUIState())
     val uiState: StateFlow<RegistrationUIState> = _uiState.asStateFlow()
 
     private val scope = viewModelScope
 
-    fun onNavigateUpPressed(){
-        if (!_uiState.value.isFirstButtonPressed){
+    fun onNavigateUpPressed() {
+        if (!_uiState.value.isFirstButtonPressed) {
             resetEnteredData()
         } else {
             scope.launch(Dispatchers.IO) {
@@ -48,15 +53,7 @@ class RegistrationViewModel @Inject constructor(
             }
         }
     }
-    fun onFirstButtonPressed(){
-        scope.launch(Dispatchers.IO) {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    isFirstButtonPressed = true
-                )
-            }
-        }
-    }
+
 
     fun onFieldChanged(fieldType: FieldType, newValue: Any) {
         scope.launch(Dispatchers.IO) {
@@ -180,6 +177,44 @@ class RegistrationViewModel @Inject constructor(
                             ),
                         )
                     }
+                }
+            }
+        }
+    }
+
+    fun onFirstButtonPressed() {
+        scope.launch(Dispatchers.IO) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isFirstButtonPressed = true
+                )
+            }
+        }
+    }
+
+    fun onSecondButtonPressed(navController: NavHostController) {
+        scope.launch(Dispatchers.IO) {
+            try {
+                val user = UserRegisterModel(
+                    name = _uiState.value.name,
+                    password = _uiState.value.password,
+                    userName = _uiState.value.login,
+                    email = _uiState.value.email,
+                    birthDate = _uiState.value.birthDate.toString(),
+                    gender = if (_uiState.value.gender == Gender.Male) 0 else 1
+                )
+                val response = authRepository.register(user)
+
+                withContext(Dispatchers.Main) {
+                    navController.navigate(Routes.SelectAuthScreen.name)
+                }
+
+                // обработать response
+            } catch (e: Exception) {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        isErrorSecondPage = true, isSecondButtonEnabled = false
+                    )
                 }
             }
         }

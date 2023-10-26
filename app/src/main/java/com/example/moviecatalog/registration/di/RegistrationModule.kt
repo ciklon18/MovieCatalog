@@ -1,5 +1,6 @@
 package com.example.moviecatalog.registration.di
 
+import com.example.moviecatalog.commons.network.repository.AuthRepository
 import com.example.moviecatalog.commons.validation.usecases.ValidateDateUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidateEmailUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
@@ -22,7 +23,8 @@ class RegistrationModule {
         validateEmailUseCase: ValidateEmailUseCase,
         validateDateUseCase: ValidateDateUseCase,
         validatePasswordUseCase: ValidatePasswordUseCase,
-        validateRepeatedPasswordsUseCase: ValidateRepeatedPasswordsUseCase
+        validateRepeatedPasswordsUseCase: ValidateRepeatedPasswordsUseCase,
+        authRepository: AuthRepository
     ): RegistrationViewModel {
         return RegistrationViewModel(
             validateNameUseCase = validateNameUseCase,
@@ -30,7 +32,8 @@ class RegistrationModule {
             validateEmailUseCase = validateEmailUseCase,
             validateDateUseCase = validateDateUseCase,
             validatePasswordUseCase = validatePasswordUseCase,
-            validateRepeatedPasswordsUseCase = validateRepeatedPasswordsUseCase
+            validateRepeatedPasswordsUseCase = validateRepeatedPasswordsUseCase,
+            authRepository = authRepository
         )
     }
 }

@@ -18,10 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.moviecatalog.R
 import com.example.moviecatalog.commons.components.AccentButton
 import com.example.moviecatalog.commons.components.CustomDateField
@@ -34,12 +32,6 @@ import com.example.moviecatalog.commons.components.Gender
 import com.example.moviecatalog.commons.components.MyTopAppBar
 import com.example.moviecatalog.commons.components.PageTitleText
 import com.example.moviecatalog.commons.navigation.Routes
-import com.example.moviecatalog.commons.validation.usecases.ValidateDateUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidateEmailUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidateNameUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidateRepeatedPasswordsUseCase
 import java.time.LocalDate
 
 
@@ -104,7 +96,7 @@ fun RegistrationScreen(
                 },
 
                 onClickFirstButton = { viewModel.onFirstButtonPressed() },
-                onClickSecondButton = { /* зарегистрировать аккаунт */ })
+                onClickSecondButton = { viewModel.onSecondButtonPressed(navController) })
             LoginLinkSection(onClickButton = { navController.navigate(Routes.LoginScreen.name) })
         }
     }
@@ -238,17 +230,18 @@ private fun LoginLinkSection(onClickButton: () -> Unit, modifier: Modifier = Mod
     }
 }
 
-@Preview
-@Composable
-fun PreviewRegistrationScreen() {
-    RegistrationScreen(
-        navController = rememberNavController(), viewModel = RegistrationViewModel(
-            ValidateNameUseCase(),
-            ValidateLoginUseCase(),
-            ValidateEmailUseCase(),
-            ValidateDateUseCase(),
-            ValidatePasswordUseCase(),
-            ValidateRepeatedPasswordsUseCase()
-        )
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewRegistrationScreen() {
+//    RegistrationScreen(
+//        navController = rememberNavController(), viewModel = RegistrationViewModel(
+//            ValidateNameUseCase(),
+//            ValidateLoginUseCase(),
+//            ValidateEmailUseCase(),
+//            ValidateDateUseCase(),
+//            ValidatePasswordUseCase(),
+//            ValidateRepeatedPasswordsUseCase(),
+//            authRepository = AuthRepositoryImpl(ApiService())
+//        )
+//    )
+//}

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.moviecatalog.commons.navigation.Routes
+import com.example.moviecatalog.commons.network.models.UserLoginModel
 import com.example.moviecatalog.commons.network.repository.AuthRepository
 import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
@@ -69,10 +70,11 @@ class LoginScreenViewModel @Inject constructor(
     fun onButtonPressed(navController: NavHostController) {
         scope.launch(Dispatchers.IO) {
             try {
-                val response = authRepository.login(
+                val user = UserLoginModel(
                     username = _uiState.value.login,
                     password = _uiState.value.password
                 )
+                val response = authRepository.login(user)
 
                 withContext(Dispatchers.Main) {
                     navController.navigate(Routes.SelectAuthScreen.name)
