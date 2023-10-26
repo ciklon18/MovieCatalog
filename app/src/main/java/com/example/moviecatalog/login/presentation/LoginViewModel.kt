@@ -2,6 +2,9 @@ package com.example.moviecatalog.login.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import com.example.moviecatalog.commons.navigation.Routes
+import com.example.moviecatalog.commons.network.repository.AuthRepository
 import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,13 +14,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
 @HiltViewModel
 class LoginScreenViewModel @Inject constructor(
     private val validateLoginUseCase: ValidateLoginUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUIState())
     val uiState: StateFlow<LoginUIState> = _uiState.asStateFlow()
@@ -29,10 +34,7 @@ class LoginScreenViewModel @Inject constructor(
             val isLoginCorrect = validateLoginUseCase.execute(newLogin)
             val isPasswordCorrect = validatePasswordUseCase.execute(_uiState.value.password)
             val isError = isError(
-                newLogin,
-                _uiState.value.password,
-                isLoginCorrect,
-                isPasswordCorrect
+                newLogin, _uiState.value.password, isLoginCorrect, isPasswordCorrect
             )
             _uiState.update { currentState ->
                 currentState.copy(
@@ -44,26 +46,14 @@ class LoginScreenViewModel @Inject constructor(
             }
         }
     }
-    fun setFalse(){
-        scope.launch(Dispatchers.IO) {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    isError = true,
-                    isButtonEnabled = false
-               )
-            }
-        }
-    }
+
 
     fun onPasswordChanged(newPassword: String) {
         scope.launch(Dispatchers.IO) {
             val isLoginCorrect = validatePasswordUseCase.execute(_uiState.value.login)
             val isPasswordCorrect = validatePasswordUseCase.execute(newPassword)
             val isError = isError(
-                _uiState.value.login,
-                newPassword,
-                isLoginCorrect,
-                isPasswordCorrect
+                _uiState.value.login, newPassword, isLoginCorrect, isPasswordCorrect
             )
             _uiState.update { currentState ->
                 currentState.copy(
@@ -76,11 +66,31 @@ class LoginScreenViewModel @Inject constructor(
         }
     }
 
+    fun onButtonPressed(navController: NavHostController) {
+        scope.launch(Dispatchers.IO) {
+            try {
+                val response = authRepository.login(
+                    username = _uiState.value.login,
+                    password = _uiState.value.password
+                )
+
+                withContext(Dispatchers.Main) {
+                    navController.navigate(Routes.SelectAuthScreen.name)
+                }
+
+                // обработать response
+            } catch (e: Exception) {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        isError = true, isButtonEnabled = false
+                    )
+                }
+            }
+        }
+    }
+
     private fun isError(
-        login: String,
-        password: String,
-        isLoginCorrect: Boolean,
-        isPasswordCorrect: Boolean
+        login: String, password: String, isLoginCorrect: Boolean, isPasswordCorrect: Boolean
     ): Boolean {
         if (login.isBlank() || password.isBlank()) {
             return false
@@ -90,6 +100,10 @@ class LoginScreenViewModel @Inject constructor(
 
     private fun isButtonEnabled(login: String, password: String, isError: Boolean): Boolean {
         return login.isNotBlank() && password.isNotBlank() && !isError
+    }
+
+    fun onRegisterLinkPressed(navController: NavHostController) {
+        navController.navigate(Routes.RegistrationScreen.name)
     }
 }
 

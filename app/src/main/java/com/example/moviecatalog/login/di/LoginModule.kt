@@ -1,5 +1,6 @@
 package com.example.moviecatalog.login.di
 
+import com.example.moviecatalog.commons.network.repository.AuthRepository
 import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
 import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
 import com.example.moviecatalog.login.presentation.LoginScreenViewModel
@@ -15,8 +16,15 @@ class LoginModule {
     @Provides
     fun provideLoginScreenViewModel(
         validateLoginUseCase: ValidateLoginUseCase,
-        validatePasswordUseCase: ValidatePasswordUseCase
+        validatePasswordUseCase: ValidatePasswordUseCase,
+        authRepository: AuthRepository,
     ): LoginScreenViewModel {
-        return LoginScreenViewModel(validateLoginUseCase, validatePasswordUseCase)
+        return LoginScreenViewModel(
+            validateLoginUseCase = validateLoginUseCase,
+            validatePasswordUseCase = validatePasswordUseCase,
+            authRepository = authRepository
+        )
     }
+
+
 }

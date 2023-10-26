@@ -68,10 +68,10 @@ fun LoginScreen(
                 uiState = uiState,
                 onLoginChanged = { newLogin -> updatedLogin = newLogin },
                 onPasswordChanged = { newPassword -> updatedPassword = newPassword },
-                onClickButton = { viewModel.setFalse() }
+                onClickButton = { viewModel.onButtonPressed(navController) }
             )
             RegistrationLinkSection(
-                onClickButton = {}
+                onClickButton = { viewModel.onRegisterLinkPressed(navController) }
             )
         }
     }

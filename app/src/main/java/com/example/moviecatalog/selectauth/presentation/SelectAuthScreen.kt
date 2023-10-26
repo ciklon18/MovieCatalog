@@ -55,7 +55,9 @@ fun SelectAuthScreen(
         Spacer(modifier = modifier.height(35.dp))
 
         AccentButton(
-            text = stringResource(R.string.registration), onClick = { /*TODO*/ }, isEnabled = true
+            text = stringResource(R.string.registration),
+            onClick = { navController.navigate(Routes.RegistrationScreen.name) },
+            isEnabled = true
         )
         Spacer(modifier = modifier.height(15.dp))
         SecondaryButton(

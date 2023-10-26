@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moviecatalog.launch.presentation.LaunchScreen
 import com.example.moviecatalog.login.presentation.LoginScreen
+import com.example.moviecatalog.registration.presentation.RegistrationScreen
 import com.example.moviecatalog.selectauth.presentation.SelectAuthScreen
 
 
@@ -24,6 +25,12 @@ fun MovieCatalogNavigation(
         }
         composable(route = Routes.LoginScreen.name) {
             LoginScreen(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
+        }
+        composable(route = Routes.RegistrationScreen.name) {
+            RegistrationScreen(
                 navController = navController,
                 viewModel = hiltViewModel()
             )
