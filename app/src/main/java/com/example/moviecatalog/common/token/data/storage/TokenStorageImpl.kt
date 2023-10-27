@@ -1,45 +1,39 @@
-package com.example.moviecatalog.commons.storage
-
+package com.example.moviecatalog.common.token.data.storage
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.moviecatalog.common.token.Constants
+import com.example.moviecatalog.common.token.PreferencesKeys
+import com.example.moviecatalog.common.token.domain.storage.TokenStorage
 import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @Singleton
-class DataStoreRepository @Inject constructor(
+class TokenStorageImpl @Inject constructor(
     private val context: Context
-) {
+) : TokenStorage {
 
     private val Context.dataStore by preferencesDataStore(
         name = Constants.USER_PREFERENCES_NAME
     )
 
-    suspend fun saveToken(token: String) {
+    override suspend fun saveToken(token: String) {
         context.dataStore.edit { prefs ->
             prefs[PreferencesKeys.TOKEN_KEY] = token
         }
     }
 
-    suspend fun getToken(): String {
+    override suspend fun getToken(): String {
         return context.dataStore.data.firstOrNull()?.get(PreferencesKeys.TOKEN_KEY)?.toString()
             ?: ""
     }
 
-
-    suspend fun clearDataStore() = context.dataStore.edit {
-        it.clear()
+    override suspend fun clearToken() {
+        context.dataStore.edit {
+            it.clear()
+        }
     }
-}
 
-private object PreferencesKeys {
-    val TOKEN_KEY = stringPreferencesKey("token_key")
-}
-
-private object Constants {
-    const val USER_PREFERENCES_NAME = "user_preferences"
 }
