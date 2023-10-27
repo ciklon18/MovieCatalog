@@ -21,17 +21,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
-import com.example.moviecatalog.commons.components.AccentButton
-import com.example.moviecatalog.commons.components.CustomDateField
-import com.example.moviecatalog.commons.components.CustomGenderFormField
-import com.example.moviecatalog.commons.components.CustomPasswordFormField
-import com.example.moviecatalog.commons.components.CustomTextFormField
-import com.example.moviecatalog.commons.components.ErrorText
-import com.example.moviecatalog.commons.components.FieldType
-import com.example.moviecatalog.commons.components.Gender
-import com.example.moviecatalog.commons.components.MyTopAppBar
-import com.example.moviecatalog.commons.components.PageTitleText
-import com.example.moviecatalog.commons.navigation.Routes
+import com.example.moviecatalog.common.ui.component.AccentButton
+import com.example.moviecatalog.common.ui.component.CustomDateField
+import com.example.moviecatalog.common.ui.component.CustomGenderFormField
+import com.example.moviecatalog.common.ui.component.CustomPasswordFormField
+import com.example.moviecatalog.common.ui.component.CustomTextFormField
+import com.example.moviecatalog.common.ui.component.ErrorText
+import com.example.moviecatalog.common.ui.component.FieldType
+import com.example.moviecatalog.common.ui.component.Gender
+import com.example.moviecatalog.common.ui.component.MyTopAppBar
+import com.example.moviecatalog.common.ui.component.PageTitleText
+import com.example.moviecatalog.common.navigation.Routes
 import java.time.LocalDate
 
 

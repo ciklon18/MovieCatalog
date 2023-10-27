@@ -28,12 +28,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.moviecatalog.R
-import com.example.moviecatalog.commons.components.AccentButton
-import com.example.moviecatalog.commons.components.CustomPasswordFormField
-import com.example.moviecatalog.commons.components.CustomTextFormField
-import com.example.moviecatalog.commons.components.ErrorText
-import com.example.moviecatalog.commons.components.MyTopAppBar
-import com.example.moviecatalog.commons.components.PageTitleText
+import com.example.moviecatalog.common.ui.component.AccentButton
+import com.example.moviecatalog.common.ui.component.CustomPasswordFormField
+import com.example.moviecatalog.common.ui.component.CustomTextFormField
+import com.example.moviecatalog.common.ui.component.ErrorText
+import com.example.moviecatalog.common.ui.component.MyTopAppBar
+import com.example.moviecatalog.common.ui.component.PageTitleText
 
 @Composable
 fun LoginScreen(

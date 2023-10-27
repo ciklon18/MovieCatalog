@@ -3,11 +3,11 @@ package com.example.moviecatalog.login.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.example.moviecatalog.commons.navigation.Routes
-import com.example.moviecatalog.commons.network.models.UserLoginModel
-import com.example.moviecatalog.commons.network.repository.AuthRepository
-import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
+import com.example.moviecatalog.common.navigation.Routes
+import com.example.moviecatalog.common.auth.domain.model.UserLoginModel
+import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

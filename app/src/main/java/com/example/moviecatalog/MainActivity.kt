@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.moviecatalog.commons.navigation.MovieCatalogNavigation
-import com.example.moviecatalog.commons.ui.theme.MovieCatalogTheme
+import com.example.moviecatalog.common.navigation.MovieCatalogNavigation
+import com.example.moviecatalog.common.ui.theme.MovieCatalogTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

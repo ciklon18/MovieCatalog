@@ -18,11 +18,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
-import com.example.moviecatalog.commons.components.AccentButton
-import com.example.moviecatalog.commons.components.SecondaryButton
-import com.example.moviecatalog.commons.navigation.Routes
-import com.example.moviecatalog.commons.ui.theme.text15RTextStyle
-import com.example.moviecatalog.commons.ui.theme.title20B2TextStyle
+import com.example.moviecatalog.common.ui.component.AccentButton
+import com.example.moviecatalog.common.ui.component.SecondaryButton
+import com.example.moviecatalog.common.navigation.Routes
+import com.example.moviecatalog.common.ui.theme.text15RTextStyle
+import com.example.moviecatalog.common.ui.theme.title20B2TextStyle
 
 @Composable
 fun SelectAuthScreen(

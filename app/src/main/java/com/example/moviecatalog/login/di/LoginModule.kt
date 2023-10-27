@@ -1,8 +1,8 @@
 package com.example.moviecatalog.login.di
 
-import com.example.moviecatalog.commons.network.repository.AuthRepository
-import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
+import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
 import com.example.moviecatalog.login.presentation.LoginScreenViewModel
 import dagger.Module
 import dagger.Provides

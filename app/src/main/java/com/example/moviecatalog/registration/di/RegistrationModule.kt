@@ -1,12 +1,12 @@
 package com.example.moviecatalog.registration.di
 
-import com.example.moviecatalog.commons.network.repository.AuthRepository
-import com.example.moviecatalog.commons.validation.usecases.ValidateDateUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidateEmailUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidateLoginUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidateNameUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidatePasswordUseCase
-import com.example.moviecatalog.commons.validation.usecases.ValidateRepeatedPasswordsUseCase
+import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateDateUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateEmailUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateNameUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateRepeatedPasswordsUseCase
 import com.example.moviecatalog.registration.presentation.RegistrationViewModel
 import dagger.Module
 import dagger.Provides
