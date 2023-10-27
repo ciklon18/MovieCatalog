@@ -1,9 +1,6 @@
-package com.example.moviecatalog.commons.network.di
+package com.example.moviecatalog.common.network.di
 
-import com.example.moviecatalog.commons.network.repository.AuthRepository
-import com.example.moviecatalog.commons.network.repository.AuthRepositoryImpl
-import com.example.moviecatalog.commons.network.service.ApiService
-import com.example.moviecatalog.commons.network.utils.BASE_URL
+import com.example.moviecatalog.common.network.BASE_URL
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -29,15 +26,5 @@ class NetworkModule {
             .baseUrl(BASE_URL)
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .build()
-    }
-
-    @Provides
-    fun provideApiImplementation(retrofit: Retrofit): ApiService {
-        return retrofit.create(ApiService::class.java)
-    }
-
-    @Provides
-    fun provideAuthRepository(apiService: ApiService): AuthRepository {
-        return AuthRepositoryImpl(apiService)
     }
 }
