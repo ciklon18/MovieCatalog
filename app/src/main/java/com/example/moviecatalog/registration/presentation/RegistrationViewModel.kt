@@ -8,6 +8,7 @@ import com.example.moviecatalog.common.ui.component.Gender
 import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.auth.domain.model.UserRegisterModel
 import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
+import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateDateUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateEmailUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
@@ -33,7 +34,8 @@ class RegistrationViewModel @Inject constructor(
     private val validateDateUseCase: ValidateDateUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val validateRepeatedPasswordsUseCase: ValidateRepeatedPasswordsUseCase,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RegistrationUIState())
     val uiState: StateFlow<RegistrationUIState> = _uiState.asStateFlow()
@@ -204,9 +206,11 @@ class RegistrationViewModel @Inject constructor(
                     gender = if (_uiState.value.gender == Gender.Male) 0 else 1
                 )
                 val response = authRepository.register(user)
+                response.getOrNull()?.token?.let { setTokenToLocalStorageUseCase.execute(it) }
 
                 withContext(Dispatchers.Main) {
-                    navController.navigate(Routes.SelectAuthScreen.name)
+                    // навигироваться на MovieScreen
+                    navController.navigate(Routes.LaunchScreen.name)
                 }
 
                 // обработать response

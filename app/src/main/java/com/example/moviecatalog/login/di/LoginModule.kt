@@ -1,6 +1,7 @@
 package com.example.moviecatalog.login.di
 
 import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
+import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
 import com.example.moviecatalog.login.presentation.LoginScreenViewModel
@@ -18,11 +19,13 @@ class LoginModule {
         validateLoginUseCase: ValidateLoginUseCase,
         validatePasswordUseCase: ValidatePasswordUseCase,
         authRepository: AuthRepository,
+        setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase
     ): LoginScreenViewModel {
         return LoginScreenViewModel(
             validateLoginUseCase = validateLoginUseCase,
             validatePasswordUseCase = validatePasswordUseCase,
-            authRepository = authRepository
+            authRepository = authRepository,
+            setTokenToLocalStorageUseCase = setTokenToLocalStorageUseCase
         )
     }
 

@@ -1,9 +1,10 @@
 package com.example.moviecatalog.common.token.di
 
 import android.content.Context
-import com.example.moviecatalog.common.token.JwtTokenHelper
+import com.example.moviecatalog.common.token.entity.JwtTokenHelper
 import com.example.moviecatalog.common.token.data.storage.TokenStorageImpl
 import com.example.moviecatalog.common.token.domain.storage.TokenStorage
+import com.example.moviecatalog.common.token.domain.usecase.DeleteTokenFromLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.GetTokenFromLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.IsTokenExpiredUseCase
 import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
@@ -26,7 +27,7 @@ class TokenModule {
 
     @Provides
     @Singleton
-    fun provideJwtTokenHelper(): JwtTokenHelper{
+    fun provideJwtTokenHelper(): JwtTokenHelper {
         return JwtTokenHelper()
     }
 
@@ -44,7 +45,11 @@ class TokenModule {
 
     @Provides
     fun provideIsTokenExpiredUseCase(jwtTokenHelper: JwtTokenHelper): IsTokenExpiredUseCase{
-        return IsTokenExpiredUseCase(jwtTokenHelper)
+        return IsTokenExpiredUseCase(jwtTokenHelper = jwtTokenHelper)
+    }
+    @Provides
+    fun provideDeleteTokenFromLocalStorageUseCase(tokenStorage: TokenStorage): DeleteTokenFromLocalStorageUseCase {
+        return DeleteTokenFromLocalStorageUseCase(tokenStorage = tokenStorage)
     }
 
 }

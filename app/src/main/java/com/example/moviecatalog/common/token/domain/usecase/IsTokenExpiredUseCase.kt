@@ -1,6 +1,6 @@
 package com.example.moviecatalog.common.token.domain.usecase
 
-import com.example.moviecatalog.common.token.JwtTokenHelper
+import com.example.moviecatalog.common.token.entity.JwtTokenHelper
 import javax.inject.Inject
 
 class IsTokenExpiredUseCase @Inject constructor(

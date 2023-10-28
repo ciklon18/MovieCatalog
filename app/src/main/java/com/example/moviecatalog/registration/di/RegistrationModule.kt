@@ -1,6 +1,7 @@
 package com.example.moviecatalog.registration.di
 
 import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
+import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateDateUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateEmailUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
@@ -24,7 +25,8 @@ class RegistrationModule {
         validateDateUseCase: ValidateDateUseCase,
         validatePasswordUseCase: ValidatePasswordUseCase,
         validateRepeatedPasswordsUseCase: ValidateRepeatedPasswordsUseCase,
-        authRepository: AuthRepository
+        authRepository: AuthRepository,
+        setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase
     ): RegistrationViewModel {
         return RegistrationViewModel(
             validateNameUseCase = validateNameUseCase,
@@ -33,7 +35,8 @@ class RegistrationModule {
             validateDateUseCase = validateDateUseCase,
             validatePasswordUseCase = validatePasswordUseCase,
             validateRepeatedPasswordsUseCase = validateRepeatedPasswordsUseCase,
-            authRepository = authRepository
+            authRepository = authRepository,
+            setTokenToLocalStorageUseCase = setTokenToLocalStorageUseCase
         )
     }
 }

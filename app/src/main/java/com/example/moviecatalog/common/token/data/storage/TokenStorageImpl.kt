@@ -30,7 +30,7 @@ class TokenStorageImpl @Inject constructor(
             ?: ""
     }
 
-    override suspend fun clearToken() {
+    override suspend fun deleteToken() {
         context.dataStore.edit {
             it.clear()
         }

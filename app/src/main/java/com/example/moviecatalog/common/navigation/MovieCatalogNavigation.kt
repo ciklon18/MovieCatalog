@@ -1,4 +1,4 @@
-package com.example.moviecatalog.commons.navigation
+package com.example.moviecatalog.common.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,7 +18,10 @@ fun MovieCatalogNavigation(
 ) {
     NavHost(navController = navController, startDestination = Routes.LaunchScreen.name) {
         composable(route = Routes.LaunchScreen.name) {
-            LaunchScreen(navController)
+            LaunchScreen(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
         }
         composable(route = Routes.SelectAuthScreen.name) {
             SelectAuthScreen(navController)
