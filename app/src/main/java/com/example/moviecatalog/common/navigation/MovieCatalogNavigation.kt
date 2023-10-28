@@ -1,4 +1,4 @@
-package com.example.moviecatalog.commons.navigation
+package com.example.moviecatalog.common.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel

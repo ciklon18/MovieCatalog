@@ -16,7 +16,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
-import com.example.moviecatalog.commons.navigation.Routes
+import com.example.moviecatalog.common.navigation.Routes
+
 
 @Composable
 fun LaunchScreen(

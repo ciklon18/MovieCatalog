@@ -1,5 +1,7 @@
 package com.example.moviecatalog.common.validation.di
 
+import com.example.moviecatalog.common.validation.domain.usecase.LoginValidationUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.RegistrationValidationUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateDateUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateEmailUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
@@ -15,30 +17,64 @@ import dagger.hilt.android.components.ViewModelComponent
 @InstallIn(ViewModelComponent::class)
 class ValidationModule {
     @Provides
-    fun provideValidateDateUseCase() : ValidateDateUseCase {
+    fun provideValidateDateUseCase(): ValidateDateUseCase {
         return ValidateDateUseCase()
     }
+
     @Provides
-    fun provideValidateEmailUseCase() : ValidateEmailUseCase {
+    fun provideValidateEmailUseCase(): ValidateEmailUseCase {
         return ValidateEmailUseCase()
     }
 
     @Provides
-    fun provideValidateLoginUseCase() : ValidateLoginUseCase {
+    fun provideValidateLoginUseCase(): ValidateLoginUseCase {
         return ValidateLoginUseCase()
     }
+
     @Provides
-    fun provideValidateNameUseCase() : ValidateNameUseCase {
+    fun provideValidateNameUseCase(): ValidateNameUseCase {
         return ValidateNameUseCase()
     }
+
     @Provides
-    fun provideValidatePasswordUseCase() : ValidatePasswordUseCase {
+    fun provideValidatePasswordUseCase(): ValidatePasswordUseCase {
         return ValidatePasswordUseCase()
     }
 
     @Provides
-    fun provideValidateRepeatedPasswordsUseCase() : ValidateRepeatedPasswordsUseCase {
+    fun provideValidateRepeatedPasswordsUseCase(): ValidateRepeatedPasswordsUseCase {
         return ValidateRepeatedPasswordsUseCase()
     }
+
+    @Provides
+    fun provideLoginValidationUseCase(
+        validateLoginUseCase: ValidateLoginUseCase,
+        validatePasswordUseCase: ValidatePasswordUseCase,
+        ): LoginValidationUseCase {
+        return LoginValidationUseCase(
+            validateLoginUseCase = validateLoginUseCase,
+            validatePasswordUseCase = validatePasswordUseCase
+        )
+    }
+
+    @Provides
+    fun provideRegistrationValidationUseCase(
+        validateNameUseCase: ValidateNameUseCase,
+        validateLoginUseCase: ValidateLoginUseCase,
+        validateEmailUseCase: ValidateEmailUseCase,
+        validateDateUseCase: ValidateDateUseCase,
+        validatePasswordUseCase: ValidatePasswordUseCase,
+        validateRepeatedPasswordsUseCase: ValidateRepeatedPasswordsUseCase
+    ): RegistrationValidationUseCase {
+        return RegistrationValidationUseCase(
+            validateNameUseCase = validateNameUseCase,
+            validateLoginUseCase = validateLoginUseCase,
+            validateEmailUseCase = validateEmailUseCase,
+            validateDateUseCase = validateDateUseCase,
+            validatePasswordUseCase = validatePasswordUseCase,
+            validateRepeatedPasswordsUseCase = validateRepeatedPasswordsUseCase,
+        )
+    }
+
 
 }

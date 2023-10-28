@@ -3,11 +3,10 @@ package com.example.moviecatalog.login.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.auth.domain.model.UserLoginModel
 import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
-import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
-import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
+import com.example.moviecatalog.common.navigation.Routes
+import com.example.moviecatalog.common.validation.domain.usecase.LoginValidationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginScreenViewModel @Inject constructor(
-    private val validateLoginUseCase: ValidateLoginUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val loginValidationUseCase: LoginValidationUseCase,
     private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUIState())
@@ -32,8 +30,8 @@ class LoginScreenViewModel @Inject constructor(
 
     fun onLoginChanged(newLogin: String) {
         scope.launch(Dispatchers.IO) {
-            val isLoginCorrect = validateLoginUseCase.execute(newLogin)
-            val isPasswordCorrect = validatePasswordUseCase.execute(_uiState.value.password)
+            val isLoginCorrect = loginValidationUseCase.validateLogin(newLogin)
+            val isPasswordCorrect = loginValidationUseCase.validatePassword(_uiState.value.password)
             val isError = isError(
                 newLogin, _uiState.value.password, isLoginCorrect, isPasswordCorrect
             )
@@ -51,8 +49,8 @@ class LoginScreenViewModel @Inject constructor(
 
     fun onPasswordChanged(newPassword: String) {
         scope.launch(Dispatchers.IO) {
-            val isLoginCorrect = validatePasswordUseCase.execute(_uiState.value.login)
-            val isPasswordCorrect = validatePasswordUseCase.execute(newPassword)
+            val isLoginCorrect = loginValidationUseCase.validateLogin(_uiState.value.login)
+            val isPasswordCorrect = loginValidationUseCase.validatePassword(newPassword)
             val isError = isError(
                 _uiState.value.login, newPassword, isLoginCorrect, isPasswordCorrect
             )

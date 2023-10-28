@@ -1,5 +1,6 @@
 package com.example.moviecatalog.common.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -24,9 +25,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.ui.theme.label15MTextStyle
@@ -41,9 +44,12 @@ import java.time.format.DateTimeFormatter
 fun CustomDateField(
     formText: String,
     pickedDate: LocalDate?,
+    isError: Boolean,
     onPickedDateChanged: (LocalDate) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val containerColor = if (!isError) Color.Transparent else colorResource(R.color.dark_accent)
+    val borderColor = if (!isError) colorResource(R.color.border_color) else colorResource(R.color.accent)
     var isDatePickerVisible by remember { mutableStateOf(false) }
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
@@ -58,9 +64,10 @@ fun CustomDateField(
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = colorResource(R.color.border_color),
+                color = borderColor,
                 shape = RoundedCornerShape(10.dp)
             )
+            .background(containerColor)
             .padding(start = 12.dp),
         horizontalArrangement = if (pickedDate != null) Arrangement.SpaceBetween else Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
@@ -127,4 +134,15 @@ fun DatePickerAlertDialog(
     ) {
         DatePicker(state = datePickerState)
     }
+}
+
+@Preview
+@Composable
+fun PreviewCustomDateField(){
+    CustomDateField(
+        formText = "",
+        pickedDate = LocalDate.now(),
+        isError = true,
+        onPickedDateChanged = {}
+    )
 }

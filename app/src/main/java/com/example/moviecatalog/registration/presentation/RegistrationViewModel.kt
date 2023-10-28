@@ -3,17 +3,12 @@ package com.example.moviecatalog.registration.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.example.moviecatalog.common.ui.component.FieldType
-import com.example.moviecatalog.common.ui.component.Gender
-import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.auth.domain.model.UserRegisterModel
 import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
-import com.example.moviecatalog.common.validation.domain.usecase.ValidateDateUseCase
-import com.example.moviecatalog.common.validation.domain.usecase.ValidateEmailUseCase
-import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
-import com.example.moviecatalog.common.validation.domain.usecase.ValidateNameUseCase
-import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
-import com.example.moviecatalog.common.validation.domain.usecase.ValidateRepeatedPasswordsUseCase
+import com.example.moviecatalog.common.navigation.Routes
+import com.example.moviecatalog.common.ui.component.FieldType
+import com.example.moviecatalog.common.ui.component.Gender
+import com.example.moviecatalog.common.validation.domain.usecase.RegistrationValidationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,12 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val validateNameUseCase: ValidateNameUseCase,
-    private val validateLoginUseCase: ValidateLoginUseCase,
-    private val validateEmailUseCase: ValidateEmailUseCase,
-    private val validateDateUseCase: ValidateDateUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val validateRepeatedPasswordsUseCase: ValidateRepeatedPasswordsUseCase,
+    private val registrationValidationUseCase: RegistrationValidationUseCase,
     private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RegistrationUIState())
@@ -76,7 +66,7 @@ class RegistrationViewModel @Inject constructor(
 
     private fun onNameChanged(newName: String) {
         scope.launch(Dispatchers.IO) {
-            val isNameCorrect = validateNameUseCase.execute(newName)
+            val isNameCorrect = registrationValidationUseCase.validateName(newName)
             _uiState.update { currentState ->
                 currentState.copy(
                     name = newName, isNameCorrect = isNameCorrect
@@ -97,7 +87,7 @@ class RegistrationViewModel @Inject constructor(
 
     private fun onLoginChanged(newLogin: String) {
         scope.launch(Dispatchers.IO) {
-            val isLoginCorrect = validateLoginUseCase.execute(newLogin)
+            val isLoginCorrect = registrationValidationUseCase.validateLogin(newLogin)
             _uiState.update { currentState ->
                 currentState.copy(
                     login = newLogin, isLoginCorrect = isLoginCorrect
@@ -108,7 +98,7 @@ class RegistrationViewModel @Inject constructor(
 
     private fun onEmailChanged(newEmail: String) {
         scope.launch(Dispatchers.IO) {
-            val isEmailCorrect = validateEmailUseCase.execute(newEmail)
+            val isEmailCorrect = registrationValidationUseCase.validateEmail(newEmail)
             _uiState.update { currentState ->
                 currentState.copy(
                     email = newEmail, isEmailCorrect = isEmailCorrect
@@ -120,7 +110,7 @@ class RegistrationViewModel @Inject constructor(
 
     private fun onBirthDateChanged(newBirthDate: LocalDate) {
         scope.launch(Dispatchers.IO) {
-            val isBirthDateCorrect = validateDateUseCase.execute(newBirthDate)
+            val isBirthDateCorrect = registrationValidationUseCase.validateDate(newBirthDate)
             _uiState.update { currentState ->
                 currentState.copy(
                     birthDate = newBirthDate, isBirthDateCorrect = isBirthDateCorrect
@@ -131,7 +121,7 @@ class RegistrationViewModel @Inject constructor(
 
     private fun onPasswordChanged(newPassword: String) {
         scope.launch(Dispatchers.IO) {
-            val isPasswordCorrect = validatePasswordUseCase.execute(newPassword)
+            val isPasswordCorrect = registrationValidationUseCase.validatePassword(newPassword)
             _uiState.update { currentState ->
                 currentState.copy(
                     password = newPassword, isPasswordCorrect = isPasswordCorrect
@@ -143,7 +133,10 @@ class RegistrationViewModel @Inject constructor(
     private fun onRepeatedPasswordChanged(password: String, newRepeatedPassword: String) {
         scope.launch(Dispatchers.IO) {
             val isPasswordsSame =
-                validateRepeatedPasswordsUseCase.execute(password, newRepeatedPassword)
+                registrationValidationUseCase.validateRepeatedPassword(
+                    password,
+                    newRepeatedPassword
+                )
             _uiState.update { currentState ->
                 currentState.copy(
                     repeatedPassword = newRepeatedPassword, isPasswordsSame = isPasswordsSame

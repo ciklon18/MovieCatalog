@@ -1,8 +1,7 @@
 package com.example.moviecatalog.login.di
 
 import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
-import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
-import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.LoginValidationUseCase
 import com.example.moviecatalog.login.presentation.LoginScreenViewModel
 import dagger.Module
 import dagger.Provides
@@ -15,13 +14,11 @@ class LoginModule {
 
     @Provides
     fun provideLoginScreenViewModel(
-        validateLoginUseCase: ValidateLoginUseCase,
-        validatePasswordUseCase: ValidatePasswordUseCase,
+        loginValidationUseCase: LoginValidationUseCase,
         authRepository: AuthRepository,
     ): LoginScreenViewModel {
         return LoginScreenViewModel(
-            validateLoginUseCase = validateLoginUseCase,
-            validatePasswordUseCase = validatePasswordUseCase,
+            loginValidationUseCase = loginValidationUseCase,
             authRepository = authRepository
         )
     }

@@ -160,7 +160,8 @@ fun RegistrationSection(
                 CustomDateField(
                     formText = stringResource(R.string.birth_date),
                     pickedDate = uiState.birthDate,
-                    onPickedDateChanged = onDateChanged
+                    onPickedDateChanged = onDateChanged,
+                    isError = uiState.isErrorFirstPage
                 )
 
                 if (uiState.isErrorFirstPage) {
