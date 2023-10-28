@@ -18,7 +18,10 @@ fun MovieCatalogNavigation(
 ) {
     NavHost(navController = navController, startDestination = Routes.LaunchScreen.name) {
         composable(route = Routes.LaunchScreen.name) {
-            LaunchScreen(navController)
+            LaunchScreen(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
         }
         composable(route = Routes.SelectAuthScreen.name) {
             SelectAuthScreen(navController)

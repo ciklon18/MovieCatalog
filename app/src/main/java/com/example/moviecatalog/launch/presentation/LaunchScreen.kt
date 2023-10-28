@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,15 +20,17 @@ import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.navigation.Routes
 
-
 @Composable
 fun LaunchScreen(
+    viewModel: LaunchViewModel,
     navController: NavHostController
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     val alpha = remember {
         Animatable(0f)
     }
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(Unit) {
         alpha.animateTo(
             1f,
             animationSpec = tween(
@@ -36,7 +40,13 @@ fun LaunchScreen(
                 }
             )
         )
-        navController.navigate(Routes.SelectAuthScreen.name)
+
+        if (uiState.isTokenExpired) {
+            navController.navigate(Routes.SelectAuthScreen.name)
+        } else {
+            // навигироваться на MovieScreen
+        }
+
     }
     Image(
         painter = painterResource(R.drawable.launch_screen_background),

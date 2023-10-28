@@ -3,8 +3,18 @@ package com.example.moviecatalog.registration.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.example.moviecatalog.common.ui.component.FieldType
+import com.example.moviecatalog.common.ui.component.Gender
+import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.auth.domain.model.UserRegisterModel
 import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
+import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateDateUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateEmailUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateNameUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateRepeatedPasswordsUseCase
 import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.ui.component.FieldType
 import com.example.moviecatalog.common.ui.component.Gender
@@ -22,6 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
+    private val setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase,
     private val registrationValidationUseCase: RegistrationValidationUseCase,
     private val authRepository: AuthRepository
 ) : ViewModel() {
@@ -197,9 +208,11 @@ class RegistrationViewModel @Inject constructor(
                     gender = if (_uiState.value.gender == Gender.Male) 0 else 1
                 )
                 val response = authRepository.register(user)
+                response.getOrNull()?.token?.let { setTokenToLocalStorageUseCase.execute(it) }
 
                 withContext(Dispatchers.Main) {
-                    navController.navigate(Routes.SelectAuthScreen.name)
+                    // навигироваться на MovieScreen
+                    navController.navigate(Routes.LaunchScreen.name)
                 }
 
                 // обработать response

@@ -1,4 +1,4 @@
-package com.example.moviecatalog.common.token
+package com.example.moviecatalog.common.token.entity
 
 import com.auth0.android.jwt.JWT
 import java.util.Date
@@ -8,8 +8,8 @@ class JwtTokenHelper @Inject constructor() {
     fun isExpired(token: String): Boolean {
         return try {
             val expirationTime = JWT(token).expiresAt
-
-            expirationTime != null && expirationTime.before(Date())
+            val isExpired = expirationTime != null && expirationTime.before(Date())
+            isExpired
         } catch (e: Exception) {
             true
         }

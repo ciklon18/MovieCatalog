@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.moviecatalog.common.auth.domain.model.UserLoginModel
 import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
+import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
 import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.validation.domain.usecase.LoginValidationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginScreenViewModel @Inject constructor(
     private val loginValidationUseCase: LoginValidationUseCase,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUIState())
     val uiState: StateFlow<LoginUIState> = _uiState.asStateFlow()
@@ -74,8 +78,11 @@ class LoginScreenViewModel @Inject constructor(
                 )
                 val response = authRepository.login(user)
 
+                response.getOrNull()?.token?.let { setTokenToLocalStorageUseCase.execute(it) }
+
                 withContext(Dispatchers.Main) {
-                    navController.navigate(Routes.SelectAuthScreen.name)
+                    // навигироваться на MovieScreen
+                    navController.navigate(Routes.LaunchScreen.name)
                 }
 
                 // обработать response
