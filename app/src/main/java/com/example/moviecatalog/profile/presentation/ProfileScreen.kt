@@ -1,4 +1,4 @@
-package com.example.moviecatalog.main.presentation
+package com.example.moviecatalog.profile.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

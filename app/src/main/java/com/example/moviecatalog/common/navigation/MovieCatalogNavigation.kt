@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moviecatalog.launch.presentation.LaunchScreen
 import com.example.moviecatalog.login.presentation.LoginScreen
-import com.example.moviecatalog.main.presentation.ProfileScreen
+import com.example.moviecatalog.profile.presentation.ProfileScreen
 import com.example.moviecatalog.registration.presentation.RegistrationScreen
 import com.example.moviecatalog.selectauth.presentation.SelectAuthScreen
 

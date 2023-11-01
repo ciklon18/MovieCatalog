@@ -2,7 +2,7 @@ package com.example.moviecatalog.common.profile.data.mapper
 
 import com.example.moviecatalog.common.profile.domain.model.Profile
 import com.example.moviecatalog.common.ui.component.Gender
-import com.example.moviecatalog.main.presentation.ProfileUIState
+import com.example.moviecatalog.profile.presentation.ProfileUIState
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
