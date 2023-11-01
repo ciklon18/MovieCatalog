@@ -3,6 +3,7 @@ package com.example.moviecatalog.common.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,37 +53,41 @@ fun CustomDateField(
     val borderColor = if (!isError) colorResource(R.color.border_color) else colorResource(R.color.accent)
     var isDatePickerVisible by remember { mutableStateOf(false) }
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-
-    Text(
-        text = formText,
-        style = label15MTextStyle
-    )
-    Spacer(modifier = Modifier.height(8.dp))
-
-    Row(
+    Column (
         modifier = modifier
-            .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = borderColor,
-                shape = RoundedCornerShape(10.dp)
-            )
-            .background(containerColor)
-            .padding(start = 12.dp),
-        horizontalArrangement = if (pickedDate != null) Arrangement.SpaceBetween else Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (pickedDate != null) {
-            Text(text = dateFormatter.format(pickedDate))
-        }
+    ){
+        Text(
+            text = formText,
+            style = label15MTextStyle
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
-        IconButton(onClick = { isDatePickerVisible = true }) {
-            Icon(
-                painter = painterResource(R.drawable.date),
-                contentDescription = stringResource(R.string.date)
-            )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = borderColor,
+                    shape = RoundedCornerShape(10.dp)
+                )
+                .background(containerColor)
+                .padding(start = 12.dp),
+            horizontalArrangement = if (pickedDate != null) Arrangement.SpaceBetween else Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (pickedDate != null) {
+                Text(text = dateFormatter.format(pickedDate))
+            }
+
+            IconButton(onClick = { isDatePickerVisible = true }) {
+                Icon(
+                    painter = painterResource(R.drawable.date),
+                    contentDescription = stringResource(R.string.date)
+                )
+            }
         }
     }
+
 
     val datePickerState = remember {
         DatePickerState(

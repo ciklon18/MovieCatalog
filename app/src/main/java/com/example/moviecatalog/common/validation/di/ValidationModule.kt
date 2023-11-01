@@ -4,6 +4,7 @@ import com.example.moviecatalog.common.validation.domain.usecase.LoginValidation
 import com.example.moviecatalog.common.validation.domain.usecase.RegistrationValidationUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateDateUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateEmailUseCase
+import com.example.moviecatalog.common.validation.domain.usecase.ValidateLinkUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidateNameUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
@@ -44,6 +45,10 @@ class ValidationModule {
     @Provides
     fun provideValidateRepeatedPasswordsUseCase(): ValidateRepeatedPasswordsUseCase {
         return ValidateRepeatedPasswordsUseCase()
+    }
+    @Provides
+    fun provideValidateLinkUseCase(): ValidateLinkUseCase {
+        return ValidateLinkUseCase()
     }
 
     @Provides

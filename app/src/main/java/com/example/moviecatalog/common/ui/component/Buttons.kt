@@ -38,7 +38,7 @@ fun AccentButton(
         isEnabled = isEnabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.accent),
-            contentColor = colorResource(R.color.white)
+            contentColor = colorResource(R.color.white),
         ),
         modifier = modifier
     )
@@ -57,6 +57,24 @@ fun SecondaryButton(
         isEnabled = isEnabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.gray_800),
+            contentColor = colorResource(R.color.accent)
+        ),
+        modifier = modifier
+    )
+}
+@Composable
+fun TransparentButton(
+    text: String,
+    onClick: () -> Unit,
+    isEnabled: Boolean,
+    modifier: Modifier = Modifier
+){
+    BasicButton(
+        text = text,
+        onClick = onClick,
+        isEnabled = isEnabled,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
             contentColor = colorResource(R.color.accent)
         ),
         modifier = modifier

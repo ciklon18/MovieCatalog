@@ -30,4 +30,12 @@
     <string name="continue_register">Продолжить</string>
     <string name="passwords_are_not_matched">Пароли не совпадают</string>
     <string name="check_entered_fields">Неверное имя, логин, электронная почта или дата рождения</string>
+    <string name="main">Главная</string>
+    <string name="favorite">Любимое</string>
+    <string name="profile">Профиль</string>
+    <string name="profile_icon">Иконка профиля пользователя</string>
+    <string name="link_to_avatar">Ссылка на аватар</string>
+    <string name="save">Сохранить</string>
+    <string name="dismiss">Отмена</string>
+    <string name="logout">Выйти из аккаунта</string>
 </resources>
