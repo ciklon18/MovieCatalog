@@ -44,7 +44,7 @@ fun LaunchScreen(
         if (uiState.isTokenExpired) {
             navController.navigate(Routes.SelectAuthScreen.name)
         } else {
-            // навигироваться на MovieScreen
+            navController.navigate(Routes.ProfileScreen.name)
         }
 
     }

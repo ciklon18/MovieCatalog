@@ -5,10 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.moviecatalog.common.auth.domain.model.UserLoginModel
 import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
-import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
-import com.example.moviecatalog.common.validation.domain.usecase.ValidateLoginUseCase
-import com.example.moviecatalog.common.validation.domain.usecase.ValidatePasswordUseCase
 import com.example.moviecatalog.common.navigation.Routes
+import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.LoginValidationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -77,23 +75,34 @@ class LoginScreenViewModel @Inject constructor(
                     password = _uiState.value.password
                 )
                 val response = authRepository.login(user)
-
-                response.getOrNull()?.token?.let { setTokenToLocalStorageUseCase.execute(it) }
-
-                withContext(Dispatchers.Main) {
-                    // навигироваться на MovieScreen
-                    navController.navigate(Routes.LaunchScreen.name)
+                val token = response.getOrNull()?.token
+                token?.let { setTokenToLocalStorageUseCase.execute(it) }
+                if (token != null) {
+                    withContext(Dispatchers.Main) {
+                        // навигироваться на MovieScreen
+                        navController.navigate(Routes.ProfileScreen.name)
+                    }
+                } else {
+                    handleException()
                 }
+
 
                 // обработать response
             } catch (e: Exception) {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        isError = true, isButtonEnabled = false
-                    )
-                }
+                handleException()
             }
         }
+    }
+
+    private fun handleException() {
+        scope.launch(Dispatchers.IO) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isError = true, isButtonEnabled = false
+                )
+            }
+        }
+
     }
 
     private fun isError(

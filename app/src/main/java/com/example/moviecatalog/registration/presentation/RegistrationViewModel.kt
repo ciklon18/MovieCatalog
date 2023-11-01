@@ -32,6 +32,7 @@ class RegistrationViewModel @Inject constructor(
 
     private val scope = viewModelScope
 
+
     fun onNavigateUpPressed() {
         if (!_uiState.value.isFirstButtonPressed) {
             resetEnteredData()
@@ -57,8 +58,10 @@ class RegistrationViewModel @Inject constructor(
                 FieldType.BirthDate -> onBirthDateChanged(newBirthDate = newValue as LocalDate)
                 FieldType.Password -> onPasswordChanged(newPassword = newValue as String)
                 FieldType.RepeatedPassword -> onRepeatedPasswordChanged(
-                    password = _uiState.value.password, newRepeatedPassword = newValue as String
+                    newRepeatedPassword = newValue as String
                 )
+
+                else -> {}
             }
             updateErrorAndButtonStateForField(fieldType)
 
@@ -124,19 +127,26 @@ class RegistrationViewModel @Inject constructor(
     private fun onPasswordChanged(newPassword: String) {
         scope.launch(Dispatchers.IO) {
             val isPasswordCorrect = registrationValidationUseCase.validatePassword(newPassword)
+            val isPasswordsSame =
+                registrationValidationUseCase.validateRepeatedPassword(
+                    newPassword,
+                    _uiState.value.repeatedPassword
+                )
             _uiState.update { currentState ->
                 currentState.copy(
-                    password = newPassword, isPasswordCorrect = isPasswordCorrect
+                    password = newPassword,
+                    isPasswordCorrect = isPasswordCorrect,
+                    isPasswordsSame = isPasswordsSame
                 )
             }
         }
     }
 
-    private fun onRepeatedPasswordChanged(password: String, newRepeatedPassword: String) {
+    private fun onRepeatedPasswordChanged(newRepeatedPassword: String) {
         scope.launch(Dispatchers.IO) {
             val isPasswordsSame =
                 registrationValidationUseCase.validateRepeatedPassword(
-                    password,
+                    _uiState.value.password,
                     newRepeatedPassword
                 )
             _uiState.update { currentState ->
@@ -199,20 +209,28 @@ class RegistrationViewModel @Inject constructor(
                     gender = if (_uiState.value.gender == Gender.Male) 0 else 1
                 )
                 val response = authRepository.register(user)
-                response.getOrNull()?.token?.let { setTokenToLocalStorageUseCase.execute(it) }
-
-                withContext(Dispatchers.Main) {
-                    // навигироваться на MovieScreen
-                    navController.navigate(Routes.LaunchScreen.name)
+                val token = response.getOrNull()?.token
+                if (token != null) {
+                    token.let { setTokenToLocalStorageUseCase.execute(it) }
+                    withContext(Dispatchers.Main) {
+                        // навигироваться на MovieScreen
+                        navController.navigate(Routes.LaunchScreen.name)
+                    }
+                } else {
+                    handleException()
                 }
-
-                // обработать response
             } catch (e: Exception) {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        isErrorSecondPage = true, isSecondButtonEnabled = false
-                    )
-                }
+                handleException()
+            }
+        }
+    }
+
+    private fun handleException() {
+        scope.launch(Dispatchers.IO) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isErrorSecondPage = true, isSecondButtonEnabled = false
+                )
             }
         }
     }
@@ -239,6 +257,7 @@ class RegistrationViewModel @Inject constructor(
                 && currentState.isEmailCorrect
                 && currentState.isBirthDateCorrect
                 && currentState.isLoginCorrect
+
     }
 
     private fun isButtonEnabledForSecondPage(
@@ -283,6 +302,4 @@ data class RegistrationUIState(
     val isFirstButtonEnabled: Boolean = false, val isSecondButtonEnabled: Boolean = false,
 
     val isFirstButtonPressed: Boolean = false
-) {
-
-}
+)
