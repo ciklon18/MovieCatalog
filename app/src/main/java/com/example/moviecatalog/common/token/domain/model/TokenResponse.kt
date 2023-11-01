@@ -1,4 +1,4 @@
-package com.example.moviecatalog.common.auth.domain.model
+package com.example.moviecatalog.common.token.domain.model
 
 import kotlinx.serialization.Serializable
 

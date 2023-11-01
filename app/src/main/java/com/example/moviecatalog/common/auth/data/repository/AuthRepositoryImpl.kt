@@ -1,6 +1,6 @@
 package com.example.moviecatalog.common.auth.data.repository
 
-import com.example.moviecatalog.common.auth.domain.model.TokenResponse
+import com.example.moviecatalog.common.token.domain.model.TokenResponse
 import com.example.moviecatalog.common.auth.domain.model.UserLoginModel
 import com.example.moviecatalog.common.auth.domain.model.UserRegisterModel
 import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
