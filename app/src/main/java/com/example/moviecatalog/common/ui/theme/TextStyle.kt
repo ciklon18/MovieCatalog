@@ -15,6 +15,12 @@ val title20B2TextStyle = TextStyle(
     fontWeight = FontWeight(700),
     textAlign = TextAlign.Center
 )
+val title24BTextStyle = TextStyle(
+    fontSize = 24.sp,
+    fontFamily = FontFamily(Font(R.font.inter_extrabold)),
+    fontWeight = FontWeight(700),
+    textAlign = TextAlign.Center
+)
 
 val text15RTextStyle = TextStyle(
     fontSize = 15.sp,
