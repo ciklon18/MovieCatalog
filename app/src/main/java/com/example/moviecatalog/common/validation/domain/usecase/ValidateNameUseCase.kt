@@ -1,12 +1,17 @@
 package com.example.moviecatalog.common.validation.domain.usecase
 
+import com.example.moviecatalog.common.validation.domain.model.ValidationResult
+import com.example.moviecatalog.common.validation.domain.util.ErrorMessageType
+
 
 class ValidateNameUseCase {
-    private val firstUpperLetterRegex = Regex("^[A-ZА-Я][a-zа-яё]+\\s*\$")
-    fun execute(value: String): Boolean {
-        return value.isNotBlank()
-                && !(value.any { it.isDigit() })
-                && value.matches(firstUpperLetterRegex)
-                && value.length > 1
+    fun execute(value: String): ValidationResult {
+        return if (value.length < 2){
+            ValidationResult(true, ErrorMessageType.SHORT_NAME)
+        } else if (!value.all { it.isLetter() }){
+            ValidationResult(true, ErrorMessageType.INCORRECT_NAME)
+        } else {
+            ValidationResult(false)
+        }
     }
 }

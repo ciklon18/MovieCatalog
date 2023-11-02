@@ -45,16 +45,18 @@ import java.time.format.DateTimeFormatter
 fun CustomDateField(
     formText: String,
     pickedDate: LocalDate?,
-    isError: Boolean,
     onPickedDateChanged: (LocalDate) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    errorMessageResId: Int? = null
 ) {
+    val isError = errorMessageResId != null
     val containerColor = if (!isError) Color.Transparent else colorResource(R.color.dark_accent)
     val borderColor = if (!isError) colorResource(R.color.border_color) else colorResource(R.color.accent)
     var isDatePickerVisible by remember { mutableStateOf(false) }
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     Column (
-        modifier = modifier
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
     ){
         Text(
             text = formText,
@@ -85,6 +87,9 @@ fun CustomDateField(
                     contentDescription = stringResource(R.string.date)
                 )
             }
+        }
+        if (isError && errorMessageResId != null){
+            ErrorText(text = stringResource(errorMessageResId))
         }
     }
 
@@ -147,7 +152,6 @@ fun PreviewCustomDateField(){
     CustomDateField(
         formText = "",
         pickedDate = LocalDate.now(),
-        isError = true,
         onPickedDateChanged = {}
     )
 }

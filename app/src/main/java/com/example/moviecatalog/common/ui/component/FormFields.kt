@@ -34,9 +34,10 @@ fun CustomTextFormField(
     formText: String,
     value: String,
     onValueChange: (String) -> Unit,
-    isError: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    errorMessageResId: Int? = null
 ) {
+    val isError = errorMessageResId != null
     val containerColor = if (!isError) Color.Transparent else colorResource(R.color.dark_accent)
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
@@ -66,6 +67,9 @@ fun CustomTextFormField(
             ),
         )
     }
+    if (isError && errorMessageResId != null) {
+        ErrorText(text = stringResource(errorMessageResId))
+    }
 }
 
 @Composable
@@ -92,12 +96,13 @@ fun CustomPasswordFormField(
     formText: String,
     value: String,
     onValueChange: (String) -> Unit,
-    isError: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    errorMessageResId: Int? = null
 ) {
     val passwordVisible = remember {
         mutableStateOf(false)
     }
+    val isError = errorMessageResId != null
     val containerColor = if (!isError) Color.Transparent else colorResource(R.color.dark_accent)
 
     Column(
@@ -146,6 +151,9 @@ fun CustomPasswordFormField(
                 errorBorderColor = colorResource(R.color.accent),
             ),
         )
+        if (isError && errorMessageResId != null) {
+            ErrorText(text = stringResource(errorMessageResId))
+        }
     }
 }
 

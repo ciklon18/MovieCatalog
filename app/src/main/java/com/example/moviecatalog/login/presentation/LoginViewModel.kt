@@ -3,10 +3,11 @@ package com.example.moviecatalog.login.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.example.moviecatalog.common.auth.domain.model.UserLoginModel
-import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
+import com.example.moviecatalog.common.auth.data.mapper.toUserLoginModel
+import com.example.moviecatalog.common.auth.domain.usecase.LoginUserUseCase
 import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
+import com.example.moviecatalog.common.ui.component.FieldType
 import com.example.moviecatalog.common.validation.domain.usecase.LoginValidationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginScreenViewModel @Inject constructor(
     private val loginValidationUseCase: LoginValidationUseCase,
-    private val authRepository: AuthRepository,
+    private val loginUserUseCase: LoginUserUseCase,
     private val setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUIState())
@@ -30,40 +31,55 @@ class LoginScreenViewModel @Inject constructor(
 
     private val scope = viewModelScope
 
-    fun onLoginChanged(newLogin: String) {
+
+    fun onFieldChanged(fieldType: FieldType, newValue: Any) {
         scope.launch(Dispatchers.IO) {
-            val isLoginCorrect = loginValidationUseCase.validateLogin(newLogin)
-            val isPasswordCorrect = loginValidationUseCase.validatePassword(_uiState.value.password)
-            val isError = isError(
-                newLogin, _uiState.value.password, isLoginCorrect, isPasswordCorrect
-            )
-            _uiState.update { currentState ->
-                currentState.copy(
-                    login = newLogin,
-                    isLoginCorrect = isLoginCorrect,
-                    isError = isError,
-                    isButtonEnabled = isButtonEnabled(newLogin, currentState.password, isError)
-                )
+            when (fieldType) {
+                FieldType.Login -> onLoginChanged(newLogin = newValue as String)
+                FieldType.Password -> onPasswordChanged(newPassword = newValue as String)
+                else -> {}
             }
+            updateErrorAndButtonStateForField()
+        }
+    }
+
+    private fun updateErrorAndButtonStateForField() {
+
+        _uiState.update { currentState ->
+            val isDataValid = loginValidationUseCase.isDataValid(
+                currentState.login, currentState.password,
+                currentState.loginErrorMessage, currentState.passwordErrorMessage
+            )
+            currentState.copy(
+                isError = !isDataValid,
+                isButtonEnabled = loginValidationUseCase.isButtonEnabled(
+                    currentState.login,
+                    currentState.password,
+                    isDataValid
+                )
+            )
+        }
+    }
+
+    private fun onLoginChanged(newLogin: String) {
+        val loginValidationResult = loginValidationUseCase.validateLogin(newLogin)
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                login = newLogin,
+                loginErrorMessage = loginValidationResult.errorMessage,
+            )
         }
     }
 
 
-    fun onPasswordChanged(newPassword: String) {
-        scope.launch(Dispatchers.IO) {
-            val isLoginCorrect = loginValidationUseCase.validateLogin(_uiState.value.login)
-            val isPasswordCorrect = loginValidationUseCase.validatePassword(newPassword)
-            val isError = isError(
-                _uiState.value.login, newPassword, isLoginCorrect, isPasswordCorrect
+    private fun onPasswordChanged(newPassword: String) {
+        val passwordValidationResult = loginValidationUseCase.validatePassword(newPassword)
+        _uiState.update { currentState ->
+            currentState.copy(
+                password = newPassword,
+                passwordErrorMessage = passwordValidationResult.errorMessage,
             )
-            _uiState.update { currentState ->
-                currentState.copy(
-                    password = newPassword,
-                    isPasswordCorrect = isPasswordCorrect,
-                    isError = isError,
-                    isButtonEnabled = isButtonEnabled(currentState.login, newPassword, isError)
-                )
-            }
         }
     }
 
@@ -105,18 +121,6 @@ class LoginScreenViewModel @Inject constructor(
 
     }
 
-    private fun isError(
-        login: String, password: String, isLoginCorrect: Boolean, isPasswordCorrect: Boolean
-    ): Boolean {
-        if (login.isBlank() || password.isBlank()) {
-            return false
-        }
-        return !(isLoginCorrect && isPasswordCorrect)
-    }
-
-    private fun isButtonEnabled(login: String, password: String, isError: Boolean): Boolean {
-        return login.isNotBlank() && password.isNotBlank() && !isError
-    }
 
     fun onRegisterLinkPressed(navController: NavHostController) {
         navController.navigate(Routes.RegistrationScreen.name)
@@ -126,9 +130,9 @@ class LoginScreenViewModel @Inject constructor(
 
 data class LoginUIState(
     val login: String = "",
-    val isLoginCorrect: Boolean = true,
+    val loginErrorMessage: Int? = null,
     val password: String = "",
-    val isPasswordCorrect: Boolean = true,
+    val passwordErrorMessage: Int? = null,
     val isError: Boolean = false,
     val isButtonEnabled: Boolean = false
 )
