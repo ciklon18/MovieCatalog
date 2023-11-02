@@ -1,6 +1,6 @@
 package com.example.moviecatalog.registration.di
 
-import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
+import com.example.moviecatalog.common.auth.domain.usecase.RegisterUserUseCase
 import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.RegistrationValidationUseCase
 import com.example.moviecatalog.registration.presentation.RegistrationViewModel
@@ -15,13 +15,13 @@ class RegistrationModule {
     @Provides
     fun provideRegistrationViewModel(
         registrationValidationUseCase: RegistrationValidationUseCase,
-        authRepository: AuthRepository,
+        registerUserUseCase: RegisterUserUseCase,
         setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase
     ): RegistrationViewModel {
         return RegistrationViewModel(
             setTokenToLocalStorageUseCase = setTokenToLocalStorageUseCase,
             registrationValidationUseCase = registrationValidationUseCase,
-            authRepository = authRepository
+            registerUserUseCase = registerUserUseCase
         )
     }
 }
