@@ -1,5 +1,6 @@
 package com.example.moviecatalog.common.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -198,4 +200,46 @@ fun PreviewMyBottomBar() {
         onProfileClicked = { /*TODO*/ },
         myTab = MyTab.Favorite
     )
+}
+
+
+
+
+@Composable
+fun ReviewElement(
+    rating: Int,
+    modifier: Modifier = Modifier
+) {
+    val elementColor = when (rating) {
+        in 9..10 -> colorResource(R.color.green)
+        in 8..9 -> colorResource(R.color.light_green)
+        in 6..8 -> colorResource(R.color.yellow)
+        in 4..6 -> colorResource(R.color.orange)
+        in 3..4 -> colorResource(R.color.orange_fire)
+        in 0..3 -> colorResource(R.color.red)
+        else -> colorResource(R.color.red)
+    }
+    Box(
+        modifier = modifier
+            .background(
+                color = elementColor,
+                shape = RoundedCornerShape(35.dp)
+            )
+            .padding(4.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.flled_star),
+                contentDescription = stringResource(R.string.star),
+                tint = colorResource(R.color.white),
+                modifier = Modifier
+                    .height(16.dp)
+                    .width(16.dp)
+            )
+            Text(text = rating.toString(), color = colorResource(R.color.white))
+        }
+    }
 }

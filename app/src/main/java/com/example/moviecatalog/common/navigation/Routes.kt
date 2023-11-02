@@ -5,5 +5,6 @@ enum class Routes {
     SelectAuthScreen,
     LoginScreen,
     RegistrationScreen,
-    ProfileScreen
+    ProfileScreen,
+    FavoriteScreen
 }

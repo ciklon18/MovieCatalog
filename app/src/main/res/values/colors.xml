@@ -21,4 +21,10 @@
     <color name="gray_300">#AAAEB3</color>
     <color name="gray_200">#C4C8CC</color>
     <color name="gray_100">#E1E3E6</color>
+    <color name="green">#4BB34B</color>
+    <color name="light_green">#A3CD4A</color>
+    <color name="yellow">#FFD54F</color>
+    <color name="orange">#FFA000</color>
+    <color name="orange_fire">#F05C44</color>
+    <color name="red">#E64646</color>
 </resources>
