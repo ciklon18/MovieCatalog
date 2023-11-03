@@ -216,17 +216,10 @@ class RegistrationViewModel @Inject constructor(
     fun onSecondButtonPressed(navController: NavHostController) {
         scope.launch(Dispatchers.IO) {
             try {
-                val user = UserRegisterModel(
-                    name = _uiState.value.name,
-                    password = _uiState.value.password,
-                    userName = _uiState.value.login,
-                    email = _uiState.value.email,
-                    birthDate = _uiState.value.birthDate.toString(),
-                    gender = if (_uiState.value.gender == Gender.Male) 0 else 1
-                )
-                val response = authRepository.register(user)
-                val token = response.getOrNull()?.token
-                if (token != null) {
+                val user = _uiState.value.toUserRegisterModel()
+                val response = registerUserUseCase.execute(user)
+                val token = response.getOrNull()?.token ?: ""
+                if (token.isNotBlank()) {
                     token.let { setTokenToLocalStorageUseCase.execute(it) }
                     withContext(Dispatchers.Main) {
                         // навигироваться на MovieScreen

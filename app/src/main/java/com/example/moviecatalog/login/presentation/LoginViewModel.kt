@@ -86,11 +86,8 @@ class LoginScreenViewModel @Inject constructor(
     fun onButtonPressed(navController: NavHostController) {
         scope.launch(Dispatchers.IO) {
             try {
-                val user = UserLoginModel(
-                    username = _uiState.value.login,
-                    password = _uiState.value.password
-                )
-                val response = authRepository.login(user)
+                val user = _uiState.value.toUserLoginModel()
+                val response = loginUserUseCase.execute(user)
                 val token = response.getOrNull()?.token
                 token?.let { setTokenToLocalStorageUseCase.execute(it) }
                 if (token != null) {
@@ -109,7 +106,6 @@ class LoginScreenViewModel @Inject constructor(
             }
         }
     }
-
     private fun handleException() {
         scope.launch(Dispatchers.IO) {
             _uiState.update { currentState ->
