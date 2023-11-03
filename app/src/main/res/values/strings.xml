@@ -38,4 +38,19 @@
     <string name="save">Сохранить</string>
     <string name="dismiss">Отмена</string>
     <string name="logout">Выйти из аккаунта</string>
+    <string name="registration_error">Ошибка регистрации. Проверьте соединение с интернетом</string>
+
+    <string name="short_name">Имя слишком короткое</string>
+    <string name="many_upper_letters_name">Имя должно иметь следующий формат: Ivan</string>
+    <string name="incorrect_date">Дата не может быть раньше 01.01.1900 года</string>
+    <string name="blank_date">Поле даты не может быть пустым</string>
+    <string name="blank_password">Поле пароля не может быть пустым</string>
+    <string name="blank_repeated_password">Поле повторного пароля не может быть пустым</string>
+    <string name="not_matched_passwords">Пароли не совпадают. Пожалуйста, введите одинаковые пароли</string>
+    <string name="incorrect_email">Почта должна иметь следующий вид: ivanov@ivan.ru</string>
+    <string name="blank_email">Поле почты не может быть пустым</string>
+    <string name="incorrect_link">Введенная строка не соответствует формату URL</string>
+    <string name="incorrect_login">Логин должен содержать только буквы и/или цифры</string>
+    <string name="short_login">Логин должен быть более 3 символов</string>
+    <string name="incorrect_name">Имя должно быть только из букв</string>
 </resources>

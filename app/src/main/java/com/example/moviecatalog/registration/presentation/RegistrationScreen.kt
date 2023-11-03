@@ -132,7 +132,7 @@ fun RegistrationSection(
                     formText = stringResource(R.string.name),
                     value = uiState.name,
                     onValueChange = onNameChanged,
-                    isError = uiState.isErrorFirstPage
+                    errorMessageResId = uiState.nameErrorMessage
                 )
                 Spacer(modifier = Modifier.height(15.dp))
 
@@ -145,7 +145,8 @@ fun RegistrationSection(
                     formText = stringResource(R.string.login),
                     value = uiState.login,
                     onValueChange = onLoginChanged,
-                    isError = uiState.isErrorFirstPage
+                    errorMessageResId = uiState.loginErrorMessage
+
                 )
                 Spacer(modifier = Modifier.height(15.dp))
 
@@ -153,7 +154,7 @@ fun RegistrationSection(
                     formText = stringResource(R.string.email),
                     value = uiState.email,
                     onValueChange = onEmailChanged,
-                    isError = uiState.isErrorFirstPage
+                    errorMessageResId = uiState.emailErrorMessage
                 )
                 Spacer(modifier = Modifier.height(15.dp))
 
@@ -161,15 +162,8 @@ fun RegistrationSection(
                     formText = stringResource(R.string.birth_date),
                     pickedDate = uiState.birthDate,
                     onPickedDateChanged = onDateChanged,
-                    isError = uiState.isErrorFirstPage
+                    errorMessageResId = uiState.birthDateErrorMessage
                 )
-
-                if (uiState.isErrorFirstPage) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    ErrorText(
-                        text = stringResource(R.string.check_entered_fields)
-                    )
-                }
             }
             Spacer(modifier = Modifier.height(20.dp))
             AccentButton(
@@ -185,7 +179,7 @@ fun RegistrationSection(
                     formText = stringResource(R.string.password),
                     value = uiState.password,
                     onValueChange = onPasswordChanged,
-                    isError = uiState.isErrorSecondPage
+                    errorMessageResId = uiState.passwordErrorMessage
                 )
                 Spacer(modifier = Modifier.height(15.dp))
 
@@ -193,15 +187,14 @@ fun RegistrationSection(
                     formText = stringResource(R.string.repeat_password),
                     value = uiState.repeatedPassword,
                     onValueChange = onRepeatedPasswordChanged,
-                    isError = uiState.isErrorSecondPage
+                    errorMessageResId = uiState.repeatedPasswordErrorMessage
                 )
-
-                if (uiState.isErrorSecondPage) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    ErrorText(
-                        text = stringResource(R.string.passwords_are_not_matched)
-                    )
-                }
+            }
+            if (uiState.isRegisterError) {
+                Spacer(modifier = Modifier.height(8.dp))
+                ErrorText(
+                    text = stringResource(R.string.registration_error)
+                )
             }
             Spacer(modifier = Modifier.height(20.dp))
             AccentButton(
@@ -230,19 +223,3 @@ private fun LoginLinkSection(onClickButton: () -> Unit, modifier: Modifier = Mod
             modifier = Modifier.clickable { onClickButton() })
     }
 }
-
-//@Preview
-//@Composable
-//fun PreviewRegistrationScreen() {
-//    RegistrationScreen(
-//        navController = rememberNavController(), viewModel = RegistrationViewModel(
-//            ValidateNameUseCase(),
-//            ValidateLoginUseCase(),
-//            ValidateEmailUseCase(),
-//            ValidateDateUseCase(),
-//            ValidatePasswordUseCase(),
-//            ValidateRepeatedPasswordsUseCase(),
-//            authRepository = AuthRepositoryImpl(ApiService())
-//        )
-//    )
-//}

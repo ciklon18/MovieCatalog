@@ -114,19 +114,20 @@ private fun ProfileSection(
             formText = stringResource(R.string.email),
             value = uiState.email,
             onValueChange = onEmailChanged,
-            isError = !uiState.isEmailCorrect
+            errorMessageResId = uiState.emailErrorMessage
+
         )
         CustomTextFormField(
             formText = stringResource(R.string.link_to_avatar),
             value = uiState.avatarLink,
             onValueChange = onLinkChanged,
-            isError = !uiState.isLinkCorrect
+            errorMessageResId = uiState.emailErrorMessage
         )
         CustomTextFormField(
             formText = stringResource(R.string.name),
             value = uiState.name,
             onValueChange = onNameChanged,
-            isError = !uiState.isNameCorrect
+            errorMessageResId = uiState.emailErrorMessage
         )
         CustomGenderFormField(
             selectedGender = uiState.gender, onGenderChanged = onGenderChanged
@@ -134,7 +135,7 @@ private fun ProfileSection(
         CustomDateField(
             formText = stringResource(R.string.birth_date),
             pickedDate = uiState.birthDate,
-            isError = !uiState.isBirthDateCorrect,
+            errorMessageResId = uiState.emailErrorMessage,
             onPickedDateChanged = onBirthDateChanged
         )
     }

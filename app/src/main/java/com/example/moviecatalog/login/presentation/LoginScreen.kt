@@ -12,12 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -32,6 +28,7 @@ import com.example.moviecatalog.common.ui.component.AccentButton
 import com.example.moviecatalog.common.ui.component.CustomPasswordFormField
 import com.example.moviecatalog.common.ui.component.CustomTextFormField
 import com.example.moviecatalog.common.ui.component.ErrorText
+import com.example.moviecatalog.common.ui.component.FieldType
 import com.example.moviecatalog.common.ui.component.MyTopAppBar
 import com.example.moviecatalog.common.ui.component.PageTitleText
 
@@ -42,14 +39,6 @@ fun LoginScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    var updatedLogin by remember { mutableStateOf(uiState.login) }
-    var updatedPassword by remember { mutableStateOf(uiState.password) }
-
-    LaunchedEffect(updatedLogin, updatedPassword) {
-        viewModel.onLoginChanged(updatedLogin)
-        viewModel.onPasswordChanged(updatedPassword)
-    }
 
 
     Scaffold(
@@ -63,11 +52,21 @@ fun LoginScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            LoginSection(updatedLogin = updatedLogin,
-                updatedPassword = updatedPassword,
+            LoginSection(updatedLogin = uiState.login,
+                updatedPassword = uiState.password,
                 uiState = uiState,
-                onLoginChanged = { newLogin -> updatedLogin = newLogin },
-                onPasswordChanged = { newPassword -> updatedPassword = newPassword },
+                onLoginChanged = { newLogin ->
+                    viewModel.onFieldChanged(
+                        FieldType.Login,
+                        newLogin
+                    )
+                },
+                onPasswordChanged = { newPassword ->
+                    viewModel.onFieldChanged(
+                        FieldType.Password,
+                        newPassword
+                    )
+                },
                 onClickButton = { viewModel.onButtonPressed(navController) }
             )
             RegistrationLinkSection(
@@ -102,7 +101,7 @@ private fun LoginSection(
                 formText = stringResource(R.string.login),
                 value = updatedLogin,
                 onValueChange = onLoginChanged,
-                isError = uiState.isError
+                errorMessageResId = uiState.loginErrorMessage
             )
             Spacer(modifier = Modifier.height(15.dp))
 
@@ -110,7 +109,7 @@ private fun LoginSection(
                 formText = stringResource(R.string.password),
                 value = updatedPassword,
                 onValueChange = onPasswordChanged,
-                isError = uiState.isError
+                errorMessageResId = uiState.passwordErrorMessage
             )
             if (uiState.isError) {
                 Spacer(modifier = Modifier.height(8.dp))

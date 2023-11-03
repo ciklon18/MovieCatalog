@@ -62,28 +62,26 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun updateUiStatesData(uiState: ProfileUIState, token: String){
-        scope.launch(Dispatchers.IO){
-            _uiState.update { currentState ->
-                currentState.copy(
-                    email = uiState.email,
-                    avatarLink = uiState.avatarLink,
-                    name = uiState.name,
-                    birthDate = uiState.birthDate,
-                    gender = uiState.gender,
-                    token = token
-                )
-            }
-            oldProfileData.update { currentState ->
-                currentState.copy(
-                    email = uiState.email,
-                    avatarLink = uiState.avatarLink,
-                    name = uiState.name,
-                    birthDate = uiState.birthDate,
-                    gender = uiState.gender,
-                    token = token
-                )
-            }
+    private fun updateUiStatesData(uiState: ProfileUIState, token: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                email = uiState.email,
+                avatarLink = uiState.avatarLink,
+                name = uiState.name,
+                birthDate = uiState.birthDate,
+                gender = uiState.gender,
+                token = token
+            )
+        }
+        oldProfileData.update { currentState ->
+            currentState.copy(
+                email = uiState.email,
+                avatarLink = uiState.avatarLink,
+                name = uiState.name,
+                birthDate = uiState.birthDate,
+                gender = uiState.gender,
+                token = token
+            )
         }
     }
 
@@ -126,77 +124,71 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun updateErrorAndButtonStateForField() {
-        scope.launch(Dispatchers.IO) {
-            _uiState.update { currentState ->
-                val isUpdatedFieldCorrect = areAllFieldsCorrect(_uiState.value)
-                currentState.copy(
-                    isSaveButtonEnabled = isUpdatedFieldCorrect
-                )
-            }
+        _uiState.update { currentState ->
+            val isUpdatedFieldCorrect = profileValidationUseCase.isDataValid(
+                _uiState.value.emailErrorMessage,
+                _uiState.value.linkErrorMessage,
+                _uiState.value.nameErrorMessage,
+                _uiState.value.birthDateErrorMessage
+            )
+            currentState.copy(
+                isSaveButtonEnabled = isUpdatedFieldCorrect
+            )
         }
     }
 
-    private fun areAllFieldsCorrect(uiState: ProfileUIState): Boolean {
-        return uiState.isEmailCorrect && uiState.isLinkCorrect && uiState.isNameCorrect && uiState.isBirthDateCorrect
-    }
 
 
     private fun onEmailChanged(newEmail: String) {
-        scope.launch(Dispatchers.IO) {
-            val isEmailCorrect = profileValidationUseCase.validateEmail(newEmail)
-            _uiState.update { currentState ->
-                currentState.copy(
-                    email = newEmail, isEmailCorrect = isEmailCorrect, isDismissButtonEnabled = true
-                )
-            }
+        val isEmailCorrect = profileValidationUseCase.validateEmail(newEmail)
+        _uiState.update { currentState ->
+            currentState.copy(
+                email = newEmail,
+                emailErrorMessage = isEmailCorrect.errorMessage,
+                isDismissButtonEnabled = true
+            )
         }
     }
 
     private fun onLinkChanged(newLink: String) {
-        scope.launch(Dispatchers.IO) {
-            val isLinkCorrect = profileValidationUseCase.validateLink(newLink)
-            _uiState.update { currentState ->
-                currentState.copy(
-                    avatarLink = newLink,
-                    isLinkCorrect = isLinkCorrect,
-                    isDismissButtonEnabled = true
-                )
-            }
+        val isLinkCorrect = profileValidationUseCase.validateLink(newLink)
+        _uiState.update { currentState ->
+            currentState.copy(
+                avatarLink = newLink,
+                linkErrorMessage = isLinkCorrect.errorMessage,
+                isDismissButtonEnabled = true
+            )
         }
     }
 
 
     private fun onNameChanged(newName: String) {
-        scope.launch(Dispatchers.IO) {
-            val isNameCorrect = profileValidationUseCase.validateName(newName)
-            _uiState.update { currentState ->
-                currentState.copy(
-                    name = newName, isNameCorrect = isNameCorrect, isDismissButtonEnabled = true
-                )
-            }
+        val isNameCorrect = profileValidationUseCase.validateName(newName)
+        _uiState.update { currentState ->
+            currentState.copy(
+                name = newName,
+                nameErrorMessage = isNameCorrect.errorMessage,
+                isDismissButtonEnabled = true
+            )
         }
     }
 
     private fun onGenderChanged(newGender: Gender) {
-        scope.launch(Dispatchers.IO) {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    gender = newGender, isDismissButtonEnabled = true
-                )
-            }
+        _uiState.update { currentState ->
+            currentState.copy(
+                gender = newGender, isDismissButtonEnabled = true
+            )
         }
     }
 
     private fun onBirthDateChanged(newBirthDate: LocalDate) {
-        scope.launch(Dispatchers.IO) {
-            val isBirthDateCorrect = profileValidationUseCase.validateDate(newBirthDate)
-            _uiState.update { currentState ->
-                currentState.copy(
-                    birthDate = newBirthDate,
-                    isBirthDateCorrect = isBirthDateCorrect,
-                    isDismissButtonEnabled = true
-                )
-            }
+        val isBirthDateCorrect = profileValidationUseCase.validateDate(newBirthDate)
+        _uiState.update { currentState ->
+            currentState.copy(
+                birthDate = newBirthDate,
+                birthDateErrorMessage = isBirthDateCorrect.errorMessage,
+                isDismissButtonEnabled = true
+            )
         }
     }
 
@@ -227,13 +219,13 @@ data class ProfileUIState(
     val id: String = "",
     val nickName: String = "",
     val email: String = "",
-    val isEmailCorrect: Boolean = true,
+    val emailErrorMessage: Int? = null,
     val avatarLink: String = "",
-    val isLinkCorrect: Boolean = true,
+    val linkErrorMessage: Int? = null,
     val name: String = "",
-    val isNameCorrect: Boolean = true,
+    val nameErrorMessage: Int? = null,
     val birthDate: LocalDate? = null,
-    val isBirthDateCorrect: Boolean = true,
+    val birthDateErrorMessage: Int? = null,
     val gender: Gender = Gender.Male,
     val isSaveButtonEnabled: Boolean = false,
     val isDismissButtonEnabled: Boolean = false,
