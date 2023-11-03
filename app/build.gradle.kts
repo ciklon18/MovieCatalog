@@ -66,7 +66,7 @@ dependencies {
 
     //datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.datastore:datastore-android:1.1.0-alpha05")
+    implementation("androidx.datastore:datastore-android:1.1.0-alpha06")
 
     //network
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
@@ -84,6 +84,9 @@ dependencies {
 
     //coil
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // systemUIcontroller
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
