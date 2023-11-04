@@ -38,6 +38,9 @@
     <string name="save">Сохранить</string>
     <string name="dismiss">Отмена</string>
     <string name="logout">Выйти из аккаунта</string>
+    <string name="dont_have_favorite_movies">У вас пока нет любимых фильмов</string>
+    <string name="select_favorite_movie">Выберите понравившийся фильм в каталоге и добавьте его в любимые</string>
+    <string name="star">Звезда</string>
     <string name="registration_error">Ошибка регистрации. Проверьте соединение с интернетом</string>
 
     <string name="short_name">Имя слишком короткое</string>
