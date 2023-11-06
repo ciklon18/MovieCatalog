@@ -2,6 +2,9 @@ package com.example.moviecatalog.launch.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moviecatalog.common.profile.domain.usecase.DeleteProfileFromLocalStorageUseCase
+import com.example.moviecatalog.common.profile.domain.usecase.GetProfileUseCase
+import com.example.moviecatalog.common.profile.domain.usecase.SetProfileToLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.DeleteTokenFromLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.GetTokenFromLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.IsTokenExpiredUseCase
@@ -19,7 +22,10 @@ import javax.inject.Inject
 class LaunchViewModel @Inject constructor(
     private val getTokenFromLocalStorageUseCase: GetTokenFromLocalStorageUseCase,
     private val isTokenExpiredUseCase: IsTokenExpiredUseCase,
-    private val deleteTokenFromLocalStorageUseCase: DeleteTokenFromLocalStorageUseCase
+    private val deleteTokenFromLocalStorageUseCase: DeleteTokenFromLocalStorageUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
+    private val setProfileToLocalStorageUseCase: SetProfileToLocalStorageUseCase,
+    private val deleteProfileFromLocalStorageUseCase: DeleteProfileFromLocalStorageUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LaunchUIState())
@@ -29,6 +35,27 @@ class LaunchViewModel @Inject constructor(
 
     init {
         checkTokenValid()
+        updateUserProfile()
+    }
+
+    private fun updateUserProfile() {
+        scope.launch(Dispatchers.Main) {
+            try{
+                if (!_uiState.value.isTokenExpired){
+                    val result = getProfileUseCase.execute(_uiState.value.token)
+                    val profile = result.getOrNull()
+                    if (result.isSuccess && profile != null){
+                        setProfileToLocalStorageUseCase.execute(profile)
+                    } else{
+                        deleteProfileFromLocalStorageUseCase.execute()
+                    }
+
+                }
+            } catch (e: Exception){
+                deleteProfileFromLocalStorageUseCase.execute()
+            }
+
+        }
     }
 
     private fun checkTokenValid() {
