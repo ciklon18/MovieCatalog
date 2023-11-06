@@ -39,7 +39,7 @@ fun ProfileScreen(
     Scaffold(
         bottomBar = {
             MyBottomBar(
-                onMainClicked = {},
+                onMainClicked = { navController.navigate(Routes.MainScreen.name)},
                 onFavoriteClicked = { navController.navigate(Routes.FavoriteScreen.name) },
                 onProfileClicked = { navController.navigate(Routes.ProfileScreen.name) },
                 myTab = MyTab.Profile

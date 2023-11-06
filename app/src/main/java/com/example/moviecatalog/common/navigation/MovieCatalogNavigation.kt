@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.moviecatalog.favorite.presentation.FavoriteScreen
 import com.example.moviecatalog.launch.presentation.LaunchScreen
 import com.example.moviecatalog.login.presentation.LoginScreen
+import com.example.moviecatalog.main.presentation.MainScreen
 import com.example.moviecatalog.profile.presentation.ProfileScreen
 import com.example.moviecatalog.registration.presentation.RegistrationScreen
 import com.example.moviecatalog.selectauth.presentation.SelectAuthScreen
@@ -48,6 +49,12 @@ fun MovieCatalogNavigation(
         }
         composable(route = Routes.FavoriteScreen.name) {
             FavoriteScreen(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
+        }
+        composable(route = Routes.MainScreen.name) {
+            MainScreen(
                 navController = navController,
                 viewModel = hiltViewModel()
             )

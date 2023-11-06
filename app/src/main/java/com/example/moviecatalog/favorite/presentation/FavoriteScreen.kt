@@ -56,7 +56,7 @@ fun FavoriteScreen(
         topBar = { FavoriteTopBar() },
         bottomBar = {
             MyBottomBar(
-                onMainClicked = { /*TODO*/ },
+                onMainClicked = { navController.navigate(Routes.MainScreen.name) },
                 onFavoriteClicked = {},
                 onProfileClicked = { navController.navigate(Routes.ProfileScreen.name) },
                 myTab = MyTab.Favorite
