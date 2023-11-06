@@ -16,7 +16,7 @@ class TokenStorageImpl @Inject constructor(
 ) : TokenStorage {
 
     private val Context.dataStore by preferencesDataStore(
-        name = Constants.USER_PREFERENCES_NAME
+        name = Constants.TOKEN_PREFERENCES_NAME
     )
 
     override suspend fun saveToken(token: String) {
@@ -31,8 +31,8 @@ class TokenStorageImpl @Inject constructor(
     }
 
     override suspend fun deleteToken() {
-        context.dataStore.edit {
-            it.clear()
+        context.dataStore.edit { prefs ->
+            prefs.remove(PreferencesKeys.TOKEN_KEY)
         }
     }
 

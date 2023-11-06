@@ -7,6 +7,7 @@ import com.example.moviecatalog.common.auth.domain.usecase.LogoutUserUseCase
 import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.profile.data.mapper.toProfile
 import com.example.moviecatalog.common.profile.data.mapper.toProfileUIState
+import com.example.moviecatalog.common.profile.domain.usecase.GetProfileFromLocalStorageUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.GetProfileUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.UpdateProfileUseCase
 import com.example.moviecatalog.common.token.domain.usecase.DeleteTokenFromLocalStorageUseCase
@@ -29,6 +30,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val getProfileUseCase: GetProfileUseCase,
+    private val getProfileFromLocalStorageUseCase: GetProfileFromLocalStorageUseCase,
     private val profileValidationUseCase: ProfileValidationUseCase,
     private val updateProfileUseCase: UpdateProfileUseCase,
     private val getTokenFromLocalStorageUseCase: GetTokenFromLocalStorageUseCase,
@@ -49,15 +51,28 @@ class ProfileViewModel @Inject constructor(
     private fun initProfileData() {
         scope.launch(Dispatchers.IO) {
             val token = getTokenFromLocalStorageUseCase.execute()
-            val result = getProfileUseCase.execute(token)
+            try {
+                val result = getProfileFromLocalStorageUseCase.execute()
 
-            if (result.isSuccess) {
-                val profile = result.getOrNull()
-                if (profile != null) {
-                    val uiState = profile.toProfileUIState()
-                    updateUiStatesData(uiState, token)
+                if (result.isSuccess) {
+                    val profile = result.getOrNull()
+                    if (profile != null) {
+                        val uiState = profile.toProfileUIState()
+                        updateUiStatesData(uiState, token)
+                    }
+                }
+            } catch (e: Exception){
+                val result = getProfileUseCase.execute(token)
+
+                if (result.isSuccess) {
+                    val profile = result.getOrNull()
+                    if (profile != null) {
+                        val uiState = profile.toProfileUIState()
+                        updateUiStatesData(uiState, token)
+                    }
                 }
             }
+
 
         }
     }
