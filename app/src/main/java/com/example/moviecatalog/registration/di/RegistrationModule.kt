@@ -1,6 +1,8 @@
 package com.example.moviecatalog.registration.di
 
 import com.example.moviecatalog.common.auth.domain.usecase.RegisterUserUseCase
+import com.example.moviecatalog.common.profile.domain.usecase.GetProfileUseCase
+import com.example.moviecatalog.common.profile.domain.usecase.SetProfileToLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.RegistrationValidationUseCase
 import com.example.moviecatalog.registration.presentation.RegistrationViewModel
@@ -16,12 +18,17 @@ class RegistrationModule {
     fun provideRegistrationViewModel(
         registrationValidationUseCase: RegistrationValidationUseCase,
         registerUserUseCase: RegisterUserUseCase,
-        setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase
+        setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase,
+        getProfileUseCase: GetProfileUseCase,
+        setProfileToLocalStorageUseCase: SetProfileToLocalStorageUseCase
     ): RegistrationViewModel {
         return RegistrationViewModel(
             setTokenToLocalStorageUseCase = setTokenToLocalStorageUseCase,
             registrationValidationUseCase = registrationValidationUseCase,
-            registerUserUseCase = registerUserUseCase
+            registerUserUseCase = registerUserUseCase,
+            getProfileUseCase = getProfileUseCase,
+
+            setProfileToLocalStorageUseCase = setProfileToLocalStorageUseCase
         )
     }
 }

@@ -1,7 +1,8 @@
 package com.example.moviecatalog.login.di
 
-import com.example.moviecatalog.common.auth.domain.repository.AuthRepository
 import com.example.moviecatalog.common.auth.domain.usecase.LoginUserUseCase
+import com.example.moviecatalog.common.profile.domain.usecase.GetProfileUseCase
+import com.example.moviecatalog.common.profile.domain.usecase.SetProfileToLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
 import com.example.moviecatalog.common.validation.domain.usecase.LoginValidationUseCase
 import com.example.moviecatalog.login.presentation.LoginScreenViewModel
@@ -18,12 +19,18 @@ class LoginModule {
     fun provideLoginScreenViewModel(
         loginValidationUseCase: LoginValidationUseCase,
         loginUserUseCase: LoginUserUseCase,
-        setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase
+        setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase,
+        getProfileUseCase: GetProfileUseCase,
+        setProfileToLocalStorageUseCase: SetProfileToLocalStorageUseCase
     ): LoginScreenViewModel {
         return LoginScreenViewModel(
             setTokenToLocalStorageUseCase = setTokenToLocalStorageUseCase,
             loginValidationUseCase = loginValidationUseCase,
-            loginUserUseCase = loginUserUseCase
+            loginUserUseCase = loginUserUseCase,
+            getProfileUseCase = getProfileUseCase,
+            setProfileToLocalStorageUseCase = setProfileToLocalStorageUseCase
+
+
         )
     }
 

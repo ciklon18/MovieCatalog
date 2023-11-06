@@ -6,6 +6,8 @@ import androidx.navigation.NavHostController
 import com.example.moviecatalog.common.auth.data.mapper.toUserLoginModel
 import com.example.moviecatalog.common.auth.domain.usecase.LoginUserUseCase
 import com.example.moviecatalog.common.navigation.Routes
+import com.example.moviecatalog.common.profile.domain.usecase.GetProfileUseCase
+import com.example.moviecatalog.common.profile.domain.usecase.SetProfileToLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
 import com.example.moviecatalog.common.ui.component.FieldType
 import com.example.moviecatalog.common.validation.domain.usecase.LoginValidationUseCase
@@ -24,7 +26,9 @@ import javax.inject.Inject
 class LoginScreenViewModel @Inject constructor(
     private val loginValidationUseCase: LoginValidationUseCase,
     private val loginUserUseCase: LoginUserUseCase,
-    private val setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase
+    private val setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
+    private val setProfileToLocalStorageUseCase: SetProfileToLocalStorageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUIState())
     val uiState: StateFlow<LoginUIState> = _uiState.asStateFlow()
@@ -91,9 +95,13 @@ class LoginScreenViewModel @Inject constructor(
                 val token = response.getOrNull()?.token
                 token?.let { setTokenToLocalStorageUseCase.execute(it) }
                 if (token != null) {
+                    val result = getProfileUseCase.execute(token)
+                    val profile = result.getOrNull()
+                    if (result.isSuccess && profile != null){
+                        setProfileToLocalStorageUseCase.execute(profile)
+                    }
                     withContext(Dispatchers.Main) {
-                        // навигироваться на MovieScreen
-                        navController.navigate(Routes.ProfileScreen.name)
+                        navController.navigate(Routes.MainScreen.name)
                     }
                 } else {
                     handleException()
