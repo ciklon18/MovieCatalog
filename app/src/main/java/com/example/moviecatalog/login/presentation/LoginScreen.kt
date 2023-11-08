@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.moviecatalog.R
+import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.ui.component.AccentButton
 import com.example.moviecatalog.common.ui.component.CustomPasswordFormField
 import com.example.moviecatalog.common.ui.component.CustomTextFormField
@@ -39,6 +41,9 @@ fun LoginScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(uiState.isButtonPressed){
+        navController.navigate(Routes.MainScreen.name)
+    }
 
 
     Scaffold(
@@ -67,7 +72,9 @@ fun LoginScreen(
                         newPassword
                     )
                 },
-                onClickButton = { viewModel.onButtonPressed(navController) }
+                onClickButton = {
+                    viewModel.onButtonPressed()
+                }
             )
             RegistrationLinkSection(
                 onClickButton = { viewModel.onRegisterLinkPressed(navController) }

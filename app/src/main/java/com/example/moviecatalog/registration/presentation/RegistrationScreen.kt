@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
+import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.ui.component.AccentButton
 import com.example.moviecatalog.common.ui.component.CustomDateField
 import com.example.moviecatalog.common.ui.component.CustomGenderFormField
@@ -31,7 +33,6 @@ import com.example.moviecatalog.common.ui.component.FieldType
 import com.example.moviecatalog.common.ui.component.Gender
 import com.example.moviecatalog.common.ui.component.MyTopAppBar
 import com.example.moviecatalog.common.ui.component.PageTitleText
-import com.example.moviecatalog.common.navigation.Routes
 import java.time.LocalDate
 
 
@@ -42,6 +43,12 @@ fun RegistrationScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(uiState.isSecondButtonPressed){
+        if (uiState.isSecondButtonPressed){
+            navController.navigate(Routes.MainScreen.name)
+        }
+        
+    }
 
     Scaffold(
         topBar = {
@@ -96,7 +103,9 @@ fun RegistrationScreen(
                 },
 
                 onClickFirstButton = { viewModel.onFirstButtonPressed() },
-                onClickSecondButton = { viewModel.onSecondButtonPressed(navController) })
+                onClickSecondButton = {
+                    viewModel.onSecondButtonPressed()
+                })
             LoginLinkSection(onClickButton = { navController.navigate(Routes.LoginScreen.name) })
         }
     }

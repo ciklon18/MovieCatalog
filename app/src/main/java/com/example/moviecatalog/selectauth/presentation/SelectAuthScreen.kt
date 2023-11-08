@@ -14,13 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
+import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.ui.component.AccentButton
 import com.example.moviecatalog.common.ui.component.SecondaryButton
-import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.ui.theme.text15RTextStyle
 import com.example.moviecatalog.common.ui.theme.title20B2TextStyle
 
@@ -68,13 +67,3 @@ fun SelectAuthScreen(
     }
 }
 
-
-@Preview
-@Composable
-fun PreviewAccentButton() {
-    AccentButton(
-        text = stringResource(R.string.registration),
-        onClick = { /*TODO*/ },
-        isEnabled = true
-    )
-}

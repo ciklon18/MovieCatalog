@@ -30,7 +30,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun loadPage() {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 try {
                     val movies = getMovieCardsUseCase.execute()

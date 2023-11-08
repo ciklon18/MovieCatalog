@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -37,7 +36,7 @@ class LoginScreenViewModel @Inject constructor(
 
 
     fun onFieldChanged(fieldType: FieldType, newValue: Any) {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             when (fieldType) {
                 FieldType.Login -> onLoginChanged(newLogin = newValue as String)
                 FieldType.Password -> onPasswordChanged(newPassword = newValue as String)
@@ -87,8 +86,8 @@ class LoginScreenViewModel @Inject constructor(
         }
     }
 
-    fun onButtonPressed(navController: NavHostController) {
-        scope.launch(Dispatchers.IO) {
+    fun onButtonPressed() {
+        scope.launch(Dispatchers.Default) {
             try {
                 val user = _uiState.value.toUserLoginModel()
                 val response = loginUserUseCase.execute(user)
@@ -97,11 +96,13 @@ class LoginScreenViewModel @Inject constructor(
                 if (token != null) {
                     val result = getProfileUseCase.execute(token)
                     val profile = result.getOrNull()
-                    if (result.isSuccess && profile != null){
+                    if (result.isSuccess && profile != null) {
                         setProfileToLocalStorageUseCase.execute(profile)
                     }
-                    withContext(Dispatchers.Main) {
-                        navController.navigate(Routes.MainScreen.name)
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            isButtonPressed = true
+                        )
                     }
                 } else {
                     handleException()
@@ -114,8 +115,9 @@ class LoginScreenViewModel @Inject constructor(
             }
         }
     }
+
     private fun handleException() {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 currentState.copy(
                     isError = true, isButtonEnabled = false
@@ -132,12 +134,12 @@ class LoginScreenViewModel @Inject constructor(
 }
 
 
-
 data class LoginUIState(
     val login: String = "",
     val loginErrorMessage: Int? = null,
     val password: String = "",
     val passwordErrorMessage: Int? = null,
     val isError: Boolean = false,
-    val isButtonEnabled: Boolean = false
+    val isButtonEnabled: Boolean = false,
+    val isButtonPressed: Boolean = false
 )
