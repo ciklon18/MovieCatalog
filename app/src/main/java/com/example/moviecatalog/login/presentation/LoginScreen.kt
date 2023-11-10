@@ -41,8 +41,11 @@ fun LoginScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
     LaunchedEffect(uiState.isButtonPressed){
-        navController.navigate(Routes.MainScreen.name)
+        if (uiState.isButtonPressed){
+            navController.navigate(Routes.MainScreen.name)
+        }
     }
 
 

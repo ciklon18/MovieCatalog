@@ -107,9 +107,6 @@ class LoginScreenViewModel @Inject constructor(
                 } else {
                     handleException()
                 }
-
-
-                // обработать response
             } catch (e: Exception) {
                 handleException()
             }
