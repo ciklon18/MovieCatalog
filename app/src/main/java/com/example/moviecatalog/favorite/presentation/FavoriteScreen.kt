@@ -1,5 +1,6 @@
 package com.example.moviecatalog.favorite.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +68,7 @@ fun FavoriteScreen(
         if (uiState.isThereMovies) {
             FilledFavoritePage(
                 movies = uiState.movies,
+                navController = navController,
                 modifier = Modifier.padding(innerPadding)
             )
         } else {
@@ -92,6 +94,7 @@ fun FavoriteTopBar() {
 @Composable
 private fun FilledFavoritePage(
     movies: List<MovieResponse>,
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -109,6 +112,7 @@ private fun FilledFavoritePage(
             MovieCard(
                 movie = item,
                 isCropped = isCropped,
+                onClick = {navController.navigate("${Routes.MovieScreen.name}/${item.id}")},
                 modifier = Modifier,
             )
         }
@@ -117,11 +121,11 @@ private fun FilledFavoritePage(
 
 
 @Composable
-fun MovieCard(movie: MovieResponse, isCropped: Boolean, modifier: Modifier) {
+fun MovieCard(movie: MovieResponse, isCropped: Boolean, onClick: () -> Unit, modifier: Modifier) {
     val rating = movie.reviews.find { it.id == movie.id }?.rating ?: 0
 
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth().clickable { onClick() }
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
