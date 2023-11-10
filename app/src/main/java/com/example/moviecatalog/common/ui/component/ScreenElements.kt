@@ -37,7 +37,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.moviecatalog.R
+import com.example.moviecatalog.common.main.domain.model.GenreModel
+import com.example.moviecatalog.common.main.domain.model.ReviewShortModel
 import com.example.moviecatalog.common.ui.theme.label11RTextStyle
+import com.example.moviecatalog.common.ui.theme.label13TextStyle
 import com.example.moviecatalog.common.ui.theme.label17SBTextStyle
 import com.example.moviecatalog.common.ui.theme.text14RTextStyle
 import com.example.moviecatalog.common.ui.theme.title20B2TextStyle
@@ -239,7 +242,85 @@ fun ReviewElement(
                     .height(16.dp)
                     .width(16.dp)
             )
-            Text(text = rating.toString(), color = colorResource(R.color.white))
+            Text(text = "$rating", color = colorResource(R.color.white))
         }
+    }
+}
+
+
+@Composable
+fun AverageRatingIcon(ratings: List<ReviewShortModel>, modifier: Modifier = Modifier) {
+    val rating = (ratings.sumOf { it.rating }.toDouble() / ratings.size)
+    val roundedRating = String.format("%.1f", rating)
+    val elementColor = when (roundedRating.toDouble()) {
+        in 9.0..10.0 -> colorResource(R.color.green)
+        in 8.0..9.0 -> colorResource(R.color.light_green)
+        in 6.0..8.0 -> colorResource(R.color.yellow)
+        in 4.0..6.0 -> colorResource(R.color.orange)
+        in 3.0..4.0 -> colorResource(R.color.orange_fire)
+        in 0.0..3.0 -> colorResource(R.color.red)
+        else -> colorResource(R.color.red)
+    }
+    if (roundedRating.isNotBlank()){
+        Row(
+            modifier = modifier
+                .background(elementColor, shape = RoundedCornerShape(5.dp))
+                .padding(start = 8.dp, top = 2.dp, end = 8.dp, bottom = 2.dp)
+        ) {
+            Text(text = roundedRating, color = colorResource(R.color.black))
+        }
+    }
+}
+
+
+@Composable
+fun GenreItem(genre: GenreModel) {
+    Box(
+        Modifier
+            .background(
+                color = colorResource(R.color.gray_750), shape = RoundedCornerShape(5.dp)
+            )
+            .padding(start = 8.dp, top = 2.dp, end = 8.dp, bottom = 2.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = genre.name ?: "",
+            color = colorResource(R.color.white),
+            style = label13TextStyle
+        )
+    }
+}
+
+
+@Composable
+fun PageIndicator(pageCount: Int, currentPage: Int, modifier: Modifier = Modifier) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+
+            .background(
+                color = colorResource(R.color.slider_pagination).copy(0.1f),
+                shape = RoundedCornerShape(28.dp)
+            )
+            .padding(10.dp)
+
+    ) {
+        repeat(pageCount) {
+            IndicatorDots(isSelected = it == currentPage)
+        }
+    }
+}
+
+@Composable
+fun IndicatorDots(isSelected: Boolean, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier, contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(if (isSelected) R.drawable.dot_filled else R.drawable.dot_unfilled),
+            contentDescription = stringResource(R.string.dot),
+            tint = colorResource(R.color.white)
+        )
     }
 }

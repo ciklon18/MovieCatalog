@@ -29,7 +29,7 @@ class FavoriteViewModel @Inject constructor(
     }
 
     private fun loadMovies() {
-        scope.launch(Dispatchers.IO){
+        scope.launch(Dispatchers.Default){
             val token = getTokenFromLocalStorageUseCase.execute()
             val result = getFavoritesUseCase.execute(token)
 

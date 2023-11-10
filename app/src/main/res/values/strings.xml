@@ -56,4 +56,7 @@
     <string name="incorrect_login">Логин должен содержать только буквы и/или цифры</string>
     <string name="short_login">Логин должен быть более 3 символов</string>
     <string name="incorrect_name">Имя должно быть только из букв</string>
+    <string name="dot">Точка</string>
+    <string name="image_description">Постер фильма</string>
+    <string name="catalog">Каталог</string>
 </resources>

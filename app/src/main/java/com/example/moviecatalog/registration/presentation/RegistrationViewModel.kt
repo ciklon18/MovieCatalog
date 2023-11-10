@@ -2,10 +2,8 @@ package com.example.moviecatalog.registration.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import com.example.moviecatalog.common.auth.data.mapper.toUserRegisterModel
 import com.example.moviecatalog.common.auth.domain.usecase.RegisterUserUseCase
-import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.profile.domain.usecase.GetProfileUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.SetProfileToLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
@@ -19,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -41,7 +38,7 @@ class RegistrationViewModel @Inject constructor(
         if (!_uiState.value.isFirstButtonPressed) {
             resetEnteredData()
         } else {
-            scope.launch(Dispatchers.IO) {
+            scope.launch(Dispatchers.Default) {
                 _uiState.update { currentState ->
                     currentState.copy(
                         isFirstButtonPressed = false
@@ -53,7 +50,7 @@ class RegistrationViewModel @Inject constructor(
 
 
     fun onFieldChanged(fieldType: FieldType, newValue: Any) {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             when (fieldType) {
                 FieldType.Name -> onNameChanged(newName = newValue as String)
                 FieldType.Gender -> onGenderChanged(newGender = newValue as Gender)
@@ -208,7 +205,7 @@ class RegistrationViewModel @Inject constructor(
     }
 
     fun onFirstButtonPressed() {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 currentState.copy(
                     isFirstButtonPressed = true
@@ -217,8 +214,8 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
-    fun onSecondButtonPressed(navController: NavHostController) {
-        scope.launch(Dispatchers.IO) {
+    fun onSecondButtonPressed() {
+        scope.launch(Dispatchers.Default) {
             try {
                 val user = _uiState.value.toUserRegisterModel()
                 val response = registerUserUseCase.execute(user)
@@ -227,12 +224,15 @@ class RegistrationViewModel @Inject constructor(
                     token.let { setTokenToLocalStorageUseCase.execute(it) }
                     val result = getProfileUseCase.execute(token)
                     val profile = result.getOrNull()
-                    if (result.isSuccess && profile != null){
+                    if (result.isSuccess && profile != null) {
                         setProfileToLocalStorageUseCase.execute(profile)
                     }
-                    withContext(Dispatchers.Main) {
-                        navController.navigate(Routes.MainScreen.name)
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            isSecondButtonPressed = true
+                        )
                     }
+
                 } else {
                     handleException()
                 }
@@ -245,7 +245,7 @@ class RegistrationViewModel @Inject constructor(
 
 
     private fun handleException() {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 currentState.copy(
                     isRegisterError = true, isSecondButtonEnabled = false
@@ -280,5 +280,5 @@ data class RegistrationUIState(
 
     val isFirstButtonEnabled: Boolean = false, val isSecondButtonEnabled: Boolean = false,
 
-    val isFirstButtonPressed: Boolean = false
+    val isFirstButtonPressed: Boolean = false, val isSecondButtonPressed: Boolean = false
 )

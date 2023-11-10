@@ -27,7 +27,6 @@ class RegistrationModule {
             registrationValidationUseCase = registrationValidationUseCase,
             registerUserUseCase = registerUserUseCase,
             getProfileUseCase = getProfileUseCase,
-
             setProfileToLocalStorageUseCase = setProfileToLocalStorageUseCase
         )
     }

@@ -49,7 +49,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun initProfileData() {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             val token = getTokenFromLocalStorageUseCase.execute()
             try {
                 val result = getProfileFromLocalStorageUseCase.execute()
@@ -102,7 +102,7 @@ class ProfileViewModel @Inject constructor(
 
 
     fun onLogoutButtonPressed(navController: NavHostController) {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             logoutUserUseCase.execute()
             deleteTokenFromLocalStorageUseCase.execute()
             withContext(Dispatchers.Main) {
@@ -112,7 +112,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onFieldChanged(fieldType: FieldType, newValue: Any) {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             when (fieldType) {
                 FieldType.Email -> onEmailChanged(newEmail = newValue as String)
                 FieldType.Link -> onLinkChanged(newLink = newValue as String)
@@ -209,7 +209,7 @@ class ProfileViewModel @Inject constructor(
 
 
     fun onSaveButtonPressed() {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             val id = UUID.randomUUID().toString()
             val profile = _uiState.value.toProfile().copy(id = id)
             val result = updateProfileUseCase.execute(_uiState.value.token, profile)
@@ -223,7 +223,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onCancelButtonPressed() {
-        scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.Default) {
             _uiState.value = oldProfileData.value
         }
     }
