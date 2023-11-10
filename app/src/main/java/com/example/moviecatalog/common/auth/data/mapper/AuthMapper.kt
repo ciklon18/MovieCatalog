@@ -6,7 +6,7 @@ import com.example.moviecatalog.common.ui.component.Gender
 import com.example.moviecatalog.login.presentation.LoginUIState
 import com.example.moviecatalog.registration.presentation.RegistrationUIState
 
-fun RegistrationUIState.toUserRegisterModel() : UserRegisterModel {
+fun RegistrationUIState.toUserRegisterModel(): UserRegisterModel {
     return UserRegisterModel(
         name = this.name,
         password = this.password,
@@ -17,7 +17,7 @@ fun RegistrationUIState.toUserRegisterModel() : UserRegisterModel {
     )
 }
 
-fun LoginUIState.toUserLoginModel(): UserLoginModel{
+fun LoginUIState.toUserLoginModel(): UserLoginModel {
     return UserLoginModel(
         username = this.login,
         password = this.password
