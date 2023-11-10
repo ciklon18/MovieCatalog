@@ -58,12 +58,11 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            MyBottomBar(
-                onMainClicked = {
-                    coroutineScope.launch {
-                        listState.animateScrollToItem(0)
-                    }
-                },
+            MyBottomBar(onMainClicked = {
+                coroutineScope.launch {
+                    listState.animateScrollToItem(0)
+                }
+            },
                 onFavoriteClicked = { navController.navigate(Routes.FavoriteScreen.name) },
                 onProfileClicked = { navController.navigate(Routes.ProfileScreen.name) },
                 myTab = MyTab.Main
@@ -71,7 +70,10 @@ fun MainScreen(
         }, modifier = modifier
     ) { innerPadding ->
         MainContent(
-            navController = navController, listState = listState, lazyMovieItems = lazyMovieItems, innerPadding = innerPadding
+            navController = navController,
+            listState = listState,
+            lazyMovieItems = lazyMovieItems,
+            innerPadding = innerPadding
         )
     }
 }
@@ -86,7 +88,11 @@ fun MainContent(
     LazyColumn(
         state = listState, modifier = Modifier.padding(innerPadding)
     ) {
-        item { SwipeMovieSection(swipedMovieItems = getSwipeImageList(lazyMovieItems), navController = navController) }
+        item {
+            SwipeMovieSection(
+                swipedMovieItems = getSwipeImageList(lazyMovieItems), navController = navController
+            )
+        }
         item { CatalogTitle() }
         movieCatalogSection(movies = lazyMovieItems, navController = navController)
     }
@@ -96,7 +102,9 @@ fun MainContent(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwipeMovieSection(
-    swipedMovieItems: List<UpdatedMovieElementModel>, navController: NavHostController, modifier: Modifier = Modifier
+    swipedMovieItems: List<UpdatedMovieElementModel>,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(0, 0f) { swipedMovieItems.size }
     LaunchedEffect(Unit) {
@@ -118,13 +126,12 @@ fun SwipeMovieSection(
         HorizontalPager(
             state = pagerState, pageSize = PageSize.Fill, modifier = Modifier.fillMaxSize()
         ) { index ->
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(swipedMovieItems[index].poster).build(),
+            AsyncImage(model = ImageRequest.Builder(LocalContext.current)
+                .data(swipedMovieItems[index].poster).build(),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
-                    .clickable { navController.navigate("${Routes.MovieScreen.name}/${swipedMovieItems[index].id}") }
-            )
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { navController.navigate("${Routes.MovieScreen.name}/${swipedMovieItems[index].id}") })
         }
         Box(
             modifier = Modifier.padding(10.dp)
@@ -159,19 +166,23 @@ fun CatalogTitle(modifier: Modifier = Modifier) {
 
 
 fun LazyListScope.movieCatalogSection(
-    movies: LazyPagingItems<UpdatedMovieElementModel>, navController: NavHostController, modifier: Modifier = Modifier
+    movies: LazyPagingItems<UpdatedMovieElementModel>,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
 ) {
     items(movies.itemCount) { index ->
         if (index > 3) {
             movies[index]?.let { movie ->
                 MovieCard(
-                    context = LocalContext.current,
                     movie = movie,
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp)
-                        .clickable { navController.navigate("${Routes.MovieScreen.name}/${movie.id}") }
+                        .clickable {
+                            navController.navigate("${Routes.MovieScreen.name}/${movie.id}")
+                        }
                 )
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

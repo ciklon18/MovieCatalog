@@ -86,3 +86,17 @@ fun MovieNameText(text: String) {
         text = text, color = colorResource(R.color.white), style = title24BTextStyle
     )
 }
+
+
+@Composable
+fun MovieNameTextFromMain(
+    name: String?,
+    modifier: Modifier = Modifier
+){
+    Text(
+        text = name ?: "",
+        color = colorResource(R.color.white),
+        style = label16BTextStyle,
+        modifier = modifier
+    )
+}
