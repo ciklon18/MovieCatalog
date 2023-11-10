@@ -36,3 +36,16 @@ enum class MyTab {
     Favorite,
     Profile
 }
+
+
+
+enum class ValueType {
+    Year,
+    Country,
+    Tagline,
+    Director,
+    Budget,
+    Fees,
+    AgeLimit,
+    Time
+}
