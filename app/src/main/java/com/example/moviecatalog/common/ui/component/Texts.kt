@@ -81,9 +81,9 @@ fun MovieSubtitleText(text: String) {
 }
 
 @Composable
-fun MovieNameText(text: String) {
+fun MovieNameText(text: String, modifier: Modifier = Modifier) {
     Text(
-        text = text, color = colorResource(R.color.white), style = title24BTextStyle
+        text = text, color = colorResource(R.color.white), style = title24BTextStyle, modifier = modifier
     )
 }
 
