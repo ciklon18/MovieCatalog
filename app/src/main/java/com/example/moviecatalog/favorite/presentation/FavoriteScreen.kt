@@ -34,6 +34,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.moviecatalog.R
+import com.example.moviecatalog.common.favorite.domain.model.FavoriteMovie
 import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.ui.component.MyBottomBar
 import com.example.moviecatalog.common.ui.component.MyTab
@@ -42,7 +43,6 @@ import com.example.moviecatalog.common.ui.theme.label14MTextStyle
 import com.example.moviecatalog.common.ui.theme.text15RTextStyle
 import com.example.moviecatalog.common.ui.theme.title20B2TextStyle
 import com.example.moviecatalog.common.ui.theme.title24BTextStyle
-import com.example.moviecatalog.common.favorite.domain.model.MovieResponse
 
 
 @Composable
@@ -93,7 +93,7 @@ fun FavoriteTopBar() {
 
 @Composable
 private fun FilledFavoritePage(
-    movies: List<MovieResponse>,
+    movies: List<FavoriteMovie>,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
@@ -112,8 +112,8 @@ private fun FilledFavoritePage(
             MovieCard(
                 movie = item,
                 isCropped = isCropped,
-                onClick = {navController.navigate("${Routes.MovieScreen.name}/${item.id}")},
-                modifier = Modifier,
+                onClick = { navController.navigate("${Routes.MovieScreen.name}/${item.id}") },
+                modifier = Modifier
             )
         }
     }
@@ -121,11 +121,13 @@ private fun FilledFavoritePage(
 
 
 @Composable
-fun MovieCard(movie: MovieResponse, isCropped: Boolean, onClick: () -> Unit, modifier: Modifier) {
-    val rating = movie.reviews.find { it.id == movie.id }?.rating ?: 0
+fun MovieCard(movie: FavoriteMovie, isCropped: Boolean, onClick: () -> Unit, modifier: Modifier) {
+
 
     Column(
-        modifier = modifier.fillMaxWidth().clickable { onClick() }
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -142,7 +144,10 @@ fun MovieCard(movie: MovieResponse, isCropped: Boolean, onClick: () -> Unit, mod
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(3.dp))
             )
-            ReviewElement(rating = rating)
+            if (movie.userReview?.rating != null) {
+                ReviewElement(rating = movie.userReview.rating)
+            }
+
         }
 
         Text(text = movie.name, style = label14MTextStyle)
