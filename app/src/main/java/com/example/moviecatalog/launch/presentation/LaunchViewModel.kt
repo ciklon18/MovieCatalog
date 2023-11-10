@@ -53,6 +53,7 @@ class LaunchViewModel @Inject constructor(
                 }
             } catch (e: Exception){
                 deleteProfileFromLocalStorageUseCase.execute()
+                deleteTokenFromLocalStorageUseCase.execute()
             }
 
         }
