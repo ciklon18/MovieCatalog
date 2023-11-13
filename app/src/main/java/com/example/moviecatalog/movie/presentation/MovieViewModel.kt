@@ -53,11 +53,15 @@ class MovieViewModel @Inject constructor(
     private fun initViewModel() = viewModelScope.launch(Dispatchers.Default) {
         val startDataTask = async { loadStartData() }
         val reviewAuthorTask = async { loadReviewAuthor() }
-        val updateFavoriteStatusTask = async { updateFavoriteStatus() }
 
         startDataTask.await()
         reviewAuthorTask.await()
-        updateFavoriteStatusTask.await()
+
+        if (startDataTask.isCompleted){
+            val updateFavoriteStatusTask = async { updateFavoriteStatus() }
+            updateFavoriteStatusTask.await()
+        }
+
 
         if (reviewAuthorTask.isCompleted) {
             val userReviewTask = async { loadUserReview() }
@@ -199,7 +203,6 @@ class MovieViewModel @Inject constructor(
                     currentState.copy(userReview = null)
                 }
             }
-
         }
     }
 
@@ -272,8 +275,6 @@ class MovieViewModel @Inject constructor(
     private suspend fun getMovieDetails(token: String, movieId: String): MovieDetailsModel? {
         return getMovieDetailsUseCase.execute(id = movieId, token = token).getOrNull()
     }
-
-
 }
 
 
