@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,7 +42,7 @@ class MovieViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieUIState())
-    val uiState: StateFlow<MovieUIState> = _uiState
+    val uiState: StateFlow<MovieUIState> = _uiState.asStateFlow()
 
 
     init {
@@ -113,16 +114,6 @@ class MovieViewModel @Inject constructor(
             }
         }
     }
-
-
-    fun setMovieId(movieId: String?) {
-        if (movieId != null) {
-            _uiState.update { currentState ->
-                currentState.copy(movieId = movieId)
-            }
-        }
-    }
-
 
 
 

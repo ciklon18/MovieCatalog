@@ -2,9 +2,7 @@ package com.example.moviecatalog.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import com.example.moviecatalog.common.auth.domain.usecase.LogoutUserUseCase
-import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.profile.data.mapper.toProfile
 import com.example.moviecatalog.common.profile.data.mapper.toProfileUIState
 import com.example.moviecatalog.common.profile.domain.usecase.GetProfileFromLocalStorageUseCase
@@ -18,12 +16,15 @@ import com.example.moviecatalog.common.ui.component.Gender
 import com.example.moviecatalog.common.validation.domain.usecase.ProfileValidationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.util.UUID
 import javax.inject.Inject
@@ -63,7 +64,7 @@ class ProfileViewModel @Inject constructor(
                         updateUiStatesData(uiState, token)
                     }
                 }
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 val result = getProfileUseCase.execute(token)
 
                 if (result.isSuccess) {
@@ -103,24 +104,43 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-    fun onLogoutButtonPressed(navController: NavHostController) {
-        scope.launch(Dispatchers.Default) {
+    fun onLogoutButtonPressed() {
+        scope.launch(Dispatchers.IO) {
             logoutUserUseCase.execute()
             deleteTokenFromLocalStorageUseCase.execute()
-            withContext(Dispatchers.Main) {
-                navController.navigate(Routes.SelectAuthScreen.name)
+            _uiState.update { currentState ->
+                currentState.copy(isLogout = true)
             }
         }
     }
 
+    @OptIn(FlowPreview::class)
     fun onFieldChanged(fieldType: FieldType, newValue: Any) {
-        scope.launch(Dispatchers.Default) {
+        val valueFlow = flowOf(newValue)
+            .debounce(300)
+            .distinctUntilChanged()
+        scope.launch {
             when (fieldType) {
-                FieldType.Email -> onEmailChanged(newEmail = newValue as String)
-                FieldType.Link -> onLinkChanged(newLink = newValue as String)
-                FieldType.Name -> onNameChanged(newName = newValue as String)
-                FieldType.Gender -> onGenderChanged(newGender = newValue as Gender)
-                FieldType.BirthDate -> onBirthDateChanged(newBirthDate = newValue as LocalDate)
+                FieldType.Email -> valueFlow.collect { newEmail ->
+                    onEmailChanged(newEmail as String)
+                }
+
+                FieldType.Link -> valueFlow.collect { newLink ->
+                    onLinkChanged(newLink as String)
+                }
+
+                FieldType.Name -> valueFlow.collect { newName ->
+                    onNameChanged(newName as String)
+                }
+
+                FieldType.Gender -> valueFlow.collect { newGender ->
+                    onGenderChanged(newGender as Gender)
+                }
+
+                FieldType.BirthDate -> valueFlow.collect { newBirthDate ->
+                    onBirthDateChanged(newBirthDate as LocalDate)
+                }
+
                 else -> {}
             }
             if (hasFieldChanged(fieldType, newValue)) {
@@ -153,7 +173,6 @@ class ProfileViewModel @Inject constructor(
             )
         }
     }
-
 
 
     private fun onEmailChanged(newEmail: String) {
@@ -248,5 +267,6 @@ data class ProfileUIState(
     val gender: Gender = Gender.Male,
     val isSaveButtonEnabled: Boolean = false,
     val isDismissButtonEnabled: Boolean = false,
-    val token: String = ""
+    val token: String = "",
+    val isLogout: Boolean = false
 )
