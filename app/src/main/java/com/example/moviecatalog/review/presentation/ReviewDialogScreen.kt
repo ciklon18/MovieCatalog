@@ -2,6 +2,7 @@ package com.example.moviecatalog.review.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -96,7 +98,7 @@ fun RatingReviewBar(rating: Int, onClick: (Int) -> Unit, modifier: Modifier = Mo
     Row(
         modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        (1 .. 10).map { index ->
+        (1..10).map { index ->
             Icon(
                 painter = painterResource(if (index <= rating) R.drawable.flled_star else R.drawable.unfilled_star),
                 contentDescription = stringResource(
@@ -105,7 +107,10 @@ fun RatingReviewBar(rating: Int, onClick: (Int) -> Unit, modifier: Modifier = Mo
                 modifier = Modifier
                     .height(25.dp)
                     .width(25.dp)
-                    .clickable { onClick(index) },
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { onClick(index) },
                 tint = colorResource(if (index <= rating) R.color.yellow else (R.color.gray_400))
             )
         }
