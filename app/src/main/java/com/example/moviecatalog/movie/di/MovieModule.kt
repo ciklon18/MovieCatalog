@@ -1,5 +1,6 @@
 package com.example.moviecatalog.movie.di
 
+import androidx.lifecycle.SavedStateHandle
 import com.example.moviecatalog.common.favorite.domain.usecase.DeleteFavoriteUseCase
 import com.example.moviecatalog.common.favorite.domain.usecase.GetFavoritesUseCase
 import com.example.moviecatalog.common.favorite.domain.usecase.PostFavoriteUseCase
@@ -28,7 +29,8 @@ class MovieModule {
         deleteFavoriteUseCase: DeleteFavoriteUseCase,
         postUserReviewUseCase: PostUserReviewUseCase,
         editUserReviewUseCase: EditUserReviewUseCase,
-        deleteUserReviewUseCase: DeleteUserReviewUseCase
+        deleteUserReviewUseCase: DeleteUserReviewUseCase,
+        savedStateHandle: SavedStateHandle
     ): MovieViewModel {
         return MovieViewModel(
             getProfileFromLocalStorageUseCase = getProfileFromLocalStorageUseCase,
@@ -39,7 +41,8 @@ class MovieModule {
             deleteFavoriteUseCase = deleteFavoriteUseCase,
             postUserReviewUseCase = postUserReviewUseCase,
             editUserReviewUseCase = editUserReviewUseCase,
-            deleteUserReviewUseCase = deleteUserReviewUseCase
+            deleteUserReviewUseCase = deleteUserReviewUseCase,
+            savedStateHandle = savedStateHandle
         )
     }
 }

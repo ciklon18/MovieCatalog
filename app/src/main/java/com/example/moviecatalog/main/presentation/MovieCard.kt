@@ -28,8 +28,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.main.domain.model.GenreModel
-import com.example.moviecatalog.common.main.domain.model.ReviewShortModel
 import com.example.moviecatalog.common.main.domain.model.UpdatedMovieElementModel
+import com.example.moviecatalog.common.review.domain.model.ReviewShortModel
 import com.example.moviecatalog.common.ui.component.AverageRatingIcon
 import com.example.moviecatalog.common.ui.component.GenreItem
 import com.example.moviecatalog.common.ui.component.MovieNameTextFromMain
