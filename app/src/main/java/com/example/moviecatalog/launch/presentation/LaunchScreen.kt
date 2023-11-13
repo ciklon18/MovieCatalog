@@ -16,14 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.navigation.Routes
 
 @Composable
 fun LaunchScreen(
-    viewModel: LaunchViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: LaunchViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

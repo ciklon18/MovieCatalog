@@ -1,5 +1,6 @@
 package com.example.moviecatalog.movie.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviecatalog.common.favorite.domain.usecase.DeleteFavoriteUseCase
@@ -36,13 +37,15 @@ class MovieViewModel @Inject constructor(
     private val deleteFavoriteUseCase: DeleteFavoriteUseCase,
     private val postUserReviewUseCase: PostUserReviewUseCase,
     private val editUserReviewUseCase: EditUserReviewUseCase,
-    private val deleteUserReviewUseCase: DeleteUserReviewUseCase
+    private val deleteUserReviewUseCase: DeleteUserReviewUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieUIState())
     val uiState: StateFlow<MovieUIState> = _uiState
 
 
     init {
+        _uiState.update { currentState -> currentState.copy(movieId = savedStateHandle["id"]) }
         initViewModel()
     }
 
@@ -119,6 +122,8 @@ class MovieViewModel @Inject constructor(
             }
         }
     }
+
+
 
 
     fun onFavoriteButtonPressed() {

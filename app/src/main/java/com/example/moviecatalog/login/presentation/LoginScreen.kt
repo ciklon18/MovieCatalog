@@ -37,8 +37,9 @@ import com.example.moviecatalog.common.ui.component.PageTitleText
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    viewModel: LoginScreenViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: LoginScreenViewModel = hiltViewModel()
+
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

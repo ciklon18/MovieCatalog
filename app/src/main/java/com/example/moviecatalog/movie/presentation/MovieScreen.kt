@@ -60,12 +60,12 @@ import java.text.DecimalFormatSymbols
 
 @Composable
 fun MovieScreen(
-    navController: NavHostController, modifier: Modifier = Modifier, movieId: String
-) {
-    val viewModel = hiltViewModel<MovieViewModel>()
-        .also { it.setMovieId(movieId) }
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    viewModel: MovieViewModel = hiltViewModel(),
 
-    val uiState = viewModel.uiState.collectAsState().value
+    ) {
+    val uiState by viewModel.uiState.collectAsState()
 
 
     Scaffold(
@@ -396,6 +396,6 @@ fun getDetailedText(value: String, type: ValueType): String {
 //@Composable
 //fun PreviewMovieScreen() {
 //    MovieScreen(
-//        navController = rememberNavController(), viewModel = hiltViewModel()
+//        navController = rememberNavController(), viewModel = hiltViewModel(), movieId = ""
 //    )
 //}
