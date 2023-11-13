@@ -1,5 +1,6 @@
 package com.example.moviecatalog.common.main.domain.model
 
+import com.example.moviecatalog.common.review.domain.model.ReviewShortModel
 import kotlinx.serialization.Serializable
 
 @Serializable

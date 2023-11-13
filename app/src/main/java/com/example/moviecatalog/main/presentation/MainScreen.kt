@@ -1,6 +1,7 @@
 package com.example.moviecatalog.main.presentation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -46,7 +48,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
-    navController: NavHostController, viewModel: MainViewModel, modifier: Modifier = Modifier
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val listState = rememberLazyListState()
@@ -70,13 +74,17 @@ fun MainScreen(
         }, modifier = modifier
     ) { innerPadding ->
         MainContent(
-            listState = listState, lazyMovieItems = lazyMovieItems, innerPadding = innerPadding
+            navController = navController,
+            listState = listState,
+            lazyMovieItems = lazyMovieItems,
+            innerPadding = innerPadding
         )
     }
 }
 
 @Composable
 fun MainContent(
+    navController: NavHostController,
     listState: LazyListState,
     lazyMovieItems: LazyPagingItems<UpdatedMovieElementModel>,
     innerPadding: PaddingValues
@@ -84,9 +92,13 @@ fun MainContent(
     LazyColumn(
         state = listState, modifier = Modifier.padding(innerPadding)
     ) {
-        item { SwipeMovieSection(swipedMovieItems = getSwipeImageList(lazyMovieItems)) }
+        item {
+            SwipeMovieSection(
+                swipedMovieItems = getSwipeImageList(lazyMovieItems), navController = navController
+            )
+        }
         item { CatalogTitle() }
-        movieCatalogSection(movies = lazyMovieItems)
+        movieCatalogSection(movies = lazyMovieItems, navController = navController)
     }
 }
 
@@ -94,7 +106,9 @@ fun MainContent(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwipeMovieSection(
-    swipedMovieItems: List<UpdatedMovieElementModel>, modifier: Modifier = Modifier
+    swipedMovieItems: List<UpdatedMovieElementModel>,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(0, 0f) { swipedMovieItems.size }
     LaunchedEffect(Unit) {
@@ -116,12 +130,12 @@ fun SwipeMovieSection(
         HorizontalPager(
             state = pagerState, pageSize = PageSize.Fill, modifier = Modifier.fillMaxSize()
         ) { index ->
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(swipedMovieItems[index].poster).build(),
+            AsyncImage(model = ImageRequest.Builder(LocalContext.current)
+                .data(swipedMovieItems[index].poster).build(),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
-            )
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { navController.navigate("${Routes.MovieScreen.name}/${swipedMovieItems[index].id}") })
         }
         Box(
             modifier = Modifier.padding(10.dp)
@@ -156,18 +170,23 @@ fun CatalogTitle(modifier: Modifier = Modifier) {
 
 
 fun LazyListScope.movieCatalogSection(
-    movies: LazyPagingItems<UpdatedMovieElementModel>, modifier: Modifier = Modifier
+    movies: LazyPagingItems<UpdatedMovieElementModel>,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
 ) {
     items(movies.itemCount) { index ->
         if (index > 3) {
             movies[index]?.let { movie ->
                 MovieCard(
-                    context = LocalContext.current,
                     movie = movie,
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp)
+                        .clickable {
+                            navController.navigate("${Routes.MovieScreen.name}/${movie.id}")
+                        }
                 )
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

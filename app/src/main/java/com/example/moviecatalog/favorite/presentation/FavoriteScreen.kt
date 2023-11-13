@@ -1,5 +1,6 @@
 package com.example.moviecatalog.favorite.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,10 +30,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.moviecatalog.R
+import com.example.moviecatalog.common.favorite.domain.model.FavoriteMovie
 import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.ui.component.MyBottomBar
 import com.example.moviecatalog.common.ui.component.MyTab
@@ -41,14 +44,13 @@ import com.example.moviecatalog.common.ui.theme.label14MTextStyle
 import com.example.moviecatalog.common.ui.theme.text15RTextStyle
 import com.example.moviecatalog.common.ui.theme.title20B2TextStyle
 import com.example.moviecatalog.common.ui.theme.title24BTextStyle
-import com.example.moviecatalog.common.favorite.domain.model.MovieResponse
 
 
 @Composable
 fun FavoriteScreen(
     navController: NavHostController,
-    viewModel: FavoriteViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: FavoriteViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -67,6 +69,7 @@ fun FavoriteScreen(
         if (uiState.isThereMovies) {
             FilledFavoritePage(
                 movies = uiState.movies,
+                navController = navController,
                 modifier = Modifier.padding(innerPadding)
             )
         } else {
@@ -91,7 +94,8 @@ fun FavoriteTopBar() {
 
 @Composable
 private fun FilledFavoritePage(
-    movies: List<MovieResponse>,
+    movies: List<FavoriteMovie>,
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -109,7 +113,8 @@ private fun FilledFavoritePage(
             MovieCard(
                 movie = item,
                 isCropped = isCropped,
-                modifier = Modifier,
+                onClick = { navController.navigate("${Routes.MovieScreen.name}/${item.id}") },
+                modifier = Modifier
             )
         }
     }
@@ -117,11 +122,13 @@ private fun FilledFavoritePage(
 
 
 @Composable
-fun MovieCard(movie: MovieResponse, isCropped: Boolean, modifier: Modifier) {
-    val rating = movie.reviews.find { it.id == movie.id }?.rating ?: 0
+fun MovieCard(movie: FavoriteMovie, isCropped: Boolean, onClick: () -> Unit, modifier: Modifier) {
+
 
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -138,7 +145,10 @@ fun MovieCard(movie: MovieResponse, isCropped: Boolean, modifier: Modifier) {
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(3.dp))
             )
-            ReviewElement(rating = rating)
+            if (movie.userReview?.rating != null) {
+                ReviewElement(rating = movie.userReview.rating)
+            }
+
         }
 
         Text(text = movie.name, style = label14MTextStyle)

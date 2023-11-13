@@ -3,6 +3,7 @@ package com.example.moviecatalog.profile.di
 import com.example.moviecatalog.common.auth.domain.usecase.LogoutUserUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.GetProfileFromLocalStorageUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.GetProfileUseCase
+import com.example.moviecatalog.common.profile.domain.usecase.SetProfileToLocalStorageUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.UpdateProfileUseCase
 import com.example.moviecatalog.common.token.domain.usecase.DeleteTokenFromLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.GetTokenFromLocalStorageUseCase
@@ -25,7 +26,8 @@ class ProfileScreenModule {
         getTokenFromLocalStorageUseCase: GetTokenFromLocalStorageUseCase,
         logoutUserUseCase: LogoutUserUseCase,
         deleteTokenFromLocalStorageUseCase: DeleteTokenFromLocalStorageUseCase,
-        getProfileFromLocalStorageUseCase: GetProfileFromLocalStorageUseCase
+        getProfileFromLocalStorageUseCase: GetProfileFromLocalStorageUseCase,
+        setProfileToLocalStorageUseCase: SetProfileToLocalStorageUseCase
     ): ProfileViewModel {
         return ProfileViewModel(
             getProfileUseCase = getProfileUseCase,
@@ -34,7 +36,8 @@ class ProfileScreenModule {
             getTokenFromLocalStorageUseCase = getTokenFromLocalStorageUseCase,
             logoutUserUseCase = logoutUserUseCase,
             deleteTokenFromLocalStorageUseCase = deleteTokenFromLocalStorageUseCase,
-            getProfileFromLocalStorageUseCase = getProfileFromLocalStorageUseCase
+            getProfileFromLocalStorageUseCase = getProfileFromLocalStorageUseCase,
+            setProfileToLocalStorageUseCase = setProfileToLocalStorageUseCase
         )
     }
 }

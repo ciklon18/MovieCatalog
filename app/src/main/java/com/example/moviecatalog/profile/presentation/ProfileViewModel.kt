@@ -9,6 +9,7 @@ import com.example.moviecatalog.common.profile.data.mapper.toProfile
 import com.example.moviecatalog.common.profile.data.mapper.toProfileUIState
 import com.example.moviecatalog.common.profile.domain.usecase.GetProfileFromLocalStorageUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.GetProfileUseCase
+import com.example.moviecatalog.common.profile.domain.usecase.SetProfileToLocalStorageUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.UpdateProfileUseCase
 import com.example.moviecatalog.common.token.domain.usecase.DeleteTokenFromLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.GetTokenFromLocalStorageUseCase
@@ -33,6 +34,7 @@ class ProfileViewModel @Inject constructor(
     private val getProfileFromLocalStorageUseCase: GetProfileFromLocalStorageUseCase,
     private val profileValidationUseCase: ProfileValidationUseCase,
     private val updateProfileUseCase: UpdateProfileUseCase,
+    private val setProfileToLocalStorageUseCase: SetProfileToLocalStorageUseCase,
     private val getTokenFromLocalStorageUseCase: GetTokenFromLocalStorageUseCase,
     private val logoutUserUseCase: LogoutUserUseCase,
     private val deleteTokenFromLocalStorageUseCase: DeleteTokenFromLocalStorageUseCase
@@ -212,8 +214,10 @@ class ProfileViewModel @Inject constructor(
         scope.launch(Dispatchers.Default) {
             val id = UUID.randomUUID().toString()
             val profile = _uiState.value.toProfile().copy(id = id)
-            val result = updateProfileUseCase.execute(_uiState.value.token, profile)
-            if (result.isSuccess) {
+            val networkResult = updateProfileUseCase.execute(_uiState.value.token, profile)
+
+            if (networkResult.isSuccess) {
+                setProfileToLocalStorageUseCase.execute(profile)
                 oldProfileData.value = _uiState.value
             } else {
                 _uiState.value = oldProfileData.value

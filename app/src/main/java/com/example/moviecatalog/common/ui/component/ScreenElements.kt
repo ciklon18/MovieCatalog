@@ -16,16 +16,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -37,10 +43,13 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.moviecatalog.R
+import com.example.moviecatalog.common.main.data.mapper.toReviewShortModel
 import com.example.moviecatalog.common.main.domain.model.GenreModel
-import com.example.moviecatalog.common.main.domain.model.ReviewShortModel
+import com.example.moviecatalog.common.review.domain.model.ReviewModel
+import com.example.moviecatalog.common.review.domain.model.ReviewShortModel
 import com.example.moviecatalog.common.ui.theme.label11RTextStyle
 import com.example.moviecatalog.common.ui.theme.label13TextStyle
+import com.example.moviecatalog.common.ui.theme.label15MTextStyle
 import com.example.moviecatalog.common.ui.theme.label17SBTextStyle
 import com.example.moviecatalog.common.ui.theme.text14RTextStyle
 import com.example.moviecatalog.common.ui.theme.title20B2TextStyle
@@ -63,6 +72,9 @@ fun MyTopAppBar(
             Icon(
                 imageVector = Icons.Default.KeyboardArrowLeft,
                 contentDescription = null,
+                modifier = Modifier
+                    .height(24.dp)
+                    .width(24.dp)
             )
         }
     }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -91,8 +103,7 @@ fun MyBottomBar(
         Row(
             modifier = Modifier
                 .padding(start = 25.dp, end = 25.dp, top = 13.dp, bottom = 13.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MyButtonItem(
                 text = stringResource(R.string.main),
@@ -153,9 +164,7 @@ fun MyProfileCard(
         modifier = modifier.fillMaxWidth()
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(link)
-                .build(),
+            model = ImageRequest.Builder(LocalContext.current).data(link).build(),
             contentDescription = stringResource(R.string.profile_icon),
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -165,9 +174,7 @@ fun MyProfileCard(
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            text = nickname,
-            style = title24BTextStyle,
-            color = colorResource(R.color.white)
+            text = nickname, style = title24BTextStyle, color = colorResource(R.color.white)
         )
     }
 }
@@ -206,12 +213,9 @@ fun PreviewMyBottomBar() {
 }
 
 
-
-
 @Composable
 fun ReviewElement(
-    rating: Int,
-    modifier: Modifier = Modifier
+    rating: Int, modifier: Modifier = Modifier
 ) {
     val elementColor = when (rating) {
         in 9..10 -> colorResource(R.color.green)
@@ -225,8 +229,7 @@ fun ReviewElement(
     Box(
         modifier = modifier
             .background(
-                color = elementColor,
-                shape = RoundedCornerShape(35.dp)
+                color = elementColor, shape = RoundedCornerShape(35.dp)
             )
             .padding(4.dp)
     ) {
@@ -247,10 +250,16 @@ fun ReviewElement(
     }
 }
 
+@Composable
+fun MovieAverageRatingIcon(ratings: List<ReviewModel>, modifier: Modifier = Modifier) {
+    val movieRatings = ratings.map { rating -> rating.toReviewShortModel() }
+    AverageRatingIcon(ratings = movieRatings, modifier = modifier)
+}
 
 @Composable
 fun AverageRatingIcon(ratings: List<ReviewShortModel>, modifier: Modifier = Modifier) {
-    val rating = (ratings.sumOf { it.rating }.toDouble() / ratings.size)
+    val rating =
+        if (ratings.isNotEmpty()) (ratings.sumOf { it.rating }.toDouble() / ratings.size) else 0.0
     val roundedRating = String.format("%.1f", rating)
     val elementColor = when (roundedRating.toDouble()) {
         in 9.0..10.0 -> colorResource(R.color.green)
@@ -261,7 +270,7 @@ fun AverageRatingIcon(ratings: List<ReviewShortModel>, modifier: Modifier = Modi
         in 0.0..3.0 -> colorResource(R.color.red)
         else -> colorResource(R.color.red)
     }
-    if (roundedRating.isNotBlank()){
+    if (roundedRating.isNotBlank()) {
         Row(
             modifier = modifier
                 .background(elementColor, shape = RoundedCornerShape(5.dp))
@@ -284,13 +293,26 @@ fun GenreItem(genre: GenreModel) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = genre.name ?: "",
-            color = colorResource(R.color.white),
-            style = label13TextStyle
+            text = genre.name ?: "", color = colorResource(R.color.white), style = label13TextStyle
         )
     }
 }
 
+@Composable
+fun MovieGenreItem(name: String, modifier: Modifier = Modifier) {
+    Box(
+        modifier
+            .background(
+                color = colorResource(R.color.accent), shape = RoundedCornerShape(5.dp)
+            )
+            .padding(start = 10.dp, top = 5.dp, end = 10.dp, bottom = 5.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = name, color = colorResource(R.color.white), style = label15MTextStyle
+        )
+    }
+}
 
 @Composable
 fun PageIndicator(pageCount: Int, currentPage: Int, modifier: Modifier = Modifier) {
@@ -322,5 +344,91 @@ fun IndicatorDots(isSelected: Boolean, modifier: Modifier = Modifier) {
             contentDescription = stringResource(R.string.dot),
             tint = colorResource(R.color.white)
         )
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MovieTopAppBar(
+    navigateUp: () -> Unit,
+    isFavorite: Boolean,
+    onFavoriteClicked: () -> Unit,
+    isVisibleActionButtons: Boolean,
+    modifier: Modifier = Modifier
+) {
+    CenterAlignedTopAppBar(title = {
+    }, navigationIcon = {
+        IconButton(
+            onClick = navigateUp,
+        ) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = null,
+                modifier = Modifier
+                    .height(24.dp)
+                    .width(24.dp)
+            )
+        }
+    },
+        actions = {
+            if (isVisibleActionButtons) {
+                FavoriteButton(isFavorite = isFavorite, onClick = onFavoriteClicked)
+            }
+
+        },
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            titleContentColor = colorResource(R.color.accent),
+            navigationIconContentColor = colorResource(R.color.white)
+        ), modifier = modifier.height(45.dp)
+    )
+}
+
+@Composable
+fun MovieGradientElement(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.background,
+                        Color.Transparent,
+                    ),
+                    start = Offset(0f, Float.POSITIVE_INFINITY),
+                    end = Offset(0f, 0f)
+                )
+            )
+    )
+}
+
+
+@Composable
+fun ReviewCheckBox(isAnonymous: Boolean, onCheckedChange: (Boolean) -> Unit){
+    Checkbox(
+        checked = isAnonymous,
+        onCheckedChange = onCheckedChange,
+        modifier = Modifier
+            .height(16.dp)
+            .width(16.dp),
+        colors = CheckboxDefaults.colors(
+            checkedColor = colorResource(R.color.accent),
+            uncheckedColor = colorResource(R.color.white),
+            checkmarkColor = colorResource(R.color.white),
+            disabledCheckedColor =colorResource(R.color.white),
+            disabledIndeterminateColor = colorResource(R.color.white),
+            disabledUncheckedColor = colorResource(R.color.white)
+        )
+    )
+}
+
+@Composable
+fun AnonymousReviewCheckBox(isAnonymous: Boolean, onCheckedChange: (Boolean) -> Unit){
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ReviewCheckBox(isAnonymous = isAnonymous,
+            onCheckedChange = onCheckedChange)
+        AnonymousReviewText()
     }
 }

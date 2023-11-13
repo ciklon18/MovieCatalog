@@ -64,6 +64,7 @@ fun SelectAuthScreen(
             onClick = { navController.navigate(Routes.LoginScreen.name) },
             isEnabled = true
         )
+
     }
 }
 
