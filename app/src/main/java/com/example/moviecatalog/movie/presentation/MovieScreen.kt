@@ -27,11 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.moviecatalog.R
@@ -58,8 +56,11 @@ import java.text.DecimalFormatSymbols
 
 @Composable
 fun MovieScreen(
-    navController: NavHostController, viewModel: MovieViewModel, modifier: Modifier = Modifier
-) {
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    viewModel: MovieViewModel = hiltViewModel(),
+
+    ) {
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(topBar = {
@@ -352,10 +353,10 @@ fun getDetailedText(value: String, type: ValueType): String {
     }
 }
 
-@Preview
-@Composable
-fun PreviewMovieScreen() {
-    MovieScreen(
-        navController = rememberNavController(), viewModel = hiltViewModel()
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewMovieScreen() {
+//    MovieScreen(
+//        navController = rememberNavController(), viewModel = hiltViewModel(), movieId = ""
+//    )
+//}

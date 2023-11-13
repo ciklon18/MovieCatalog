@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -47,7 +48,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
-    navController: NavHostController, viewModel: MainViewModel, modifier: Modifier = Modifier
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val listState = rememberLazyListState()
@@ -58,11 +61,12 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            MyBottomBar(onMainClicked = {
-                coroutineScope.launch {
-                    listState.animateScrollToItem(0)
-                }
-            },
+            MyBottomBar(
+                onMainClicked = {
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                },
                 onFavoriteClicked = { navController.navigate(Routes.FavoriteScreen.name) },
                 onProfileClicked = { navController.navigate(Routes.ProfileScreen.name) },
                 myTab = MyTab.Main

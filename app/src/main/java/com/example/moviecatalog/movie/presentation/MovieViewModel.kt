@@ -1,5 +1,6 @@
 package com.example.moviecatalog.movie.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviecatalog.common.favorite.domain.usecase.DeleteFavoriteUseCase
@@ -29,7 +30,8 @@ class MovieViewModel @Inject constructor(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val getFavoritesUseCase: GetFavoritesUseCase,
     private val postFavoriteUseCase: PostFavoriteUseCase,
-    private val deleteFavoriteUseCase: DeleteFavoriteUseCase
+    private val deleteFavoriteUseCase: DeleteFavoriteUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieUIState())
     val uiState: StateFlow<MovieUIState> = _uiState.asStateFlow()
@@ -37,16 +39,19 @@ class MovieViewModel @Inject constructor(
     private val scope = viewModelScope
 
     init {
-        scope.launch(Dispatchers.Default) {
-            val startDataTask = async { loadStartData() }
-            val userReviewTask = async { loadUserReview() }
-            val updateFavoriteStatusTask = async { updateFavoriteStatus() }
+        _uiState.update { currentState -> currentState.copy(movieId = savedStateHandle["id"]) }
 
-            startDataTask.await()
-            userReviewTask.await()
-            updateFavoriteStatusTask.await()
+        _uiState.value.movieId?.let {
+            scope.launch(Dispatchers.Default) {
+                val startDataTask = async { loadStartData() }
+                val userReviewTask = async { loadUserReview() }
+                val updateFavoriteStatusTask = async { updateFavoriteStatus() }
+
+                startDataTask.await()
+                userReviewTask.await()
+                updateFavoriteStatusTask.await()
+            }
         }
-
     }
 
     private suspend fun loadStartData() {
@@ -73,15 +78,7 @@ class MovieViewModel @Inject constructor(
             }
         }
     }
-
-    fun setMovieId(movieId: String?) {
-        if (movieId != null) {
-            _uiState.update { currentState ->
-                currentState.copy(movieId = movieId)
-            }
-        }
-
-    }
+    
 
 
     private suspend fun loadUserReview() {
