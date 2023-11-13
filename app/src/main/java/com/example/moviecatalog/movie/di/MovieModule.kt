@@ -5,6 +5,9 @@ import com.example.moviecatalog.common.favorite.domain.usecase.GetFavoritesUseCa
 import com.example.moviecatalog.common.favorite.domain.usecase.PostFavoriteUseCase
 import com.example.moviecatalog.common.main.domain.usecase.GetMovieDetailsUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.GetProfileFromLocalStorageUseCase
+import com.example.moviecatalog.common.review.domain.usecase.DeleteUserReviewUseCase
+import com.example.moviecatalog.common.review.domain.usecase.EditUserReviewUseCase
+import com.example.moviecatalog.common.review.domain.usecase.PostUserReviewUseCase
 import com.example.moviecatalog.common.token.domain.usecase.GetTokenFromLocalStorageUseCase
 import com.example.moviecatalog.movie.presentation.MovieViewModel
 import dagger.Module
@@ -22,7 +25,10 @@ class MovieModule {
         getMovieDetailsUseCase: GetMovieDetailsUseCase,
         getFavoritesUseCase: GetFavoritesUseCase,
         postFavoriteUseCase: PostFavoriteUseCase,
-        deleteFavoriteUseCase: DeleteFavoriteUseCase
+        deleteFavoriteUseCase: DeleteFavoriteUseCase,
+        postUserReviewUseCase: PostUserReviewUseCase,
+        editUserReviewUseCase: EditUserReviewUseCase,
+        deleteUserReviewUseCase: DeleteUserReviewUseCase
     ): MovieViewModel {
         return MovieViewModel(
             getProfileFromLocalStorageUseCase = getProfileFromLocalStorageUseCase,
@@ -30,7 +36,10 @@ class MovieModule {
             getMovieDetailsUseCase = getMovieDetailsUseCase,
             getFavoritesUseCase = getFavoritesUseCase,
             postFavoriteUseCase = postFavoriteUseCase,
-            deleteFavoriteUseCase = deleteFavoriteUseCase
+            deleteFavoriteUseCase = deleteFavoriteUseCase,
+            postUserReviewUseCase = postUserReviewUseCase,
+            editUserReviewUseCase = editUserReviewUseCase,
+            deleteUserReviewUseCase = deleteUserReviewUseCase
         )
     }
 }

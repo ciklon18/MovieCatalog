@@ -8,16 +8,20 @@ import com.example.moviecatalog.common.favorite.domain.usecase.PostFavoriteUseCa
 import com.example.moviecatalog.common.main.data.mapper.toMovieUIState
 import com.example.moviecatalog.common.main.domain.model.GenreModel
 import com.example.moviecatalog.common.main.domain.model.MovieDetailsModel
-import com.example.moviecatalog.common.main.domain.model.ReviewModel
 import com.example.moviecatalog.common.main.domain.usecase.GetMovieDetailsUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.GetProfileFromLocalStorageUseCase
+import com.example.moviecatalog.common.review.data.mapper.toUserShortModel
+import com.example.moviecatalog.common.review.domain.model.ReviewModel
+import com.example.moviecatalog.common.review.domain.model.UserShortModel
+import com.example.moviecatalog.common.review.domain.usecase.DeleteUserReviewUseCase
+import com.example.moviecatalog.common.review.domain.usecase.EditUserReviewUseCase
+import com.example.moviecatalog.common.review.domain.usecase.PostUserReviewUseCase
 import com.example.moviecatalog.common.token.domain.usecase.GetTokenFromLocalStorageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,37 +33,70 @@ class MovieViewModel @Inject constructor(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val getFavoritesUseCase: GetFavoritesUseCase,
     private val postFavoriteUseCase: PostFavoriteUseCase,
-    private val deleteFavoriteUseCase: DeleteFavoriteUseCase
+    private val deleteFavoriteUseCase: DeleteFavoriteUseCase,
+    private val postUserReviewUseCase: PostUserReviewUseCase,
+    private val editUserReviewUseCase: EditUserReviewUseCase,
+    private val deleteUserReviewUseCase: DeleteUserReviewUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieUIState())
-    val uiState: StateFlow<MovieUIState> = _uiState.asStateFlow()
+    val uiState: StateFlow<MovieUIState> = _uiState
 
-    private val scope = viewModelScope
 
     init {
-        scope.launch(Dispatchers.Default) {
-            val startDataTask = async { loadStartData() }
-            val userReviewTask = async { loadUserReview() }
-            val updateFavoriteStatusTask = async { updateFavoriteStatus() }
-
-            startDataTask.await()
-            userReviewTask.await()
-            updateFavoriteStatusTask.await()
-        }
-
+        initViewModel()
     }
+
+    private fun initViewModel() = viewModelScope.launch(Dispatchers.Default) {
+        val startDataTask = async { loadStartData() }
+        val reviewAuthorTask = async { loadReviewAuthor() }
+        val updateFavoriteStatusTask = async { updateFavoriteStatus() }
+
+        startDataTask.await()
+        reviewAuthorTask.await()
+        updateFavoriteStatusTask.await()
+
+        if (reviewAuthorTask.isCompleted) {
+            val userReviewTask = async { loadUserReview() }
+            userReviewTask.await()
+        }
+    }
+
 
     private suspend fun loadStartData() {
         val token = getTokenFromLocalStorageUseCase.execute()
         _uiState.value.movieId?.let { movieId ->
             getMovieDetails(token, movieId)?.let { movieDetails ->
-                _uiState.update {
-                    movieDetails.toMovieUIState().copy(token = token, movieId = it.movieId)
+                _uiState.update { currentState ->
+                    movieDetails.toMovieUIState().copy(
+                        token = token,
+                        movieId = currentState.movieId,
+                        reviewAuthor = currentState.reviewAuthor
+                    )
                 }
             }
         }
     }
 
+    private suspend fun loadReviewAuthor() {
+        val userProfile = getProfileFromLocalStorageUseCase.execute().getOrNull()
+        val reviewAuthor = userProfile?.toUserShortModel()
+        _uiState.update { currentState ->
+            currentState.copy(reviewAuthor = reviewAuthor)
+        }
+    }
+
+
+    private fun loadUserReview() {
+        val reviewAuthorId = _uiState.value.reviewAuthor?.userId
+
+        _uiState.value.reviews?.firstOrNull { it.author?.userId == reviewAuthorId }
+            ?.let { foundReview ->
+                _uiState.update { currentState ->
+                    currentState.copy(userReview = foundReview,
+                        reviews = currentState.reviews?.filterNot { it == foundReview })
+                }
+            }
+    }
 
     private suspend fun updateFavoriteStatus() {
         val token = _uiState.value.token
@@ -74,39 +111,23 @@ class MovieViewModel @Inject constructor(
         }
     }
 
+
     fun setMovieId(movieId: String?) {
         if (movieId != null) {
             _uiState.update { currentState ->
                 currentState.copy(movieId = movieId)
             }
         }
-
     }
 
 
-    private suspend fun loadUserReview() {
-        val reviews = _uiState.value.reviews
-        val userId = getUserId()
-
-        reviews?.find { review -> review.author.userId == userId }.let { foundReview ->
-            _uiState.update { currentState ->
-                currentState.copy(
-                    userReview = foundReview,
-                    reviews = currentState.reviews?.filterNot { it == foundReview }
-                )
-            }
-        }
-    }
-
-
-    fun onFavoriteButtonClicked() {
+    fun onFavoriteButtonPressed() {
         viewModelScope.launch(Dispatchers.Default) {
             val isFavorite = _uiState.value.isFavorite
 
             _uiState.value.token?.let { token ->
                 _uiState.value.movieId?.let { movieId ->
-                    val result = if (!isFavorite)
-                        postFavoriteUseCase.execute(token, movieId)
+                    val result = if (!isFavorite) postFavoriteUseCase.execute(token, movieId)
                     else deleteFavoriteUseCase.execute(token, movieId)
 
                     if (result.isSuccess) {
@@ -116,26 +137,146 @@ class MovieViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+
+    fun onAddReviewButtonPressed() {
+        viewModelScope.launch(Dispatchers.Default) {
+            _uiState.update { currentState ->
+                currentState.copy(isReviewDialogVisible = true)
+            }
+        }
+    }
+
+
+    fun onEditReviewPressed() {
+        viewModelScope.launch(Dispatchers.Default) {
+            _uiState.update { currentState ->
+                currentState.copy(isReviewDialogVisible = true)
+            }
+        }
+    }
+
+    fun onDismissReviewButtonPressed() {
+        viewModelScope.launch(Dispatchers.Default) {
+            _uiState.update { currentState ->
+                currentState.copy(isReviewDialogVisible = false)
+            }
+        }
+    }
+
+
+    fun onSaveReviewButtonPressed(review: ReviewModel?) {
+        viewModelScope.launch(Dispatchers.Default) {
+            if (review == null) return@launch
+            _uiState.update { currentState ->
+                currentState.copy(isReviewDialogVisible = false)
+            }
+            updateReviewAuthorInfo(review).let { updatedReview ->
+                if (updatedReview == null) return@launch
+
+                if (_uiState.value.userReview == null) {
+                    handlePostReviewPress(updatedReview)
+                } else {
+                    handleEditReviewPress(updatedReview)
+                }
+            }
+        }
+    }
+
+    fun onDeleteReviewPressed() {
+        viewModelScope.launch(Dispatchers.Default) {
+            val result = _uiState.value.movieId?.let { movieId ->
+                _uiState.value.token?.let { token ->
+                    _uiState.value.userReview?.let { userReview ->
+                        userReview.id?.let {
+                            deleteUserReviewUseCase.execute(
+                                movieId = movieId, reviewId = userReview.id, token = token
+                            )
+                        }
+                    }
+                }
+            }
+            if (result != null && result.isSuccess) {
+                _uiState.update { currentState ->
+                    currentState.copy(userReview = null)
+                }
+            }
 
         }
     }
 
 
-    fun onAddReviewButtonClicked() {
-        TODO("Not yet implemented")
+    private suspend fun handleEditReviewPress(review: ReviewModel) {
+        val result = _uiState.value.movieId?.let { movieId ->
+            _uiState.value.token?.let { token ->
+                review.id?.let { id ->
+                    editUserReviewUseCase.execute(
+                        movieId = movieId, token = token, review = review, reviewId = id
+                    )
+                }
+
+            }
+        }
+        if (result != null && result.isSuccess) {
+            _uiState.update { currentState ->
+                currentState.copy(userReview = review)
+            }
+        }
     }
 
-    fun onDeleteReviewClicked() {
-        TODO("Not yet implemented")
+    private suspend fun handlePostReviewPress(review: ReviewModel) {
+        val result = _uiState.value.movieId?.let { movieId ->
+            _uiState.value.token?.let { token ->
+                postUserReviewUseCase.execute(
+                    movieId = movieId, token = token, review = review
+                )
+
+            }
+        }
+        if (result != null && result.isSuccess) {
+            viewModelScope.launch(Dispatchers.Default) {
+                _uiState.update { currentState -> currentState.copy(userReview = null) }
+                loadUpdatedReviews()
+                updateUserReview()
+            }
+        }
     }
+
+    private suspend fun loadUpdatedReviews() {
+        _uiState.value.movieId?.let { movieId ->
+            _uiState.value.token?.let { token ->
+                getMovieDetails(token, movieId)?.let { movieDetails ->
+                    _uiState.update { currentState ->
+                        currentState.copy(reviews = movieDetails.reviews)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateUserReview() {
+        val reviewAuthorId = _uiState.value.reviewAuthor?.userId
+        _uiState.value.reviews?.firstOrNull { it.author?.userId == reviewAuthorId }
+            ?.let { foundReview ->
+                _uiState.update { currentState ->
+                    currentState.copy(userReview = foundReview,
+                        reviews = currentState.reviews?.filterNot { it == foundReview })
+                }
+            }
+    }
+
+
+    private fun updateReviewAuthorInfo(review: ReviewModel): ReviewModel? {
+        return _uiState.value.reviewAuthor?.let { review.copy(author = it) }
+    }
+
 
     private suspend fun getMovieDetails(token: String, movieId: String): MovieDetailsModel? {
         return getMovieDetailsUseCase.execute(id = movieId, token = token).getOrNull()
     }
 
-    private suspend fun getUserId(): String? {
-        return getProfileFromLocalStorageUseCase.execute().getOrNull()?.id
-    }
 
 }
 
@@ -157,6 +298,8 @@ data class MovieUIState(
     val ageLimit: Int? = null,
     val isFavorite: Boolean = false,
     val isVisibleActionButtons: Boolean = false,
+    val isReviewDialogVisible: Boolean = false,
     val token: String? = null,
+    val reviewAuthor: UserShortModel? = null,
     val userReview: ReviewModel? = null
 )
