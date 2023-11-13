@@ -13,9 +13,13 @@ import com.example.moviecatalog.common.ui.component.FieldType
 import com.example.moviecatalog.common.validation.domain.usecase.LoginValidationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,15 +39,32 @@ class LoginScreenViewModel @Inject constructor(
     private val scope = viewModelScope
 
 
+    @OptIn(FlowPreview::class)
     fun onFieldChanged(fieldType: FieldType, newValue: Any) {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch {
+            val valueFlow = flowOf(newValue as String)
+                .debounce(300)
+                .distinctUntilChanged()
             when (fieldType) {
-                FieldType.Login -> onLoginChanged(newLogin = newValue as String)
-                FieldType.Password -> onPasswordChanged(newPassword = newValue as String)
+                FieldType.Login -> {
+                    valueFlow.collect { newLogin ->
+                        onLoginChanged(newLogin)
+                        updateErrorAndButtonStateForField()
+                    }
+                }
+
+                FieldType.Password -> {
+                    valueFlow.collect { newPassword ->
+                        onPasswordChanged(newPassword)
+                        updateErrorAndButtonStateForField()
+                    }
+                }
+
                 else -> {}
             }
-            updateErrorAndButtonStateForField()
         }
+
+
     }
 
     private fun updateErrorAndButtonStateForField() {

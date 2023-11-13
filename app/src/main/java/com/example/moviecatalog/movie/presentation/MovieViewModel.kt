@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,7 +42,7 @@ class MovieViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieUIState())
-    val uiState: StateFlow<MovieUIState> = _uiState
+    val uiState: StateFlow<MovieUIState> = _uiState.asStateFlow()
 
 
     init {
@@ -52,11 +53,15 @@ class MovieViewModel @Inject constructor(
     private fun initViewModel() = viewModelScope.launch(Dispatchers.Default) {
         val startDataTask = async { loadStartData() }
         val reviewAuthorTask = async { loadReviewAuthor() }
-        val updateFavoriteStatusTask = async { updateFavoriteStatus() }
 
         startDataTask.await()
         reviewAuthorTask.await()
-        updateFavoriteStatusTask.await()
+
+        if (startDataTask.isCompleted){
+            val updateFavoriteStatusTask = async { updateFavoriteStatus() }
+            updateFavoriteStatusTask.await()
+        }
+
 
         if (reviewAuthorTask.isCompleted) {
             val userReviewTask = async { loadUserReview() }
@@ -113,16 +118,6 @@ class MovieViewModel @Inject constructor(
             }
         }
     }
-
-
-    fun setMovieId(movieId: String?) {
-        if (movieId != null) {
-            _uiState.update { currentState ->
-                currentState.copy(movieId = movieId)
-            }
-        }
-    }
-
 
 
 
@@ -208,7 +203,6 @@ class MovieViewModel @Inject constructor(
                     currentState.copy(userReview = null)
                 }
             }
-
         }
     }
 
@@ -281,8 +275,6 @@ class MovieViewModel @Inject constructor(
     private suspend fun getMovieDetails(token: String, movieId: String): MovieDetailsModel? {
         return getMovieDetailsUseCase.execute(id = movieId, token = token).getOrNull()
     }
-
-
 }
 
 

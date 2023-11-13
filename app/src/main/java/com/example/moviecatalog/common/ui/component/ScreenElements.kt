@@ -2,6 +2,7 @@ package com.example.moviecatalog.common.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -138,7 +140,10 @@ fun MyButtonItem(
     val buttonColor =
         if (isSelected) colorResource(R.color.accent) else colorResource(R.color.gray_400)
     Column(
-        modifier = modifier.clickable { onClick() },
+        modifier = modifier.clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null
+        ) { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -403,7 +408,7 @@ fun MovieGradientElement(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun ReviewCheckBox(isAnonymous: Boolean, onCheckedChange: (Boolean) -> Unit){
+fun ReviewCheckBox(isAnonymous: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Checkbox(
         checked = isAnonymous,
         onCheckedChange = onCheckedChange,
@@ -414,7 +419,7 @@ fun ReviewCheckBox(isAnonymous: Boolean, onCheckedChange: (Boolean) -> Unit){
             checkedColor = colorResource(R.color.accent),
             uncheckedColor = colorResource(R.color.white),
             checkmarkColor = colorResource(R.color.white),
-            disabledCheckedColor =colorResource(R.color.white),
+            disabledCheckedColor = colorResource(R.color.white),
             disabledIndeterminateColor = colorResource(R.color.white),
             disabledUncheckedColor = colorResource(R.color.white)
         )
@@ -422,13 +427,15 @@ fun ReviewCheckBox(isAnonymous: Boolean, onCheckedChange: (Boolean) -> Unit){
 }
 
 @Composable
-fun AnonymousReviewCheckBox(isAnonymous: Boolean, onCheckedChange: (Boolean) -> Unit){
+fun AnonymousReviewCheckBox(isAnonymous: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ReviewCheckBox(isAnonymous = isAnonymous,
-            onCheckedChange = onCheckedChange)
+        ReviewCheckBox(
+            isAnonymous = isAnonymous,
+            onCheckedChange = onCheckedChange
+        )
         AnonymousReviewText()
     }
 }

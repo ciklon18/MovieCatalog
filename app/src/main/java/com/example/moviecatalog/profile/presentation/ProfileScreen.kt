@@ -2,11 +2,13 @@ package com.example.moviecatalog.profile.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,6 +41,12 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(uiState.isLogout){
+        if (uiState.isLogout){
+            navController.navigate(Routes.SelectAuthScreen.name)
+        }
+    }
+
     Scaffold(
         bottomBar = {
             MyBottomBar(
@@ -49,58 +57,59 @@ fun ProfileScreen(
             )
         }, modifier = modifier
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    MyProfileCard(
-                        link = uiState.avatarLink,
-                        nickname = uiState.nickName,
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
-                    )
-                    TransparentButton(
-                        text = stringResource(R.string.logout),
-                        onClick = { viewModel.onLogoutButtonPressed(navController) },
-                        isEnabled = true
-                    )
-                }
-            }
-            item {
-                ProfileSection(uiState = uiState, onEmailChanged = { newValue ->
-                    viewModel.onFieldChanged(FieldType.Email, newValue)
-                }, onBirthDateChanged = { newValue ->
-                    viewModel.onFieldChanged(FieldType.BirthDate, newValue)
-                }, onGenderChanged = { newValue ->
-                    viewModel.onFieldChanged(FieldType.Gender, newValue)
-                }, onLinkChanged = { newValue ->
-                    viewModel.onFieldChanged(FieldType.Link, newValue)
-                }, onNameChanged = { newValue ->
-                    viewModel.onFieldChanged(FieldType.Name, newValue)
-                }, modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+        FieldsSection(viewModel, uiState, innerPadding)
+
+    }
+}
+@Composable
+private fun FieldsSection(viewModel: ProfileViewModel, uiState: ProfileUIState, innerPadding: PaddingValues){
+    LazyColumn(
+        modifier = Modifier.padding(innerPadding),
+        verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        item {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                MyProfileCard(
+                    link = uiState.avatarLink,
+                    nickname = uiState.nickName,
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                )
+                TransparentButton(
+                    text = stringResource(R.string.logout),
+                    onClick = { viewModel.onLogoutButtonPressed() },
+                    isEnabled = true
                 )
             }
-
-            item {
-                ButtonSection(
-                    onClickSaveButton = { viewModel.onSaveButtonPressed() },
-                    isSaveButtonEnabled = uiState.isSaveButtonEnabled,
-                    onClickDismissButton = { viewModel.onCancelButtonPressed() },
-                    isDismissButtonEnabled = uiState.isDismissButtonEnabled,
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                )
-            }
-
-
         }
-
+        item {
+            FieldsSection(uiState = uiState, onEmailChanged = { newValue ->
+                viewModel.onFieldChanged(FieldType.Email, newValue)
+            }, onBirthDateChanged = { newValue ->
+                viewModel.onFieldChanged(FieldType.BirthDate, newValue)
+            }, onGenderChanged = { newValue ->
+                viewModel.onFieldChanged(FieldType.Gender, newValue)
+            }, onLinkChanged = { newValue ->
+                viewModel.onFieldChanged(FieldType.Link, newValue)
+            }, onNameChanged = { newValue ->
+                viewModel.onFieldChanged(FieldType.Name, newValue)
+            }, modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            )
+        }
+        item {
+            ButtonSection(
+                onClickSaveButton = { viewModel.onSaveButtonPressed() },
+                isSaveButtonEnabled = uiState.isSaveButtonEnabled,
+                onClickDismissButton = { viewModel.onCancelButtonPressed() },
+                isDismissButtonEnabled = uiState.isDismissButtonEnabled,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+            )
+        }
     }
 }
 
 @Composable
-private fun ProfileSection(
+private fun FieldsSection(
     uiState: ProfileUIState,
     onEmailChanged: (String) -> Unit,
     onLinkChanged: (String) -> Unit,
