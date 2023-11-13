@@ -55,7 +55,7 @@ class GetUpdatedMoviesPagedListUseCase @Inject constructor(
             getMovieDetailsUseCase.execute(movie!!.id, token).fold(
                 onSuccess = { movieDetails ->
                     val userReview =
-                        movieDetails?.reviews?.firstOrNull { it.author.userId == userId }
+                        movieDetails?.reviews?.firstOrNull { it.author?.userId == userId }
                     movieDetails?.toUpdatedMovieElementModel(userReview)
                         ?: movie.toUpdatedMovieElementModel(userReview)
 
