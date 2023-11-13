@@ -16,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,8 +45,8 @@ import coil.request.ImageRequest
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.main.data.mapper.toReviewShortModel
 import com.example.moviecatalog.common.main.domain.model.GenreModel
-import com.example.moviecatalog.common.main.domain.model.ReviewModel
-import com.example.moviecatalog.common.main.domain.model.ReviewShortModel
+import com.example.moviecatalog.common.review.domain.model.ReviewModel
+import com.example.moviecatalog.common.review.domain.model.ReviewShortModel
 import com.example.moviecatalog.common.ui.theme.label11RTextStyle
 import com.example.moviecatalog.common.ui.theme.label13TextStyle
 import com.example.moviecatalog.common.ui.theme.label15MTextStyle
@@ -400,3 +402,33 @@ fun MovieGradientElement(modifier: Modifier = Modifier) {
 }
 
 
+@Composable
+fun ReviewCheckBox(isAnonymous: Boolean, onCheckedChange: (Boolean) -> Unit){
+    Checkbox(
+        checked = isAnonymous,
+        onCheckedChange = onCheckedChange,
+        modifier = Modifier
+            .height(16.dp)
+            .width(16.dp),
+        colors = CheckboxDefaults.colors(
+            checkedColor = colorResource(R.color.accent),
+            uncheckedColor = colorResource(R.color.white),
+            checkmarkColor = colorResource(R.color.white),
+            disabledCheckedColor =colorResource(R.color.white),
+            disabledIndeterminateColor = colorResource(R.color.white),
+            disabledUncheckedColor = colorResource(R.color.white)
+        )
+    )
+}
+
+@Composable
+fun AnonymousReviewCheckBox(isAnonymous: Boolean, onCheckedChange: (Boolean) -> Unit){
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ReviewCheckBox(isAnonymous = isAnonymous,
+            onCheckedChange = onCheckedChange)
+        AnonymousReviewText()
+    }
+}

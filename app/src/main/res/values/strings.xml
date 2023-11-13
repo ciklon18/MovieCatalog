@@ -80,4 +80,9 @@
     <string name="manage_review">Управление отзывом</string>
     <string name="edit">Редактировать</string>
     <string name="delete">Удалить</string>
+    <string name="leave_review">Оставить отзыв</string>
+    <string name="unfilled_star">Незаполненная звезда</string>
+    <string name="filled_star">Заполненная звезда</string>
+    <string name="anonymous_review">Анонимный отзыв</string>
+    <string name="write_review">Напишите отзыв</string>
 </resources>

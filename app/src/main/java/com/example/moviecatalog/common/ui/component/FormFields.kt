@@ -3,6 +3,7 @@ package com.example.moviecatalog.common.ui.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,6 +12,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -157,3 +159,31 @@ fun CustomPasswordFormField(
     }
 }
 
+
+@Composable
+fun ReviewTextFiled(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier
+            .height(100.dp)
+            .fillMaxWidth(),
+        placeholder = { WriteReviewText() },
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = colorResource(R.color.white),
+            unfocusedTextColor = colorResource(R.color.white),
+            focusedPlaceholderColor = colorResource(R.color.gray_400),
+            unfocusedPlaceholderColor = colorResource(R.color.gray_400),
+            focusedIndicatorColor = colorResource(R.color.gray_400),
+            unfocusedIndicatorColor = colorResource(R.color.gray_400),
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            cursorColor = colorResource(R.color.white)
+        )
+
+    )
+}

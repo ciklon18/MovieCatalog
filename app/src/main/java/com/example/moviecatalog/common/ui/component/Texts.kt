@@ -13,11 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.ui.theme.label14MTextStyle
+import com.example.moviecatalog.common.ui.theme.label15MTextStyle
 import com.example.moviecatalog.common.ui.theme.label16BTextStyle
 import com.example.moviecatalog.common.ui.theme.text14RTextStyle
+import com.example.moviecatalog.common.ui.theme.title20B2TextStyle
 import com.example.moviecatalog.common.ui.theme.title24BTextStyle
 
 @Composable
@@ -98,5 +101,32 @@ fun MovieNameTextFromMain(
         color = colorResource(R.color.white),
         style = label16BTextStyle,
         modifier = modifier
+    )
+}
+
+@Composable
+fun LeaveReviewText() {
+    Text(
+        text = stringResource(R.string.leave_review),
+        color = colorResource(R.color.white),
+        style = title20B2TextStyle
+    )
+}
+
+
+@Composable
+fun AnonymousReviewText(){
+    Text(
+        text = stringResource(R.string.anonymous_review),
+        color = colorResource(R.color.white),
+        style = label15MTextStyle
+    )
+}
+@Composable
+fun WriteReviewText(){
+    Text(
+        text = stringResource(R.string.write_review),
+        style = text14RTextStyle,
+        color = colorResource(R.color.gray_400)
     )
 }
