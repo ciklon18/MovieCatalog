@@ -275,6 +275,15 @@ class MovieViewModel @Inject constructor(
     private suspend fun getMovieDetails(token: String, movieId: String): MovieDetailsModel? {
         return getMovieDetailsUseCase.execute(id = movieId, token = token).getOrNull()
     }
+    fun onScrollChanged(scrollPosition: Int) {
+        val isVisibleActionButtons = scrollPosition > 1
+
+        viewModelScope.launch(Dispatchers.Default) {
+            _uiState.update { currentState ->
+                currentState.copy(isVisibleActionButtons = isVisibleActionButtons)
+            }
+        }
+    }
 }
 
 

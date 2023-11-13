@@ -359,10 +359,15 @@ fun MovieTopAppBar(
     navigateUp: () -> Unit,
     isFavorite: Boolean,
     onFavoriteClicked: () -> Unit,
-    isVisibleActionButtons: Boolean,
+    isVisibleMovie: Boolean,
+    movieName: String?,
     modifier: Modifier = Modifier
 ) {
     CenterAlignedTopAppBar(title = {
+        if (isVisibleMovie){
+            Text(text = movieName ?: "", style = title24BTextStyle, color = colorResource(R.color.white))
+        }
+
     }, navigationIcon = {
         IconButton(
             onClick = navigateUp,
@@ -377,7 +382,7 @@ fun MovieTopAppBar(
         }
     },
         actions = {
-            if (isVisibleActionButtons) {
+            if (isVisibleMovie) {
                 FavoriteButton(isFavorite = isFavorite, onClick = onFavoriteClicked)
             }
 
