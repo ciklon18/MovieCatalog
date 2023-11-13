@@ -1,22 +1,23 @@
 package com.example.moviecatalog.common.main.domain.model
 
+import com.example.moviecatalog.common.review.domain.model.ReviewModel
 import kotlinx.serialization.Serializable
 
 
 @Serializable
 data class MovieDetailsModel(
-    val id: String,
+    val id: String?,
     val name: String?,
     val poster: String?,
-    val year: Int,
+    val year: Int?,
     val country: String?,
     val genres: List<GenreModel>?,
     val reviews: List<ReviewModel>?,
-    val time: Int,
+    val time: Int?,
     val tagline: String?,
     val description: String?,
     val director: String?,
     val budget: Int?,
     val fees: Int?,
-    val ageLimit: Int
+    val ageLimit: Int?
 )

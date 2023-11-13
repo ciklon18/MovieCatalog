@@ -67,7 +67,7 @@ class FavoriteViewModel @Inject constructor(
         val reviews = getMovieDetailsUseCase.execute(movieId, token)
             .getOrNull()?.reviews
 
-        return reviews?.find { it.author.userId == userId }?.toFavoriteReview()
+        return reviews?.find { it.author?.userId == userId }?.toFavoriteReview()
     }
 
 }

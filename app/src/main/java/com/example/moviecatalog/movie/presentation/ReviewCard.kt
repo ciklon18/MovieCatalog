@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.moviecatalog.R
-import com.example.moviecatalog.common.main.domain.model.ReviewModel
+import com.example.moviecatalog.common.review.domain.model.ReviewModel
 import com.example.moviecatalog.common.ui.component.ReviewElement
 import com.example.moviecatalog.common.ui.component.ReviewManagementButton
 import com.example.moviecatalog.common.ui.theme.label12TextStyle
@@ -49,7 +49,7 @@ fun ReviewCard(
     isUserReview: Boolean,
     onEditButtonClicked: () -> Unit = {},
     onDeleteButtonClicked: () -> Unit = {}
-){
+) {
 
     Column(
         modifier = modifier
@@ -57,7 +57,7 @@ fun ReviewCard(
             .padding(bottom = 20.dp, start = 16.dp, end = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        if (isUserReview){
+        if (isUserReview) {
             ReviewAuthorSection(
                 review = review,
                 isUserReview = true,
@@ -82,8 +82,6 @@ fun ReviewCard(
 }
 
 
-
-
 @Composable
 fun ReviewAuthorSection(
     review: ReviewModel,
@@ -105,38 +103,40 @@ fun ReviewAuthorSection(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ReviewAuthorImage(isAnonymous = review.isAnonymous, avatarLink = review.author.avatar)
+                ReviewAuthorImage(
+                    isAnonymous = review.isAnonymous ?: false,
+                    avatarLink = review.author?.avatar
+                )
                 AuthorName(
-                    isAnonymous = if (isUserReview) false else review.isAnonymous,
+                    isAnonymous = if (isUserReview || review.isAnonymous == null) false else review.isAnonymous,
                     isUserReview = isUserReview,
-                    nickname = review.author.nickName
+                    nickname = review.author?.nickName
                 )
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ReviewElement(rating = review.rating)
-                if (isUserReview){
+                review.rating?.let { ReviewElement(rating = it) }
+                if (isUserReview) {
                     ReviewManagementButton({ isReviewManagerShowed = true; })
                 }
 
             }
         }
-        if (isReviewManagerShowed){
+        if (isReviewManagerShowed) {
 
             ReviewManagerDialog(
                 isExpended = true,
-                onEditButtonClick = { onEditButtonClicked(); isReviewManagerShowed = false},
-                onDeleteButtonClick = { onDeleteButtonClicked(); isReviewManagerShowed = false},
-                onDismissRequest = {isReviewManagerShowed = false}
+                onEditButtonClick = { onEditButtonClicked(); isReviewManagerShowed = false },
+                onDeleteButtonClick = { onDeleteButtonClicked(); isReviewManagerShowed = false },
+                onDismissRequest = { isReviewManagerShowed = false }
             )
 
         }
     }
 
 }
-
 
 
 @Composable
@@ -219,7 +219,8 @@ fun ReviewTextSection(reviewText: String?) {
 
 
 @Composable
-fun ReviewDateSection(createDateTime: String) {
+fun ReviewDateSection(createDateTime: String?) {
+    if (createDateTime == null) return
     val formattedDate = formatDate(dateString = createDateTime)
     if (formattedDate != null) {
         Text(

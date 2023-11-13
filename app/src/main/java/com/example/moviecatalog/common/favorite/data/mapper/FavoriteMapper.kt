@@ -3,7 +3,7 @@ package com.example.moviecatalog.common.favorite.data.mapper
 import com.example.moviecatalog.common.favorite.domain.model.FavoriteMovie
 import com.example.moviecatalog.common.favorite.domain.model.FavoriteReview
 import com.example.moviecatalog.common.favorite.domain.model.MovieResponse
-import com.example.moviecatalog.common.main.domain.model.ReviewModel
+import com.example.moviecatalog.common.review.domain.model.ReviewModel
 
 
 fun MovieResponse.toFavoriteMovie(userReview: FavoriteReview?): FavoriteMovie {
@@ -21,7 +21,7 @@ fun MovieResponse.toFavoriteMovie(userReview: FavoriteReview?): FavoriteMovie {
 
 fun ReviewModel.toFavoriteReview(): FavoriteReview{
     return FavoriteReview(
-        id = this.id,
-        rating = this.rating
+        id = this.id ?: "",
+        rating = this.rating ?: 0
     )
 }

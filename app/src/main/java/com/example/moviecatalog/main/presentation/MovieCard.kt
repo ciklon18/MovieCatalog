@@ -68,7 +68,7 @@ fun MovieCard(
                             .wrapContentWidth(Alignment.Start)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
-                    if (movie.userReview != null) {
+                    if (movie.userReview?.rating != null) {
                         ReviewElement(rating = movie.userReview.rating)
                     }
 
@@ -106,13 +106,15 @@ fun ImageSection(
 
 @Composable
 fun DateAndCountrySection(
-    year: Int, country: String?
+    year: Int?, country: String?
 ) {
-    Text(
-        text = "$year · $country", color = colorResource(
-            R.color.white
-        ), style = label12TextStyle
-    )
+    if (year != null && country != null) {
+        Text(
+            text = "$year · $country", color = colorResource(
+                R.color.white
+            ), style = label12TextStyle
+        )
+    }
 }
 
 
