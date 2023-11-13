@@ -11,10 +11,12 @@
     <color name="accent">#FC315E</color>
     <color name="light_accent">#E64646</color>
     <color name="dark_accent">#1AE64646</color>
+    <color name="dismiss_accent">#81263a</color>
     <color name="border_color">#FF5E5E5E</color>
     <color name="choosing_gender_background">#1F767680</color>
     <color name="divider_color">#3E3E41</color>
     <color name="slider_pagination">#1AFFFFFF</color>
+    <color name="review_background">#00000059</color>
     <color name="gray_900">#1D1D1D</color>
     <color name="gray_800">#292929</color>
     <color name="gray_750">#363738</color>

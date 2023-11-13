@@ -1,5 +1,6 @@
 package com.example.moviecatalog.movie.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,21 +25,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.main.data.mapper.toShortMovieDetails
 import com.example.moviecatalog.common.main.domain.model.GenreModel
-import com.example.moviecatalog.common.main.domain.model.ReviewModel
 import com.example.moviecatalog.common.main.domain.model.ShortMovieDetails
+import com.example.moviecatalog.common.review.domain.model.ReviewModel
 import com.example.moviecatalog.common.ui.component.AddReviewButton
 import com.example.moviecatalog.common.ui.component.BasicDetailsText
 import com.example.moviecatalog.common.ui.component.FavoriteButton
@@ -52,33 +53,72 @@ import com.example.moviecatalog.common.ui.component.MovieSubtitleText
 import com.example.moviecatalog.common.ui.component.MovieTopAppBar
 import com.example.moviecatalog.common.ui.component.StyledDetailsText
 import com.example.moviecatalog.common.ui.component.ValueType
+import com.example.moviecatalog.review.presentation.ReviewDialogScreen
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
 
 @Composable
 fun MovieScreen(
-    navController: NavHostController, viewModel: MovieViewModel, modifier: Modifier = Modifier
+    navController: NavHostController, modifier: Modifier = Modifier, movieId: String
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val viewModel = hiltViewModel<MovieViewModel>()
+        .also { it.setMovieId(movieId) }
 
-    Scaffold(topBar = {
-        MovieTopAppBar(
-            navigateUp = { navController.navigateUp() },
-            isFavorite = uiState.isFavorite,
-            onFavoriteClicked = { viewModel.onFavoriteButtonClicked() },
-            isVisibleActionButtons = uiState.isVisibleActionButtons
-        )
-    }, modifier = modifier) { innerPadding ->
+    val uiState = viewModel.uiState.collectAsState().value
+
+
+    Scaffold(
+        topBar = {
+            MovieTopAppBar(
+                navigateUp = { navController.navigateUp() },
+                isFavorite = uiState.isFavorite,
+                onFavoriteClicked = { viewModel.onFavoriteButtonPressed() },
+                isVisibleActionButtons = uiState.isVisibleActionButtons
+            )
+        }, modifier = modifier
+    ) { innerPadding ->
         MovieContent(
             innerPadding = innerPadding,
             uiState = uiState,
-            onFavoriteButtonClicked = { viewModel.onFavoriteButtonClicked() },
-            onAddReviewClicked = { viewModel.onAddReviewButtonClicked() },
-            onEditButtonClicked = { /* обработка редактирования отзыва */ },
-            onDeleteButtonClicked = { viewModel.onDeleteReviewClicked() }
+            onFavoriteButtonClicked = { viewModel.onFavoriteButtonPressed() },
+            onAddReviewClicked = { viewModel.onAddReviewButtonPressed() },
+            onEditButtonClicked = { viewModel.onEditReviewPressed() },
+            onDeleteButtonClicked = { viewModel.onDeleteReviewPressed() }
+        )
+        ReviewDialogContent(
+            isReviewDialogVisible = uiState.isReviewDialogVisible,
+            onSaveClick = { viewModel.onSaveReviewButtonPressed(it) },
+            onDismissClick = { viewModel.onDismissReviewButtonPressed() },
+            userReview = uiState.userReview
         )
 
+    }
+
+
+}
+
+@Composable
+fun ReviewDialogContent(
+    isReviewDialogVisible: Boolean,
+    userReview: ReviewModel?,
+    onSaveClick: (ReviewModel?) -> Unit,
+    onDismissClick: () -> Unit
+) {
+    if (isReviewDialogVisible) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = colorResource(R.color.review_background)
+                )
+                .alpha(0.35f)
+        )
+        ReviewDialogScreen(
+            userReview = userReview,
+            onSaveClick = onSaveClick,
+            onDismissClick = onDismissClick
+        )
     }
 }
 
@@ -352,10 +392,10 @@ fun getDetailedText(value: String, type: ValueType): String {
     }
 }
 
-@Preview
-@Composable
-fun PreviewMovieScreen() {
-    MovieScreen(
-        navController = rememberNavController(), viewModel = hiltViewModel()
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewMovieScreen() {
+//    MovieScreen(
+//        navController = rememberNavController(), viewModel = hiltViewModel()
+//    )
+//}

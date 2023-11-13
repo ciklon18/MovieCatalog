@@ -5,7 +5,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -54,6 +56,8 @@ fun AccentButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.accent),
             contentColor = colorResource(R.color.white),
+            disabledContainerColor = colorResource(R.color.dismiss_accent),
+
         ),
         modifier = modifier
     )
@@ -220,7 +224,8 @@ fun FavoriteButton(isFavorite: Boolean, onClick: () -> Unit, modifier: Modifier 
 
 @Composable
 fun AddReviewButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    IconButton(onClick = onClick,
+    IconButton(
+        onClick = onClick,
         modifier = modifier
             .width(32.dp)
             .height(32.dp),
@@ -228,7 +233,7 @@ fun AddReviewButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
             containerColor = colorResource(R.color.accent),
             contentColor = colorResource(R.color.white)
         )
-        ) {
+    ) {
         Icon(
             painter = painterResource(R.drawable.add),
             contentDescription = stringResource(R.string.add_review),
@@ -239,7 +244,6 @@ fun AddReviewButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
         )
     }
 }
-
 
 
 @Composable
@@ -270,10 +274,10 @@ fun MoreDetailsButton(
 }
 
 
-
 @Composable
 fun ReviewManagementButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    IconButton(onClick = onClick,
+    IconButton(
+        onClick = onClick,
         modifier = modifier
             .width(26.dp)
             .height(26.dp)
@@ -290,6 +294,33 @@ fun ReviewManagementButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
             modifier = Modifier
                 .height(20.dp)
                 .width(20.dp),
+        )
+    }
+}
+
+
+@Composable
+fun ReviewButtons(
+    isAccentButtonEnabled: Boolean,
+    onSaveClick: () -> Unit,
+    onDismissClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        AccentButton(
+            text = stringResource(R.string.save),
+            onClick = onSaveClick,
+            isEnabled = isAccentButtonEnabled,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        SecondaryButton(
+            text = stringResource(R.string.dismiss),
+            onClick = onDismissClick,
+            isEnabled = true,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
