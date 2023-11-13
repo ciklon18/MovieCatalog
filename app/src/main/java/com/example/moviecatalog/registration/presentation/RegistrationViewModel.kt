@@ -12,9 +12,13 @@ import com.example.moviecatalog.common.ui.component.Gender
 import com.example.moviecatalog.common.validation.domain.usecase.RegistrationValidationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -48,27 +52,35 @@ class RegistrationViewModel @Inject constructor(
     }
 
 
+    @OptIn(FlowPreview::class)
     fun onFieldChanged(fieldType: FieldType, newValue: Any) {
-        scope.launch(Dispatchers.Default) {
+        val valueFlow = flowOf(newValue)
+            .debounce(500)
+            .distinctUntilChanged()
+        scope.launch {
             when (fieldType) {
-                FieldType.Name -> onNameChanged(newName = newValue as String)
-                FieldType.Gender -> onGenderChanged(newGender = newValue as Gender)
-                FieldType.Login -> onLoginChanged(newLogin = newValue as String)
-                FieldType.Email -> onEmailChanged(newEmail = newValue as String)
-                FieldType.BirthDate -> {
-                    onBirthDateChanged(newBirthDate = newValue as LocalDate)
-                }
 
-                FieldType.Password -> {
-                    onPasswordChanged(newPassword = newValue as String)
+                FieldType.Name -> valueFlow.collect { newName ->
+                    onNameChanged(newName as String)
                 }
-
-                FieldType.RepeatedPassword -> {
-                    onRepeatedPasswordChanged(
-                        newRepeatedPassword = newValue as String
-                    )
+                FieldType.Gender -> valueFlow.collect { newGender ->
+                    onGenderChanged(newGender as Gender)
                 }
-
+                FieldType.Login -> valueFlow.collect { newLogin ->
+                    onLoginChanged(newLogin as String)
+                }
+                FieldType.Email -> valueFlow.collect { newEmail ->
+                    onEmailChanged(newEmail as String)
+                }
+                FieldType.BirthDate -> valueFlow.collect { newBirthDate ->
+                    onBirthDateChanged(newBirthDate as LocalDate)
+                }
+                FieldType.Password -> valueFlow.collect { newPassword ->
+                    onPasswordChanged(newPassword as String)
+                }
+                FieldType.RepeatedPassword -> valueFlow.collect { newRepeatedPassword ->
+                    onRepeatedPasswordChanged(newRepeatedPassword as String)
+                }
                 else -> {}
             }
             updateErrorAndButtonStateForField(fieldType)
