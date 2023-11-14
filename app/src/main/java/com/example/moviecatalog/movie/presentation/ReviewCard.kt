@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.decode.GifDecoder
 import coil.request.ImageRequest
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.review.domain.model.ReviewModel
@@ -150,6 +151,7 @@ fun ReviewAuthorImage(isAnonymous: Boolean, avatarLink: String?) {
                     .data(avatarLink)
                     .placeholder(R.drawable.user)
                     .error(R.drawable.user)
+                    .decoderFactory(GifDecoder.Factory())
                     .build(),
                 contentDescription = stringResource(
                     R.string.user_avatar
@@ -160,6 +162,8 @@ fun ReviewAuthorImage(isAnonymous: Boolean, avatarLink: String?) {
                     .clip(RoundedCornerShape(50.dp)),
                 contentScale = ContentScale.FillBounds
             )
+        } else {
+            AnonymousImage()
         }
     }
 }

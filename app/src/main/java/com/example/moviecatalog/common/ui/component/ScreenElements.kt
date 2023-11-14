@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.decode.GifDecoder
 import coil.request.ImageRequest
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.main.data.mapper.toReviewShortModel
@@ -169,7 +170,7 @@ fun MyProfileCard(
         modifier = modifier.fillMaxWidth()
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current).data(link).build(),
+            model = ImageRequest.Builder(LocalContext.current).data(link).decoderFactory(GifDecoder.Factory()).build(),
             contentDescription = stringResource(R.string.profile_icon),
             contentScale = ContentScale.Crop,
             modifier = Modifier
