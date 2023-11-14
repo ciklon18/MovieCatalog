@@ -166,8 +166,10 @@ fun DatePickerAlertDialog(
         DatePicker(
             state = datePickerState,
             colors = DatePickerDefaults.colors(
-                todayContentColor = colorResource(R.color.accent),
-                todayDateBorderColor = colorResource(R.color.accent),
+                todayContentColor = colorResource(R.color.light_accent),
+                todayDateBorderColor = colorResource(R.color.dismiss_accent),
+                selectedDayContainerColor = colorResource(R.color.accent),
+                selectedDayContentColor = colorResource(R.color.white),
             ),
         )
     }
