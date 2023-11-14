@@ -23,7 +23,7 @@ class ProfileStorageImpl @Inject constructor(
             prefs[PreferencesKeys.PROFILE_ID_KEY] = profile.id
             prefs[PreferencesKeys.PROFILE_NICKNAME_KEY] = profile.nickName
             prefs[PreferencesKeys.PROFILE_EMAIL_KEY] = profile.email
-            prefs[PreferencesKeys.PROFILE_AVATAR_LINK_KEY] = profile.avatarLink
+            prefs[PreferencesKeys.PROFILE_AVATAR_LINK_KEY] = profile.avatarLink ?: ""
             prefs[PreferencesKeys.PROFILE_NAME_KEY] = profile.name
             prefs[PreferencesKeys.PROFILE_BIRTH_DATE_KEY] = profile.birthDate
             prefs[PreferencesKeys.PROFILE_GENDER_KEY] = profile.gender
