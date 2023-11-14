@@ -163,7 +163,15 @@ fun ReviewAuthorImage(isAnonymous: Boolean, avatarLink: String?) {
                 contentScale = ContentScale.FillBounds
             )
         } else {
-            AnonymousImage()
+            Icon(
+                painter = painterResource(R.drawable.user),
+                contentDescription = stringResource(R.string.anonymous),
+                tint = colorResource(R.color.black),
+                modifier = Modifier
+                    .height(40.dp)
+                    .width(40.dp)
+                    .clip(RoundedCornerShape(50.dp))
+            )
         }
     }
 }

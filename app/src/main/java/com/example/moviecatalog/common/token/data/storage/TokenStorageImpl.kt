@@ -21,6 +21,7 @@ class TokenStorageImpl @Inject constructor(
 
     override suspend fun saveToken(token: String) {
         context.dataStore.edit { prefs ->
+            prefs.remove(PreferencesKeys.TOKEN_KEY)
             prefs[PreferencesKeys.TOKEN_KEY] = token
         }
     }

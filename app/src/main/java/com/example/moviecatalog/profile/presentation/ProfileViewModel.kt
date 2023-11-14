@@ -234,10 +234,11 @@ class ProfileViewModel @Inject constructor(
             val id = UUID.randomUUID().toString()
             val profile = _uiState.value.toProfile().copy(id = id)
             val networkResult = updateProfileUseCase.execute(_uiState.value.token, profile)
-
-            if (networkResult.isSuccess) {
-                setProfileToLocalStorageUseCase.execute(profile)
+            val updatedProfile = getProfileUseCase.execute(_uiState.value.token).getOrNull()
+            if (networkResult.isSuccess && updatedProfile != null) {
+                setProfileToLocalStorageUseCase.execute(updatedProfile)
                 oldProfileData.value = _uiState.value
+
             } else {
                 _uiState.value = oldProfileData.value
             }
