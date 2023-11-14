@@ -23,14 +23,13 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
-    private val scope = viewModelScope
 
     init {
         loadPage()
     }
 
     private fun loadPage() {
-        scope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.Main) {
             _uiState.update { currentState ->
                 try {
                     val movies = getMovieCardsUseCase.execute()

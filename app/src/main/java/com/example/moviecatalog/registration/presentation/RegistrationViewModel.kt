@@ -34,15 +34,14 @@ class RegistrationViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RegistrationUIState())
     val uiState: StateFlow<RegistrationUIState> = _uiState.asStateFlow()
-
-    private val scope = viewModelScope
+    
 
 
     fun onNavigateUpPressed() {
         if (!_uiState.value.isFirstButtonPressed) {
             resetEnteredData()
         } else {
-            scope.launch(Dispatchers.Default) {
+            viewModelScope.launch(Dispatchers.Default) {
                 _uiState.update { currentState ->
                     currentState.copy(
                         isFirstButtonPressed = false
@@ -58,7 +57,7 @@ class RegistrationViewModel @Inject constructor(
         val valueFlow = flowOf(newValue)
             .debounce(500)
             .distinctUntilChanged()
-        scope.launch {
+        viewModelScope.launch {
             when (fieldType) {
 
                 FieldType.Name -> valueFlow.collect { newName ->
@@ -224,7 +223,7 @@ class RegistrationViewModel @Inject constructor(
     }
 
     fun onFirstButtonPressed() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 currentState.copy(
                     isFirstButtonPressed = true
@@ -234,7 +233,7 @@ class RegistrationViewModel @Inject constructor(
     }
 
     fun onSecondButtonPressed() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             try {
                 val user = _uiState.value.toUserRegisterModel()
                 val response = registerUserUseCase.execute(user)
@@ -261,7 +260,7 @@ class RegistrationViewModel @Inject constructor(
 
 
     private fun handleException() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 currentState.copy(
                     isRegisterError = true, isSecondButtonEnabled = false

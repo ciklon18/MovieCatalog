@@ -28,15 +28,13 @@ class FavoriteViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(FavoriteUIState())
     val uiState: StateFlow<FavoriteUIState> = _uiState.asStateFlow()
-
-    private val scope = viewModelScope
-
+    
     init {
         loadMovies()
     }
 
     private fun loadMovies() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             val token = getTokenFromLocalStorageUseCase.execute()
             val result = getFavoritesUseCase.execute(token)
             val userId = getProfileFromLocalStorageUseCase.execute().getOrNull()?.id

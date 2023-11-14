@@ -31,15 +31,13 @@ class LaunchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LaunchUIState())
     val uiState: StateFlow<LaunchUIState> = _uiState.asStateFlow()
 
-    private val scope = viewModelScope
-
     init {
         checkTokenValid()
         updateUserProfile()
     }
 
     private fun updateUserProfile() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             try{
                 if (!_uiState.value.isTokenExpired){
                     val result = getProfileUseCase.execute(_uiState.value.token)
@@ -60,7 +58,7 @@ class LaunchViewModel @Inject constructor(
     }
 
     private fun checkTokenValid() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             val token = getTokenFromLocalStorageUseCase.execute()
             val isTokenExpired = isTokenExpiredUseCase.execute(token)
             _uiState.update { currentState ->
