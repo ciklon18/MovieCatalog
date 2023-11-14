@@ -43,9 +43,13 @@ fun LaunchScreen(
         )
 
         if (uiState.isTokenExpired) {
-            navController.navigate(Routes.SelectAuthScreen.name)
+            navController.navigate(Routes.SelectAuthScreen.name){
+                navController.popBackStack()
+            }
         } else {
-            navController.navigate(Routes.MainScreen.name)
+            navController.navigate(Routes.MainScreen.name) {
+                navController.popBackStack()
+            }
         }
 
     }

@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,7 +69,7 @@ fun MovieScreen(
 
     ) {
     val uiState by viewModel.uiState.collectAsState()
-
+    val lazyListState = rememberLazyListState()
 
     Scaffold(
         topBar = {
@@ -74,7 +77,8 @@ fun MovieScreen(
                 navigateUp = { navController.navigateUp() },
                 isFavorite = uiState.isFavorite,
                 onFavoriteClicked = { viewModel.onFavoriteButtonPressed() },
-                isVisibleActionButtons = uiState.isVisibleActionButtons
+                isVisibleMovie = uiState.isVisibleActionButtons,
+                movieName = uiState.name
             )
         }, modifier = modifier
     ) { innerPadding ->
@@ -84,7 +88,9 @@ fun MovieScreen(
             onFavoriteButtonClicked = { viewModel.onFavoriteButtonPressed() },
             onAddReviewClicked = { viewModel.onAddReviewButtonPressed() },
             onEditButtonClicked = { viewModel.onEditReviewPressed() },
-            onDeleteButtonClicked = { viewModel.onDeleteReviewPressed() }
+            onDeleteButtonClicked = { viewModel.onDeleteReviewPressed() },
+            onScrollChanged = { viewModel.onScrollChanged(it) },
+            lazyListState = lazyListState,
         )
         ReviewDialogContent(
             isReviewDialogVisible = uiState.isReviewDialogVisible,
@@ -129,19 +135,26 @@ fun MovieContent(
     onFavoriteButtonClicked: () -> Unit,
     onAddReviewClicked: () -> Unit,
     onEditButtonClicked: () -> Unit,
-    onDeleteButtonClicked: () -> Unit
+    onDeleteButtonClicked: () -> Unit,
+    onScrollChanged: (Int) -> Unit,
+    lazyListState: LazyListState
 ) {
+
+    LaunchedEffect(lazyListState.firstVisibleItemIndex) {
+        onScrollChanged(lazyListState.firstVisibleItemIndex)
+    }
     LazyColumn(
-        modifier = Modifier.padding(innerPadding)
+        modifier = Modifier.padding(innerPadding),
+        state = lazyListState
     ) {
         item {
             PosterSection(posterLink = uiState.poster)
         }
         item {
-            MovieDetailsSection(
-                uiState = uiState,
-                onFavoriteButtonClicked = onFavoriteButtonClicked
-            )
+            NameSection(uiState, onFavoriteButtonClicked)
+        }
+        item {
+            MovieDetailsSection(uiState = uiState)
         }
         reviewsSection(
             reviews = uiState.reviews,
@@ -169,12 +182,10 @@ fun PosterSection(posterLink: String?, modifier: Modifier = Modifier) {
         MovieGradientElement(modifier = Modifier.fillMaxSize())
     }
 }
-
 @Composable
-fun MovieDetailsSection(uiState: MovieUIState, onFavoriteButtonClicked: () -> Unit) {
+fun NameSection(uiState: MovieUIState, onFavoriteButtonClicked: () -> Unit){
     Column(
         modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         NameSection(
             reviews = uiState.reviews,
@@ -182,6 +193,14 @@ fun MovieDetailsSection(uiState: MovieUIState, onFavoriteButtonClicked: () -> Un
             isFavorite = uiState.isFavorite,
             onButtonClicked = onFavoriteButtonClicked
         )
+    }
+}
+@Composable
+fun MovieDetailsSection(uiState: MovieUIState) {
+    Column(
+        modifier = Modifier.padding(start = 16.dp, top = 20.dp, end = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
         DescriptionSection(description = uiState.description)
         GenreSection(genres = uiState.genres)
         AboutMovieSection(movieDetails = uiState.toShortMovieDetails())

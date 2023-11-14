@@ -43,22 +43,30 @@ fun ProfileScreen(
 
     LaunchedEffect(uiState.isLogout){
         if (uiState.isLogout){
-            navController.navigate(Routes.SelectAuthScreen.name)
+            navController.navigate(Routes.SelectAuthScreen.name){
+                navController.popBackStack()
+            }
         }
     }
 
     Scaffold(
         bottomBar = {
             MyBottomBar(
-                onMainClicked = { navController.navigate(Routes.MainScreen.name)},
-                onFavoriteClicked = { navController.navigate(Routes.FavoriteScreen.name) },
-                onProfileClicked = { navController.navigate(Routes.ProfileScreen.name) },
+                onMainClicked = { navController.navigate(Routes.MainScreen.name) {
+                    navController.popBackStack()
+                } },
+
+                onFavoriteClicked = { navController.navigate(Routes.FavoriteScreen.name) {
+                    navController.popBackStack()
+                } },
+                onProfileClicked = { navController.navigate(Routes.ProfileScreen.name) {
+                    navController.popBackStack()
+                } },
                 myTab = MyTab.Profile
             )
         }, modifier = modifier
     ) { innerPadding ->
         FieldsSection(viewModel, uiState, innerPadding)
-
     }
 }
 @Composable

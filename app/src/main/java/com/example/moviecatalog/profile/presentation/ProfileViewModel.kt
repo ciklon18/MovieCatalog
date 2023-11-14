@@ -43,8 +43,7 @@ class ProfileViewModel @Inject constructor(
     private val oldProfileData = MutableStateFlow(ProfileUIState())
     private val _uiState = MutableStateFlow(ProfileUIState())
     val uiState: StateFlow<ProfileUIState> = _uiState.asStateFlow()
-
-    private val scope = viewModelScope
+    
 
 
     init {
@@ -52,7 +51,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun initProfileData() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             val token = getTokenFromLocalStorageUseCase.execute()
             try {
                 val result = getProfileFromLocalStorageUseCase.execute()
@@ -105,7 +104,7 @@ class ProfileViewModel @Inject constructor(
 
 
     fun onLogoutButtonPressed() {
-        scope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             logoutUserUseCase.execute()
             deleteTokenFromLocalStorageUseCase.execute()
             _uiState.update { currentState ->
@@ -119,7 +118,7 @@ class ProfileViewModel @Inject constructor(
         val valueFlow = flowOf(newValue)
             .debounce(300)
             .distinctUntilChanged()
-        scope.launch {
+        viewModelScope.launch {
             when (fieldType) {
                 FieldType.Email -> valueFlow.collect { newEmail ->
                     onEmailChanged(newEmail as String)
@@ -230,14 +229,15 @@ class ProfileViewModel @Inject constructor(
 
 
     fun onSaveButtonPressed() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             val id = UUID.randomUUID().toString()
             val profile = _uiState.value.toProfile().copy(id = id)
             val networkResult = updateProfileUseCase.execute(_uiState.value.token, profile)
-
-            if (networkResult.isSuccess) {
-                setProfileToLocalStorageUseCase.execute(profile)
+            val updatedProfile = getProfileUseCase.execute(_uiState.value.token).getOrNull()
+            if (networkResult.isSuccess && updatedProfile != null) {
+                setProfileToLocalStorageUseCase.execute(updatedProfile)
                 oldProfileData.value = _uiState.value
+
             } else {
                 _uiState.value = oldProfileData.value
             }
@@ -246,7 +246,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onCancelButtonPressed() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.value = oldProfileData.value
         }
     }

@@ -52,21 +52,23 @@ class MovieViewModel @Inject constructor(
 
     private fun initViewModel() = viewModelScope.launch(Dispatchers.Default) {
         val startDataTask = async { loadStartData() }
-        val reviewAuthorTask = async { loadReviewAuthor() }
-
         startDataTask.await()
-        reviewAuthorTask.await()
+        if (startDataTask.isCompleted) {
+            val reviewAuthorTask = async { loadReviewAuthor() }
+            reviewAuthorTask.await()
+            if (startDataTask.isCompleted) {
+                val updateFavoriteStatusTask = async { updateFavoriteStatus() }
+                updateFavoriteStatusTask.await()
+            }
 
-        if (startDataTask.isCompleted){
-            val updateFavoriteStatusTask = async { updateFavoriteStatus() }
-            updateFavoriteStatusTask.await()
+
+            if (reviewAuthorTask.isCompleted) {
+                val userReviewTask = async { loadUserReview() }
+                userReviewTask.await()
+            }
         }
 
 
-        if (reviewAuthorTask.isCompleted) {
-            val userReviewTask = async { loadUserReview() }
-            userReviewTask.await()
-        }
     }
 
 
@@ -118,7 +120,6 @@ class MovieViewModel @Inject constructor(
             }
         }
     }
-
 
 
     fun onFavoriteButtonPressed() {
@@ -256,11 +257,12 @@ class MovieViewModel @Inject constructor(
     }
 
     private fun updateUserReview() {
-        val reviewAuthorId = _uiState.value.reviewAuthor?.userId
+        val reviewAuthor = _uiState.value.reviewAuthor
+        val reviewAuthorId = reviewAuthor?.userId
         _uiState.value.reviews?.firstOrNull { it.author?.userId == reviewAuthorId }
             ?.let { foundReview ->
                 _uiState.update { currentState ->
-                    currentState.copy(userReview = foundReview,
+                    currentState.copy(userReview = foundReview.copy(author = reviewAuthor),
                         reviews = currentState.reviews?.filterNot { it == foundReview })
                 }
             }
@@ -274,6 +276,16 @@ class MovieViewModel @Inject constructor(
 
     private suspend fun getMovieDetails(token: String, movieId: String): MovieDetailsModel? {
         return getMovieDetailsUseCase.execute(id = movieId, token = token).getOrNull()
+    }
+
+    fun onScrollChanged(scrollPosition: Int) {
+        val isVisibleActionButtons = scrollPosition > 1
+
+        viewModelScope.launch(Dispatchers.Default) {
+            _uiState.update { currentState ->
+                currentState.copy(isVisibleActionButtons = isVisibleActionButtons)
+            }
+        }
     }
 }
 

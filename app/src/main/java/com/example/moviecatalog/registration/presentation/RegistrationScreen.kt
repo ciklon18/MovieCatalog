@@ -41,15 +41,14 @@ import java.time.LocalDate
 fun RegistrationScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    viewModel: RegistrationViewModel  = hiltViewModel(),
+    viewModel: RegistrationViewModel = hiltViewModel(),
 
-) {
+    ) {
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(uiState.isSecondButtonPressed){
-        if (uiState.isSecondButtonPressed){
+    LaunchedEffect(uiState.isSecondButtonPressed) {
+        if (uiState.isSecondButtonPressed) {
             navController.navigate(Routes.MainScreen.name)
         }
-        
     }
 
     Scaffold(
@@ -108,7 +107,11 @@ fun RegistrationScreen(
                 onClickSecondButton = {
                     viewModel.onSecondButtonPressed()
                 })
-            LoginLinkSection(onClickButton = { navController.navigate(Routes.LoginScreen.name) })
+            LoginLinkSection(onClickButton = {
+                navController.navigate(Routes.LoginScreen.name) {
+                    navController.popBackStack()
+                }
+            })
         }
     }
 }

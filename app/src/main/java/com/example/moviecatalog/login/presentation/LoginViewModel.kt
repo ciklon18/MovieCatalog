@@ -2,10 +2,8 @@ package com.example.moviecatalog.login.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import com.example.moviecatalog.common.auth.data.mapper.toUserLoginModel
 import com.example.moviecatalog.common.auth.domain.usecase.LoginUserUseCase
-import com.example.moviecatalog.common.navigation.Routes
 import com.example.moviecatalog.common.profile.domain.usecase.GetProfileUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.SetProfileToLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
@@ -143,11 +141,6 @@ class LoginScreenViewModel @Inject constructor(
             }
         }
 
-    }
-
-
-    fun onRegisterLinkPressed(navController: NavHostController) {
-        navController.navigate(Routes.RegistrationScreen.name)
     }
 }
 

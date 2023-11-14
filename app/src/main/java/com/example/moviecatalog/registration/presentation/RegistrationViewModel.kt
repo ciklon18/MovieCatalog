@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviecatalog.common.auth.data.mapper.toUserRegisterModel
 import com.example.moviecatalog.common.auth.domain.usecase.RegisterUserUseCase
-import com.example.moviecatalog.common.profile.data.mapper.toProfile
+import com.example.moviecatalog.common.profile.domain.usecase.GetProfileUseCase
 import com.example.moviecatalog.common.profile.domain.usecase.SetProfileToLocalStorageUseCase
 import com.example.moviecatalog.common.token.domain.usecase.SetTokenToLocalStorageUseCase
 import com.example.moviecatalog.common.ui.component.FieldType
@@ -29,19 +29,19 @@ class RegistrationViewModel @Inject constructor(
     private val setTokenToLocalStorageUseCase: SetTokenToLocalStorageUseCase,
     private val registrationValidationUseCase: RegistrationValidationUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
     private val setProfileToLocalStorageUseCase: SetProfileToLocalStorageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RegistrationUIState())
     val uiState: StateFlow<RegistrationUIState> = _uiState.asStateFlow()
-
-    private val scope = viewModelScope
+    
 
 
     fun onNavigateUpPressed() {
         if (!_uiState.value.isFirstButtonPressed) {
             resetEnteredData()
         } else {
-            scope.launch(Dispatchers.Default) {
+            viewModelScope.launch(Dispatchers.Default) {
                 _uiState.update { currentState ->
                     currentState.copy(
                         isFirstButtonPressed = false
@@ -57,30 +57,37 @@ class RegistrationViewModel @Inject constructor(
         val valueFlow = flowOf(newValue)
             .debounce(500)
             .distinctUntilChanged()
-        scope.launch {
+        viewModelScope.launch {
             when (fieldType) {
 
                 FieldType.Name -> valueFlow.collect { newName ->
                     onNameChanged(newName as String)
                 }
+
                 FieldType.Gender -> valueFlow.collect { newGender ->
                     onGenderChanged(newGender as Gender)
                 }
+
                 FieldType.Login -> valueFlow.collect { newLogin ->
                     onLoginChanged(newLogin as String)
                 }
+
                 FieldType.Email -> valueFlow.collect { newEmail ->
                     onEmailChanged(newEmail as String)
                 }
+
                 FieldType.BirthDate -> valueFlow.collect { newBirthDate ->
                     onBirthDateChanged(newBirthDate as LocalDate)
                 }
+
                 FieldType.Password -> valueFlow.collect { newPassword ->
                     onPasswordChanged(newPassword as String)
                 }
+
                 FieldType.RepeatedPassword -> valueFlow.collect { newRepeatedPassword ->
                     onRepeatedPasswordChanged(newRepeatedPassword as String)
                 }
+
                 else -> {}
             }
             updateErrorAndButtonStateForField(fieldType)
@@ -216,7 +223,7 @@ class RegistrationViewModel @Inject constructor(
     }
 
     fun onFirstButtonPressed() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 currentState.copy(
                     isFirstButtonPressed = true
@@ -226,22 +233,21 @@ class RegistrationViewModel @Inject constructor(
     }
 
     fun onSecondButtonPressed() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             try {
                 val user = _uiState.value.toUserRegisterModel()
                 val response = registerUserUseCase.execute(user)
                 val token = response.getOrNull()?.token ?: ""
                 if (token.isNotBlank()) {
                     token.let { setTokenToLocalStorageUseCase.execute(it) }
-                    val profile = _uiState.value.toProfile()
-                    setProfileToLocalStorageUseCase.execute(profile)
-
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            isSecondButtonPressed = true
-                        )
+                    getProfileUseCase.execute(token).getOrNull()?.let { profile ->
+                        setProfileToLocalStorageUseCase.execute(profile)
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                isSecondButtonPressed = true
+                            )
+                        }
                     }
-
                 } else {
                     handleException()
                 }
@@ -254,7 +260,7 @@ class RegistrationViewModel @Inject constructor(
 
 
     private fun handleException() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 currentState.copy(
                     isRegisterError = true, isSecondButtonEnabled = false

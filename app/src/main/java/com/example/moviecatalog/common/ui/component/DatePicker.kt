@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
@@ -51,13 +53,14 @@ fun CustomDateField(
 ) {
     val isError = errorMessageResId != null
     val containerColor = if (!isError) Color.Transparent else colorResource(R.color.dark_accent)
-    val borderColor = if (!isError) colorResource(R.color.border_color) else colorResource(R.color.accent)
+    val borderColor =
+        if (!isError) colorResource(R.color.border_color) else colorResource(R.color.accent)
     var isDatePickerVisible by remember { mutableStateOf(false) }
     val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-    Column (
+    Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
-    ){
+    ) {
         Text(
             text = formText,
             style = label15MTextStyle
@@ -88,7 +91,7 @@ fun CustomDateField(
                 )
             }
         }
-        if (isError && errorMessageResId != null){
+        if (isError && errorMessageResId != null) {
             ErrorText(text = stringResource(errorMessageResId))
         }
     }
@@ -107,22 +110,39 @@ fun CustomDateField(
             datePickerState = datePickerState,
             onDismissRequest = { isDatePickerVisible = false },
             confirmButton = {
-                Button(onClick = {
-                    val selectedDateMillis = datePickerState.selectedDateMillis
-                    if (selectedDateMillis != null) {
-                        onPickedDateChanged(
-                            Instant.ofEpochMilli(selectedDateMillis).atZone(ZoneId.systemDefault())
-                                .toLocalDate()
-                        )
-                    }
-                    isDatePickerVisible = false
-                }) {
-                    Text(text = stringResource(R.string.confirm))
+                Button(
+                    onClick = {
+                        val selectedDateMillis = datePickerState.selectedDateMillis
+                        if (selectedDateMillis != null) {
+                            onPickedDateChanged(
+                                Instant.ofEpochMilli(selectedDateMillis)
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDate()
+                            )
+                        }
+                        isDatePickerVisible = false
+                    }, colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.accent),
+                        contentColor = colorResource(R.color.white)
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.confirm),
+                        color = colorResource(R.color.white)
+                    )
                 }
             },
             dismissButton = {
-                Button(onClick = { isDatePickerVisible = false }) {
-                    Text(text = stringResource(R.string.cancel))
+                Button(
+                    onClick = { isDatePickerVisible = false }, colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.gray_400),
+                        contentColor = colorResource(R.color.white)
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.cancel),
+                        color = colorResource(R.color.white)
+                    )
                 }
             },
         )
@@ -140,15 +160,24 @@ fun DatePickerAlertDialog(
     DatePickerDialog(
         onDismissRequest = onDismissRequest,
         dismissButton = dismissButton,
-        confirmButton = confirmButton
-    ) {
-        DatePicker(state = datePickerState)
+        confirmButton = confirmButton,
+
+        ) {
+        DatePicker(
+            state = datePickerState,
+            colors = DatePickerDefaults.colors(
+                todayContentColor = colorResource(R.color.light_accent),
+                todayDateBorderColor = colorResource(R.color.dismiss_accent),
+                selectedDayContainerColor = colorResource(R.color.accent),
+                selectedDayContentColor = colorResource(R.color.white),
+            ),
+        )
     }
 }
 
 @Preview
 @Composable
-fun PreviewCustomDateField(){
+fun PreviewCustomDateField() {
     CustomDateField(
         formText = "",
         pickedDate = LocalDate.now(),

@@ -19,12 +19,11 @@ class ReviewDialogViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ReviewUiState())
     val uiState: StateFlow<ReviewUiState> = _uiState.asStateFlow()
-
-    private val scope = viewModelScope
+    
 
 
     fun onUserReviewChanged(userReview: ReviewModel) {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 userReview.toReviewUiState().copy(
                     isSaveButtonEnabled = currentState.isSaveButtonEnabled,
@@ -35,7 +34,7 @@ class ReviewDialogViewModel @Inject constructor(
     }
 
     fun onRatingChanged(newRating: Int) {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 currentState.copy(rating = newRating)
             }
@@ -44,7 +43,7 @@ class ReviewDialogViewModel @Inject constructor(
     }
 
     fun onReviewTextChanged(newReviewText: String) {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 currentState.copy(reviewText = newReviewText)
             }
@@ -53,7 +52,7 @@ class ReviewDialogViewModel @Inject constructor(
     }
 
     fun onAnonymousChanged(isAnonymous: Boolean) {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 currentState.copy(isAnonymous = isAnonymous)
             }
@@ -61,7 +60,7 @@ class ReviewDialogViewModel @Inject constructor(
         updateSaveButtonState()
     }
     fun onButtonPressed(){
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.update {
                 ReviewUiState()
             }
@@ -69,7 +68,7 @@ class ReviewDialogViewModel @Inject constructor(
     }
 
     private fun updateSaveButtonState() {
-        scope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             _uiState.update { currentState ->
                 val userReview = currentState.userReview
                 if (userReview != null) {

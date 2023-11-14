@@ -43,8 +43,8 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(uiState.isButtonPressed){
-        if (uiState.isButtonPressed){
+    LaunchedEffect(uiState.isButtonPressed) {
+        if (uiState.isButtonPressed) {
             navController.navigate(Routes.MainScreen.name)
         }
     }
@@ -81,7 +81,11 @@ fun LoginScreen(
                 }
             )
             RegistrationLinkSection(
-                onClickButton = { viewModel.onRegisterLinkPressed(navController) }
+                onClickButton = {
+                    navController.navigate(Routes.RegistrationScreen.name) {
+                        navController.popBackStack()
+                    }
+                }
             )
         }
     }
