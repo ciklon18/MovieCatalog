@@ -61,15 +61,15 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            MyBottomBar(
-                onMainClicked = {
-                    coroutineScope.launch {
-                        listState.animateScrollToItem(0)
-                    }
-                },
-                onFavoriteClicked = { navController.navigate(Routes.FavoriteScreen.name) },
-                onProfileClicked = { navController.navigate(Routes.ProfileScreen.name) },
-                myTab = MyTab.Main
+            MyBottomBar(onMainClicked = {
+                coroutineScope.launch {
+                    listState.animateScrollToItem(0)
+                }
+            }, onFavoriteClicked = {
+                navController.navigate(Routes.FavoriteScreen.name)
+            }, onProfileClicked = {
+                navController.navigate(Routes.ProfileScreen.name)
+            }, myTab = MyTab.Main
             )
         }, modifier = modifier
     ) { innerPadding ->
@@ -177,15 +177,13 @@ fun LazyListScope.movieCatalogSection(
     items(movies.itemCount) { index ->
         if (index > 3) {
             movies[index]?.let { movie ->
-                MovieCard(
-                    movie = movie,
+                MovieCard(movie = movie,
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp)
                         .clickable {
                             navController.navigate("${Routes.MovieScreen.name}/${movie.id}")
-                        }
-                )
+                        })
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
