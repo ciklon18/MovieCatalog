@@ -1,40 +1,47 @@
 package com.example.moviecatalog.common.token.data.storage
 
 import android.content.Context
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
+import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.example.moviecatalog.common.token.Constants
-import com.example.moviecatalog.common.token.PreferencesKeys
 import com.example.moviecatalog.common.token.domain.storage.TokenStorage
-import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
 @Singleton
 class TokenStorageImpl @Inject constructor(
-    private val context: Context
+    context: Context
 ) : TokenStorage {
 
-    private val Context.dataStore by preferencesDataStore(
-        name = Constants.TOKEN_PREFERENCES_NAME
+
+    private var masterKey = MasterKey.Builder(context)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        .build()
+
+    private var sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+        context,
+        Constants.TOKEN_STORAGE_NAME,
+        masterKey,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
     override suspend fun saveToken(token: String) {
-        context.dataStore.edit { prefs ->
-            prefs.remove(PreferencesKeys.TOKEN_KEY)
-            prefs[PreferencesKeys.TOKEN_KEY] = token
-        }
+        sharedPreferences.edit()
+            .putString(Constants.TOKEN_KEY, token)
+            .apply()
     }
 
     override suspend fun getToken(): String {
-        return context.dataStore.data.firstOrNull()?.get(PreferencesKeys.TOKEN_KEY)?.toString()
-            ?: ""
+        return sharedPreferences.getString(Constants.TOKEN_KEY, "") ?: ""
     }
 
     override suspend fun deleteToken() {
-        context.dataStore.edit { prefs ->
-            prefs.remove(PreferencesKeys.TOKEN_KEY)
-        }
+        sharedPreferences.edit()
+            .remove(Constants.TOKEN_KEY)
+            .apply()
     }
 
 }
