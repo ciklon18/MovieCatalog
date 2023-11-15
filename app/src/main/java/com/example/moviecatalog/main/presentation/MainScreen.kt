@@ -115,7 +115,7 @@ fun SwipeMovieSection(
         while (true) {
             delay(3000)
             if (pagerState.pageCount != 0) {
-                val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
+                val nextPage = if (pagerState.currentPage != pagerState.pageCount) (pagerState.currentPage + 1) % pagerState.pageCount else 0
                 pagerState.animateScrollToPage(nextPage)
             }
 
