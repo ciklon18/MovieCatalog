@@ -85,6 +85,7 @@ class ProfileViewModel @Inject constructor(
                 email = uiState.email,
                 avatarLink = uiState.avatarLink,
                 name = uiState.name,
+                nickName = uiState.nickName,
                 birthDate = uiState.birthDate,
                 gender = uiState.gender,
                 token = token
@@ -95,6 +96,7 @@ class ProfileViewModel @Inject constructor(
                 email = uiState.email,
                 avatarLink = uiState.avatarLink,
                 name = uiState.name,
+                nickName = uiState.nickName,
                 birthDate = uiState.birthDate,
                 gender = uiState.gender,
                 token = token

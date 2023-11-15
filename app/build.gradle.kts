@@ -64,11 +64,8 @@ dependencies {
     //datePicker
     implementation("androidx.compose.material3:material3:1.1.2")
 
-    //datastore
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.datastore:datastore-android:1.1.0-alpha06")
 
-    //
+    //encryptedSharedPreferences
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
     //network
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
