@@ -170,7 +170,12 @@ fun MyProfileCard(
         modifier = modifier.fillMaxWidth()
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current).data(link).decoderFactory(GifDecoder.Factory()).build(),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(link)
+                .decoderFactory(GifDecoder.Factory())
+                .error(R.drawable.user)
+                .placeholder(R.drawable.user)
+                .build(),
             contentDescription = stringResource(R.string.profile_icon),
             contentScale = ContentScale.Crop,
             modifier = Modifier
